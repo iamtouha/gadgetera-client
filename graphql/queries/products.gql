@@ -1,0 +1,13 @@
+{
+  products {
+    id
+    name
+    slug
+    price
+    discount
+    photos {
+      previewUrl
+      url
+    }
+  }
+}
