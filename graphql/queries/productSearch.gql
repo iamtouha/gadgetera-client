@@ -1,0 +1,12 @@
+query productsSearch($name: String!) {
+  products(where: { name_contains: $name }) {
+    id
+    name
+    slug
+    price
+    discount
+    photos {
+      url
+    }
+  }
+}

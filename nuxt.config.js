@@ -10,7 +10,7 @@ export default {
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
    */
-  target: 'server',
+  target: 'static',
   /*
    ** Headers of the page
    ** See https://nuxtjs.org/api/configuration-head
@@ -74,7 +74,8 @@ export default {
     clientConfigs: {
       default: {
         // required
-        httpEndpoint: process.env.GQL_API || 'http://localhost:1337/graphql',
+        httpEndpoint:
+          process.env.GQL_API || 'http://gadgetera.herokuapp.com/graphql',
       },
     },
   },
@@ -86,12 +87,12 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: false,
+      dark: true,
       themes: {
-        light: {
-          primary: colors.blue.darken2,
+        dark: {
+          primary: '#CBAD6D',
           accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
+          secondary: '#343434',
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
@@ -104,5 +105,7 @@ export default {
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
    */
-  build: {},
+  build: {
+    extractCSS: true,
+  },
 }

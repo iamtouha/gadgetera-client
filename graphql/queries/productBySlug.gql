@@ -1,0 +1,26 @@
+query productBySlug($slug: String!) {
+  productBySlug(slug: $slug) {
+    id
+    name
+    description
+    price
+    discount
+    photos {
+      url
+    }
+    available
+    category {
+      name
+      id
+    }
+    brand {
+      id
+      name
+    }
+    variants {
+      attribute
+      value
+      available
+    }
+  }
+}

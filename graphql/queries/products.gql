@@ -6,7 +6,6 @@
     price
     discount
     photos {
-      previewUrl
       url
     }
   }

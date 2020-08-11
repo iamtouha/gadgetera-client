@@ -1,11 +1,72 @@
 <template>
   <v-app>
-    <v-app-bar :hide-on-scroll="isMobile" app></v-app-bar>
+    <v-app-bar clipped-left color="seconday" :hide-on-scroll="isMobile" app>
+      <v-toolbar-title style="cursor:pointer;" @click="$router.push('/')">
+        <v-img max-width="135px" class="mr-3" contain src="/logo.svg" lazy-src="/logo.svg"></v-img>
+      </v-toolbar-title>
+      <v-toolbar-items v-if="!isMobile">
+        <v-btn
+          class="transparent primary--text"
+          exact
+          elevation="0"
+          v-for="route in routes"
+          nuxt
+          :to="route.path"
+          :key="route.name"
+        >{{route.name}}</v-btn>
+      </v-toolbar-items>
+      <v-spacer />
+      <v-text-field flat solo hide-details v-model="search" label="search"></v-text-field>
+      <v-btn
+        color="primary"
+        :style="{'max-width':isMobile?'40px':'','min-width':isMobile?'40px':''}"
+        :to="'/search/'+search"
+        outlined
+        large
+        elevation="0"
+      >
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+      <v-spacer />
+      <v-toolbar-items>
+        <v-menu close-on-click close-on-content-click bottom nudge-bottom left>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" color="primary" v-on="on">
+              <v-icon>mdi-account</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item>
+              <v-list-item-title>Cart</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title>Log in</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title>Sign up</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-toolbar-items>
+    </v-app-bar>
     <v-main>
       <nuxt />
     </v-main>
     <client-only>
-      <v-bottom-navigation app v-if="isMobile"></v-bottom-navigation>
+      <v-bottom-navigation app v-if="isMobile">
+        <v-btn
+          exact
+          elevation="0"
+          active-class="primary--text"
+          v-for="route in navigates"
+          nuxt
+          :to="route.path"
+          :key="route.name"
+        >
+          <v-icon>{{route.icon}}</v-icon>
+        </v-btn>
+      </v-bottom-navigation>
     </client-only>
   </v-app>
 </template>
@@ -13,9 +74,38 @@
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
+  name: 'DefaultLayout',
+  data() {
+    return {
+      search: '',
+      routes: [
+        { name: 'Home', path: '/' },
+        { name: 'Shop', path: '/products' },
+        { name: 'Contact', path: '/contact' },
+        { name: 'About', path: '/about' },
+      ],
+      navigates: [
+        { name: 'Home', path: '/', icon: 'mdi-home' },
+        { name: 'Shop', path: '/products', icon: 'mdi-store' },
+        { name: 'Cart', path: '/cart', icon: 'mdi-cart' },
+        { name: 'Contact', path: '/contact', icon: 'mdi-headset' },
+      ],
+    }
+  },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown
+    },
+    query() {
+      return this.$route.params.name
+    },
+  },
+  watch: {
+    query: {
+      immediate: true,
+      handler: function (val) {
+        if (val) this.search = val
+      },
     },
   },
 })
