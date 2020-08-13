@@ -1,5 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
 
+const dev =
+  process.env.NODE_ENV && process.env.NODE_ENV === 'development' ? true : false
+
 export default {
   mode: 'universal',
   target: 'static',
@@ -40,7 +43,9 @@ export default {
     clientConfigs: {
       default: {
         // required
-        httpEndpoint: process.env.GQL_API || 'http://localhost:1337/graphql',
+        httpEndpoint: dev
+          ? 'http://localhost:1337/graphql'
+          : 'https://gadgetera.herokuapp.com/graphql',
       },
     },
   },
