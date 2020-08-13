@@ -4,7 +4,7 @@
       <v-toolbar-title style="cursor:pointer;" @click="$router.push('/')">
         <v-img max-width="135px" class="mr-3" contain src="/logo.svg" lazy-src="/logo.svg"></v-img>
       </v-toolbar-title>
-      <v-toolbar-items v-if="!isMobile">
+      <v-toolbar-items :class="[isMobile?'d-none':'']">
         <v-btn
           class="transparent primary--text"
           exact
@@ -67,18 +67,20 @@
       </v-footer>
     </v-main>
     <client-only>
-      <v-bottom-navigation app v-if="isMobile">
-        <v-btn
-          exact
-          elevation="0"
-          active-class="primary--text"
-          v-for="route in navigates"
-          nuxt
-          :to="route.path"
-          :key="route.name"
-        >
-          <v-icon>{{route.icon}}</v-icon>
-        </v-btn>
+      <v-bottom-navigation app :class="[isMobile?'':'d-none']">
+        <v-toolbar-items>
+          <v-btn
+            exact
+            elevation="0"
+            active-class="primary--text"
+            v-for="route in navigates"
+            nuxt
+            :to="route.path"
+            :key="route.name"
+          >
+            <v-icon>{{route.icon}}</v-icon>
+          </v-btn>
+        </v-toolbar-items>
       </v-bottom-navigation>
     </client-only>
   </v-app>
