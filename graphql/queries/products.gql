@@ -5,8 +5,28 @@
     slug
     price
     discount
+    category {
+      id
+      name
+    }
+    brand {
+      id
+      name
+    }
     photos {
       url
     }
+  }
+  categories {
+    name
+    icon
+    id
+  }
+  brands {
+    name
+    logo {
+      url
+    }
+    id
   }
 }

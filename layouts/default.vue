@@ -51,7 +51,20 @@
       </v-toolbar-items>
     </v-app-bar>
     <v-main>
+      <client-only>
+        <v-progress-linear color="primary" indeterminate v-if="loading"></v-progress-linear>
+      </client-only>
       <nuxt />
+      <v-footer>
+        <v-row>
+          <v-col cols="6" sm="4">
+            <v-list color="transparent" dense>
+              <v-list-item class="subtitle-2" nuxt to="/privacy-policy">Privay Policy</v-list-item>
+              <v-list-item class="subtitle-2" nuxt to="/terms-and-conditions">Terms and Conditions</v-list-item>
+            </v-list>
+          </v-col>
+        </v-row>
+      </v-footer>
     </v-main>
     <client-only>
       <v-bottom-navigation app v-if="isMobile">
@@ -98,6 +111,9 @@ export default Vue.extend({
     },
     query() {
       return this.$route.params.name
+    },
+    loading() {
+      return this.$store.state.loading
     },
   },
   watch: {

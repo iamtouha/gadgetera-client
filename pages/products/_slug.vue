@@ -86,18 +86,27 @@ export default Vue.extend({
       title: (this as any).product.name,
     }
   },
-  apollo: {
-    product: {
-      prefetch: true,
-      query: productBySlug,
-      variables() {
+  async asyncData({ app, params, store }) {
+    try {
+      store.commit('LOADING_ON')
+      const client = app.apolloProvider?.defaultClient
+      if (client) {
+        const response = await client.query({
+          query: productBySlug,
+          variables: { slug: params.slug },
+        })
         return {
-          slug: this.$route.params.slug,
+          product: response.data.productBySlug,
         }
-      },
-      update: (data) => data.productBySlug,
-    },
+      }
+      return {}
+    } catch (error) {
+      throw error
+    } finally {
+      store.commit('LOADING_OFF')
+    }
   },
+
   data() {
     return {
       slug: this.$route.params.slug,

@@ -3,7 +3,13 @@
     <v-row>
       <v-col class="pb-0" cols="12">
         <v-chip-group multiple v-model="filterCategories">
-          <v-chip label active-class="primary--text" v-for="cat in categories" :key="cat.id">
+          <v-chip
+            :value="cat.id"
+            label
+            active-class="primary--text"
+            v-for="cat in categories"
+            :key="cat.id"
+          >
             <v-icon left>{{cat.icon}}</v-icon>
             {{cat.name}}
           </v-chip>
@@ -11,11 +17,17 @@
       </v-col>
       <v-col class="pt-0" cols="12">
         <v-chip-group multiple v-model="filterBrands">
-          <v-chip label active-class="primary--text" v-for="cat in brands" :key="cat.id">
+          <v-chip
+            label
+            :value="brand.id"
+            active-class="primary--text"
+            v-for="brand in brands"
+            :key="brand.id"
+          >
             <v-avatar class="mr-1">
-              <v-img :src="cat.logo.url"></v-img>
+              <v-img :src="brand.logo.url"></v-img>
             </v-avatar>
-            {{cat.name}}
+            {{brand.name}}
           </v-chip>
         </v-chip-group>
       </v-col>
@@ -82,7 +94,25 @@ export default Vue.extend({
   head: {
     title: 'Shop',
   },
-
+  async asyncData({ app, store }) {
+    try {
+      store.commit('LOADING_ON')
+      const client = app.apolloProvider?.defaultClient
+      if (client) {
+        const response = await client.query({ query: productsQuery })
+        return {
+          products: response.data.products,
+          brands: response.data.brands,
+          categories: response.data.categories,
+        }
+      }
+      return {}
+    } catch (error) {
+      throw error
+    } finally {
+      store.commit('LOADING_OFF')
+    }
+  },
   data: () => ({
     products: [] as Product[],
     filterCategories: [] as string[],
@@ -101,50 +131,18 @@ export default Vue.extend({
     },
     filteredProducts() {
       let filterd = [...this.products]
-
       if (this.filterCategories.length) {
         filterd = filterd.filter((prod) =>
           this.filterCategories.includes(prod.category.id)
         )
       }
+
       if (this.filterBrands.length) {
         filterd = filterd.filter((prod) =>
           this.filterBrands.includes(prod.brand.id)
         )
       }
       return filterd
-    },
-  },
-  apollo: {
-    products: {
-      query: productsQuery,
-      loadingKey: 'loading',
-    },
-    categories: {
-      query: gql`
-        {
-          categories {
-            name
-            icon
-            id
-          }
-        }
-      `,
-      loadingKey: 'loading',
-    },
-    brands: {
-      query: gql`
-        {
-          brands {
-            name
-            logo {
-              url
-            }
-            id
-          }
-        }
-      `,
-      loadingKey: 'loading',
     },
   },
 })

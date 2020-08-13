@@ -1,0 +1,16 @@
+{
+  contactUs {
+    phone1
+    phone2
+    phone3
+    email
+    messenger
+    availability
+    content
+    links {
+      icon
+      name
+      url
+    }
+  }
+}
