@@ -52,7 +52,7 @@
     </v-app-bar>
     <v-main>
       <client-only>
-        <v-progress-linear color="primary" indeterminate v-if="loading"></v-progress-linear>
+        <v-progress-linear absolute color="primary" indeterminate v-if="loading"></v-progress-linear>
       </client-only>
       <nuxt />
       <v-footer>
@@ -66,7 +66,7 @@
         </v-row>
       </v-footer>
     </v-main>
-    <v-bottom-navigation grow app :class="[isMobile?'':'d-none']">
+    <v-bottom-navigation grow app v-if="isMobile">
       <v-btn
         style="height:100%;"
         v-for="route in navigates"

@@ -84,6 +84,24 @@ export default Vue.extend({
   head() {
     return {
       title: (this as any).product.name,
+      meta: [
+        {
+          hid: 'description',
+          property: 'og:description',
+          content: (this as any).product.overview,
+        },
+        {
+          hid: 'title',
+          property: 'og:title',
+          content: (this as any).product.name,
+        },
+
+        {
+          hid: 'image',
+          property: 'og:image',
+          content: (this as any).product.photos[0].url,
+        },
+      ],
     }
   },
   async asyncData({ app, params, store }) {

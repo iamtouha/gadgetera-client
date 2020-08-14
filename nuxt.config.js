@@ -7,11 +7,6 @@ export default {
   mode: 'universal',
   target: 'static',
 
-  server: {
-    port: 8000,
-    host: '0.0.0.0',
-  },
-
   head: {
     titleTemplate: '%s | ' + 'Gadget Era',
     title: process.env.npm_package_name || '',
@@ -21,7 +16,7 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: process.env.npm_package_description || '',
+        content: 'Gadget Era is a multi-branded retail electronics seller',
       },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],

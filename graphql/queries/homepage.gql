@@ -1,0 +1,21 @@
+{
+  homePage {
+    carousel {
+      url
+    }
+    features {
+      title
+      text
+      icon
+    }
+    featured {
+      name
+      slug
+      price
+      discount
+      photos {
+        url
+      }
+    }
+  }
+}
