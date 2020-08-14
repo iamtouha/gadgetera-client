@@ -66,7 +66,7 @@
         </v-row>
       </v-footer>
     </v-main>
-    <v-bottom-navigation grow app>
+    <v-bottom-navigation grow app :class="[isMobile?'':'d-none']">
       <v-btn
         style="height:100%;"
         v-for="route in navigates"
