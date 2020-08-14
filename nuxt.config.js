@@ -6,6 +6,12 @@ const dev =
 export default {
   mode: 'universal',
   target: 'static',
+
+  server: {
+    port: 8000,
+    host: '0.0.0.0',
+  },
+
   head: {
     titleTemplate: '%s | ' + 'Gadget Era',
     title: process.env.npm_package_name || '',
