@@ -67,20 +67,18 @@
       </v-footer>
     </v-main>
     <client-only>
-      <v-bottom-navigation app :class="[isMobile?'':'d-none']">
-        <v-toolbar-items>
-          <v-btn
-            exact
-            elevation="0"
-            active-class="primary--text"
-            v-for="route in navigates"
-            nuxt
-            :to="route.path"
-            :key="route.name"
-          >
-            <v-icon>{{route.icon}}</v-icon>
-          </v-btn>
-        </v-toolbar-items>
+      <v-bottom-navigation grow app :class="[isMobile?'':'d-none']">
+        <v-btn
+          exact
+          elevation="0"
+          active-class="primary--text"
+          v-for="route in navigates"
+          nuxt
+          :to="route.path"
+          :key="route.name"
+        >
+          <v-icon>{{route.icon}}</v-icon>
+        </v-btn>
       </v-bottom-navigation>
     </client-only>
   </v-app>
