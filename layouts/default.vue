@@ -66,15 +66,19 @@
         </v-row>
       </v-footer>
     </v-main>
-    <client-only>
-      <v-bottom-navigation grow app :class="[isMobile?'':'d-none']">
-        <v-toolbar-items v-for="route in navigates" :key="route.name">
-          <v-btn exact elevation="0" active-class="primary--text" nuxt :to="route.path">
-            <v-icon>{{route.icon}}</v-icon>
-          </v-btn>
-        </v-toolbar-items>
-      </v-bottom-navigation>
-    </client-only>
+    <v-bottom-navigation grow app>
+      <v-btn
+        v-for="route in navigates"
+        :key="route.name"
+        exact
+        elevation="0"
+        active-class="primary--text"
+        nuxt
+        :to="route.path"
+      >
+        <v-icon>{{route.icon}}</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
