@@ -68,6 +68,7 @@
     </v-main>
     <v-bottom-navigation grow app>
       <v-btn
+        style="height:100%;"
         v-for="route in navigates"
         :key="route.name"
         exact
