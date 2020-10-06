@@ -1,37 +1,62 @@
 <template>
   <v-app>
-    <v-app-bar clipped-left color="seconday" :hide-on-scroll="isMobile" app>
-      <v-toolbar-title style="cursor:pointer;" @click="$router.push('/')">
-        <v-img max-width="135px" class="mr-3" contain src="/logo.svg" lazy-src="/logo.svg"></v-img>
-      </v-toolbar-title>
-      <v-toolbar-items :class="[isMobile?'d-none':'']">
+    <v-app-bar dark color="primary" app>
+      <v-toolbar-title class="mr-3">Gadget Era</v-toolbar-title>
+
+      <v-toolbar-items :class="[isMobile ? 'd-none' : '']">
         <v-btn
-          class="transparent primary--text"
+          v-for="route in routes"
+          :key="route.name"
+          :to="route.path"
+          class="transparent"
           exact
           elevation="0"
-          v-for="route in routes"
           nuxt
-          :to="route.path"
-          :key="route.name"
-        >{{route.name}}</v-btn>
+          >{{ route.name }}</v-btn
+        >
       </v-toolbar-items>
       <v-spacer />
-      <v-text-field flat solo hide-details v-model="search" label="search"></v-text-field>
-      <v-btn
-        color="primary"
-        :style="{'max-width':isMobile?'40px':'','min-width':isMobile?'40px':''}"
-        :to="'/search/'+search"
-        outlined
-        large
-        elevation="0"
-      >
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      <template v-if="isMobile && $route.name !== 'products'" v-slot:extension>
+        <v-text-field
+          v-model="search"
+          dense
+          flat
+          solo
+          light
+          hide-details
+          label="search"
+        ></v-text-field>
+        <v-btn text class="accent">search</v-btn>
+      </template>
+      <client-only v-if="!isMobile && $route.name !== 'products'">
+        <v-text-field
+          v-model="search"
+          style="max-width: 400px"
+          light
+          flat
+          dense
+          solo
+          hide-details
+          label="search"
+        ></v-text-field>
+        <v-btn
+          class="black--text accent"
+          :style="{
+            'max-width': isMobile ? '40px' : '',
+            'min-width': isMobile ? '40px' : '',
+          }"
+          :to="'/search/' + search"
+          elevation="0"
+        >
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+      </client-only>
       <v-spacer />
+
       <v-toolbar-items>
         <v-menu close-on-click close-on-content-click bottom nudge-bottom left>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" color="primary" v-on="on">
+            <v-btn icon v-bind="attrs" v-on="on">
               <v-icon>mdi-account</v-icon>
             </v-btn>
           </template>
@@ -50,57 +75,43 @@
         </v-menu>
       </v-toolbar-items>
     </v-app-bar>
-    <v-main>
-      <client-only>
-        <v-progress-linear absolute color="primary" indeterminate v-if="loading"></v-progress-linear>
-      </client-only>
-      <nuxt />
-      <v-footer>
-        <v-row>
-          <v-col cols="6" sm="4">
-            <v-list color="transparent" dense>
-              <v-list-item class="subtitle-2" nuxt to="/privacy-policy">Privay Policy</v-list-item>
-              <v-list-item class="subtitle-2" nuxt to="/terms-and-conditions">Terms and Conditions</v-list-item>
-            </v-list>
-          </v-col>
-        </v-row>
-      </v-footer>
-    </v-main>
-    <v-bottom-navigation grow app v-if="isMobile">
-      <v-btn
-        style="height:100%;"
-        v-for="route in navigates"
-        :key="route.name"
-        exact
-        elevation="0"
-        active-class="primary--text"
-        nuxt
-        :to="route.path"
-      >
-        <v-icon>{{route.icon}}</v-icon>
-      </v-btn>
-    </v-bottom-navigation>
+
+    <nuxt></nuxt>
+    <client-only>
+      <v-bottom-navigation v-if="isMobile" app height="48px">
+        <v-tabs v-model="tab" color="primary" grow>
+          <v-tab v-for="route in bottomNav" :key="route.path" :to="route.path">
+            <v-icon>{{ route.icon }}</v-icon>
+          </v-tab>
+        </v-tabs>
+      </v-bottom-navigation>
+    </client-only>
   </v-app>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
-  name: 'DefaultLayout',
+<script>
+export default {
+  name: "DefaultLayout",
   data() {
     return {
-      search: '',
+      tab: 0,
+      search: "",
+
       routes: [
-        { name: 'Home', path: '/' },
-        { name: 'Shop', path: '/products' },
-        { name: 'Contact', path: '/contact' },
-        { name: 'About', path: '/about' },
+        {
+          name: "Home",
+          path: "/",
+        },
+        {
+          name: "Products",
+          path: "/products",
+        },
       ],
-      navigates: [
-        { name: 'Home', path: '/', icon: 'mdi-home' },
-        { name: 'Shop', path: '/products', icon: 'mdi-store' },
-        { name: 'Cart', path: '/cart', icon: 'mdi-cart' },
-        { name: 'Contact', path: '/contact', icon: 'mdi-headset' },
+      bottomNav: [
+        { name: "Home", path: "/", icon: "mdi-home" },
+        { name: "Shop", path: "/products", icon: "mdi-store" },
+        { name: "Cart", path: "/cart", icon: "mdi-cart" },
+        { name: "Contact", path: "/contact", icon: "mdi-headset" },
       ],
     }
   },
@@ -108,20 +119,6 @@ export default Vue.extend({
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown
     },
-    query() {
-      return this.$route.params.name
-    },
-    loading() {
-      return this.$store.state.loading
-    },
   },
-  watch: {
-    query: {
-      immediate: true,
-      handler: function (val) {
-        if (val) this.search = val
-      },
-    },
-  },
-})
+}
 </script>

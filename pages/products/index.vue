@@ -1,149 +1,174 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col class="pb-0" cols="12">
-        <v-chip-group multiple v-model="filterCategories">
-          <v-chip
-            :value="cat.id"
-            label
-            active-class="primary--text"
-            v-for="cat in categories"
-            :key="cat.id"
+  <v-main>
+    <v-img
+      class="products-main-image"
+      max-height="400px"
+      src="/products_main.jpg"
+      lazy-src="/products_main.jpg"
+    >
+      <div class="products-main-text-wrapper text-center">
+        <v-container>
+          <v-row class="transparent">
+            <v-col class="transparent" cols="12">
+              <h1
+                :style="{ fontSize: isMobile ? '32px' : '42px' }"
+                :class="[isMobile ? 'mb-2' : 'mb-10']"
+                class="font-weight-light text-center"
+              >
+                Products
+              </h1>
+            </v-col>
+          </v-row>
+          <client-only>
+            <v-row class="transparent">
+              <v-col class="transparent" cols="6" md="3">
+                <v-text-field
+                  v-model="searchText"
+                  solo
+                  hide-details
+                  flat
+                  style="border-radius: 0px"
+                  label="Search by Name"
+                ></v-text-field>
+              </v-col>
+              <v-col class="transparent" cols="6" md="3">
+                <v-autocomplete
+                  v-model="category"
+                  solo
+                  :items="categories"
+                  item-text="name"
+                  item-value="id"
+                  hide-details
+                  flat
+                  style="border-radius: 0px"
+                  label="Select Category"
+                ></v-autocomplete>
+              </v-col>
+              <v-col class="transparent" cols="6" md="3">
+                <v-autocomplete
+                  v-model="brand"
+                  multiple
+                  :items="brands"
+                  item-text="name"
+                  item-value="id"
+                  solo
+                  hide-details
+                  flat
+                  style="border-radius: 0px"
+                  label="Select Brands"
+                ></v-autocomplete>
+              </v-col>
+              <v-col class="transparent" cols="6" md="3">
+                <v-select
+                  v-model="sort"
+                  :items="sorting"
+                  solo
+                  hide-details
+                  flat
+                  style="border-radius: 0px"
+                  label="Sort by"
+                ></v-select>
+              </v-col>
+            </v-row>
+          </client-only>
+        </v-container>
+      </div>
+    </v-img>
+    <client-only>
+      <v-container>
+        <v-row>
+          <v-col
+            v-for="product in products"
+            :key="product.id"
+            cols="12"
+            sm="6"
+            md="4"
           >
-            <v-icon left>{{cat.icon}}</v-icon>
-            {{cat.name}}
-          </v-chip>
-        </v-chip-group>
-      </v-col>
-      <v-col class="pt-0" cols="12">
-        <v-chip-group multiple v-model="filterBrands">
-          <v-chip
-            label
-            :value="brand.id"
-            active-class="primary--text"
-            v-for="brand in brands"
-            :key="brand.id"
-          >
-            <v-avatar class="mr-1">
-              <v-img :src="brand.logo.url"></v-img>
-            </v-avatar>
-            {{brand.name}}
-          </v-chip>
-        </v-chip-group>
-      </v-col>
-    </v-row>
-
-    <v-divider></v-divider>
-    <v-row>
-      <v-col v-for="product in filteredProducts" :key="product.id" cols="12" sm="6" md="3">
-        <v-card
-          class="fill-height"
-          :class="[isMobile?'d-none':'']"
-          nuxt
-          :to="'/products/'+product.slug"
-        >
-          <v-img aspect-ratio="1" :lazy-src="product.photos[0].url" :src="product.photos[0].url"></v-img>
-          <v-card-title
-            style="word-break:normal; white-space:pre-wrap;"
-            class="body-1 pb-0"
-          >{{product.name}}</v-card-title>
-          <v-card-title v-if="product.discount" class="title font-weight-regular pt-1">
-            <span class="mr-2 primary--text">&#2547;{{product.price*(1 - (product.discount/100)) }}</span>
-            <del>&#2547;{{product.price}}</del>
-          </v-card-title>
-          <v-card-title
-            v-else
-            class="title font-weight-regular pt-1 primary--text"
-          >&#2547;{{product.price}}</v-card-title>
-        </v-card>
-        <v-list-item nuxt :to="'/products/'+product.slug" :class="[isMobile?'':'d-none']" two-line>
-          <v-list-item-avatar tile size="120">
-            <v-img aspect-ratio="1" :lazy-src="product.photos[0].url" :src="product.photos[0].url"></v-img>
-          </v-list-item-avatar>
-
-          <v-list-item-content>
-            <v-list-item-title
-              style="word-break:normal; white-space:unset;"
-              class="body-2 pb-0"
-            >{{product.name}}</v-list-item-title>
-            <v-list-item-title v-if="product.discount" class="title font-weight-regular pt-1">
-              <span
-                class="mr-2 primary--text"
-              >&#2547;{{product.price*(1 - (product.discount/100)) }}</span>
-              <del>&#2547;{{product.price}}</del>
-            </v-list-item-title>
-            <v-list-item-title
-              v-else
-              class="title font-weight-regular pt-1 primary--text"
-            >&#2547;{{product.price}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-col>
-    </v-row>
-  </v-container>
+            <product-card :product="product"></product-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </client-only>
+  </v-main>
 </template>
+<script>
+import debounce from "lodash.debounce"
+import productsQuery from "~/graphql/queries/products.gql"
+import ProductCard from "~/components/ProductCard.vue"
 
-<script lang="ts">
-import Vue from 'vue'
-import gql from 'graphql-tag'
-import { Product } from '~/models'
-import productsQuery from '~/graphql/queries/products.gql'
-
-export default Vue.extend({
-  name: 'Products',
-  head: {
-    title: 'Shop',
-  },
-  async asyncData({ app, store }) {
-    try {
-      store.commit('LOADING_ON')
-      const client = app.apolloProvider?.defaultClient
-      if (client) {
-        const response = await client.query({ query: productsQuery })
-        return {
-          products: response.data.products,
-          brands: response.data.brands,
-          categories: response.data.categories,
-        }
-      }
-      return {}
-    } catch (error) {
-      throw error
-    } finally {
-      store.commit('LOADING_OFF')
+export default {
+  name: "Products",
+  components: { ProductCard },
+  data() {
+    return {
+      products: [],
+      search: "",
+      category: null,
+      brand: [],
+      sort: null,
+      categories: [],
+      brands: [],
+      sorting: ["name", "price", "date", "category", "brand"],
     }
   },
-  data: () => ({
-    products: [] as Product[],
-    filterCategories: [] as string[],
-    filterBrands: [] as string[],
-    categories: [],
-    brands: [],
-    breadcrumb: [
-      { text: 'Home', to: '/' },
-      { text: 'Products', disabled: true },
-    ],
-    drawer: null,
-  }),
+  apollo: {
+    products: {
+      prefetch: false,
+      query: productsQuery,
+      update(data) {
+        this.brands = data.brands
+        this.categories = data.categories
+        return data.products
+      },
+    },
+  },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown
     },
-    filteredProducts() {
-      let filterd = [...this.products]
-      if (this.filterCategories.length) {
-        filterd = filterd.filter((prod) =>
-          this.filterCategories.includes(prod.category.id)
-        )
-      }
-
-      if (this.filterBrands.length) {
-        filterd = filterd.filter((prod) =>
-          this.filterBrands.includes(prod.brand.id)
-        )
-      }
-      return filterd
+    searchText: {
+      get() {
+        return this.search
+      },
+      set: debounce(function (val) {
+        this.search = val
+      }, 500),
     },
   },
-})
+  created() {
+    const query = this.$route.query.q
+    if (query) this.search = query
+  },
+  methods: {
+    filter() {
+      const filtered = this.products
+        .filter((p) => p.name.toLowerCase().includes(this.search.toLowerCase()))
+        .filter((p) =>
+          this.brand.length ? this.brand.includes(p.brand.id) : true
+        )
+        .filter((p) => (this.category ? this.category === p.category.id : true))
+        .sort()
+
+      return filtered
+    },
+  },
+}
 </script>
+<style lang="scss">
+.products-main-image {
+  .v-responsive__content {
+    display: flex;
+    flex-direction: row;
+    .products-main-text-wrapper {
+      flex: 1;
+      margin: auto;
+      div {
+        background: rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
+}
+.transparent {
+  background: rgba($color: #000000, $alpha: 0);
+}
+</style>

@@ -1,34 +1,45 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from "vuetify/es5/util/colors"
 
-const dev =
-  process.env.NODE_ENV && process.env.NODE_ENV === 'development' ? true : false
+const dev = process.env.NODE_ENV && process.env.NODE_ENV === "development"
 
 export default {
-  mode: 'universal',
-  target: 'static',
+  // Target (https://go.nuxtjs.dev/config-target)
+  target: "static",
 
+  // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s | ' + 'Gadget Era',
-    title: process.env.npm_package_name || '',
+    titleTemplate: "%s - Gadget Era",
+    title: "Gadget Era",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      {
-        hid: 'description',
-        name: 'description',
-        content: 'Gadget Era is a multi-branded retail electronics seller',
-      },
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { hid: "description", name: "description", content: "" },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
+
+  // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
+
+  // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [],
+
+  // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
+
+  // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
+  buildModules: [
+    // https://go.nuxtjs.dev/eslint
+    "@nuxtjs/eslint-module",
+    // https://go.nuxtjs.dev/vuetify
+    "@nuxtjs/vuetify",
+  ],
+
+  // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    //
-    '@nuxtjs/axios',
-    '@nuxtjs/apollo',
+    // https://go.nuxtjs.dev/axios
+    "@nuxtjs/axios",
+    "@nuxtjs/apollo",
   ],
   apollo: {
     cookieAttributes: {
@@ -36,30 +47,38 @@ export default {
     },
     defaultOptions: {
       $query: {
-        loadingKey: 'loading',
-        fetchPolicy: 'cache-and-network',
+        loadingKey: "loading",
+        fetchPolicy: "cache-and-network",
       },
     },
-    errorHandler: '~/plugins/apollo-error-handler.js',
+    errorHandler: "~/plugins/apollo-error-handler.js",
     clientConfigs: {
       default: {
         // required
         httpEndpoint: dev
-          ? 'http://localhost:1337/graphql'
-          : 'https://gadgetera.herokuapp.com/graphql',
+          ? "https://gadgetera.herokuapp.com/graphql"
+          : "https://gadgetera.herokuapp.com/graphql",
       },
     },
   },
+  // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
+
+  // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ["~/assets/variables.scss"],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
-        dark: {
-          primary: '#CBAD6D',
-          accent: colors.grey.darken3,
-          secondary: '#343434',
+        light: {
+          primary: "#325D79",
+          accent: {
+            base: colors.orange.accent4,
+            lighten3: colors.orange.lighten3,
+            lighten4: colors.orange.lighten4,
+            darken4: colors.orange.darken4,
+          },
+          secondary: "#f2f2f2",
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
@@ -68,7 +87,6 @@ export default {
       },
     },
   },
-  build: {
-    extractCSS: true,
-  },
+  // Build Configuration (https://go.nuxtjs.dev/config-build)
+  build: {},
 }
