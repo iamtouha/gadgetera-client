@@ -11,7 +11,7 @@
           <img
             style="height: 100%"
             class="mx-auto d-block"
-            :src="mainImgUrl"
+            :src="product.image.url"
             alt=""
           />
         </v-col>
@@ -92,14 +92,11 @@ export default {
       const product = response.data.productBySlug
       return {
         product,
-        mainImgUrl: product.photos[0]?.url,
       }
     } else return {}
   },
   data: () => ({
-    mainImgUrl: "",
     product: {
-      photos: [],
       variants: [],
     },
     variant: {},
@@ -107,6 +104,7 @@ export default {
   }),
   computed: {
     isMobile() {
+      if (process.server) return true
       return this.$vuetify.breakpoint.smAndDown
     },
     variants() {
@@ -143,7 +141,7 @@ export default {
         {
           hid: "image",
           property: "og:image",
-          content: this.product.photos[0].url,
+          content: this.product.image.url,
         },
       ],
     }

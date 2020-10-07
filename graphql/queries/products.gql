@@ -13,7 +13,7 @@
       id
       name
     }
-    photos {
+    image {
       url
     }
   }

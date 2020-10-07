@@ -6,7 +6,7 @@ query productBySlug($slug: String!) {
     description
     price
     discount
-    photos {
+    image {
       url
     }
     available

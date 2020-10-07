@@ -7,7 +7,7 @@
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
-    <v-img :src="product.photos[0].url" :lazy-src="product.photos[0].url">
+    <v-img :src="product.image.url" :lazy-src="product.image.url">
       <v-chip
         v-if="product.discount"
         color="primary"

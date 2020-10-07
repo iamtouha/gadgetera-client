@@ -5,7 +5,7 @@ query productsSearch($name: String!) {
     slug
     price
     discount
-    photos {
+    image {
       url
     }
   }

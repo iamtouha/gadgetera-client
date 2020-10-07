@@ -5,7 +5,7 @@
       slug
       price
       discount
-      photos {
+      image {
         url
       }
     }

@@ -56,7 +56,7 @@ export default {
       default: {
         // required
         httpEndpoint: dev
-          ? "https://gadgetera.herokuapp.com/graphql"
+          ? "http://localhost:1337/graphql"
           : "https://gadgetera.herokuapp.com/graphql",
       },
     },
