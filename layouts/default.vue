@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar dark color="primary" app>
+    <v-app-bar dark color="primary" :hide-on-scroll="isMobile" app>
       <v-toolbar-title class="mr-3">Gadget Era</v-toolbar-title>
 
       <v-toolbar-items :class="[isMobile ? 'd-none' : '']">
