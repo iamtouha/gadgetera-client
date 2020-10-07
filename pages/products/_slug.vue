@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col
-          :style="{ 'max-height': isMobile ? '400px' : '600px' }"
+          :style="{ 'max-height': isMobile ? '350px' : '600px' }"
           cols="12"
           md="6"
           class="pa-0"
