@@ -9,7 +9,6 @@ query productBySlug($slug: String!) {
     image {
       url
     }
-    available
     category {
       name
       id

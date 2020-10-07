@@ -36,7 +36,7 @@
         </v-row>
         <v-row>
           <v-col
-            v-for="product in homePage.featured"
+            v-for="product in featuredProducts"
             :key="product.slug"
             cols="12"
             sm="6"
@@ -65,17 +65,17 @@
           >
             <v-list-item three-line>
               <v-list-item-avatar>
-                <v-img :src="review.user.photo"> </v-img>
+                <v-img :src="review.photo.url"> </v-img>
               </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title>{{ review.user.name }}</v-list-item-title>
+                <v-list-item-title>{{ review.username }}</v-list-item-title>
                 <v-list-item-subtitle
                   style="
                     text-overflow: unset;
                     white-space: unset;
                     -webkit-line-clamp: unset;
                   "
-                  >{{ review.review }}
+                  >{{ review.body }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -92,80 +92,32 @@ import ProductCard from "~/components/ProductCard.vue"
 export default {
   name: "Home",
   components: { ProductCard },
-
+  async asyncData({ app }) {
+    try {
+      const client = app.apolloProvider?.defaultClient
+      if (client) {
+        const response = await client.query({ query: homepageQuery })
+        const { featured, reviews } = response.data.homePage
+        return {
+          reviews,
+          featuredProducts: featured,
+        }
+      } else return {}
+    } catch (error) {
+      console.error(error.message) //eslint-disable-line
+    }
+  },
   data() {
     return {
       //
-      homePage: {},
-      reviews: [
-        {
-          user: {
-            name: "John Doe",
-            photo: "/home_main.jpg",
-          },
-          review:
-            "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa, ad provident? Optio totam nostrum magni minima recusandae aut quibusdam. Suscipit consectetur temporibus quod doloremque quasi officiis illum distinctio quidem fugiat.",
-        },
-        {
-          user: {
-            name: "John Doe",
-            photo: "/home_main.jpg",
-          },
-          review:
-            "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa, ad provident? Optio totam nostrum magni minima recusandae aut quibusdam. Suscipit consectetur temporibus quod doloremque quasi officiis illum distinctio quidem fugiat.",
-        },
-        {
-          user: {
-            name: "John Doe",
-            photo: "/home_main.jpg",
-          },
-          review:
-            "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa, ad provident? Optio totam nostrum magni minima recusandae aut quibusdam. Suscipit consectetur temporibus quod doloremque quasi officiis illum distinctio quidem fugiat.",
-        },
-        {
-          user: {
-            name: "John Doe",
-            photo: "/home_main.jpg",
-          },
-          review:
-            "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa, ad provident? Optio totam nostrum magni minima recusandae aut quibusdam. Suscipit consectetur temporibus quod doloremque quasi officiis illum distinctio quidem fugiat.",
-        },
-        {
-          user: {
-            name: "John Doe",
-            photo: "/home_main.jpg",
-          },
-          review:
-            "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa, ad provident? Optio totam nostrum magni minima recusandae aut quibusdam. Suscipit consectetur temporibus quod doloremque quasi officiis illum distinctio quidem fugiat.",
-        },
-        {
-          user: {
-            name: "John Doe",
-            photo: "/home_main.jpg",
-          },
-          review:
-            "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa, ad provident? Optio totam nostrum magni minima recusandae aut quibusdam. Suscipit consectetur temporibus quod doloremque quasi officiis illum distinctio quidem fugiat.",
-        },
-        {
-          user: {
-            name: "John Doe",
-            photo: "/home_main.jpg",
-          },
-          review:
-            "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa, ad provident? Optio totam nostrum magni minima recusandae aut quibusdam. Suscipit consectetur temporibus quod doloremque quasi officiis illum distinctio quidem fugiat.",
-        },
-      ],
+      featuredProducts: [],
+      reviews: [],
     }
   },
 
-  apollo: {
-    homePage: {
-      prefetch: false,
-      query: homepageQuery,
-    },
-  },
   computed: {
     isMobile() {
+      if (process.server) return true
       return this.$vuetify.breakpoint.smAndDown
     },
   },

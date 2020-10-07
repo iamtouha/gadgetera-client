@@ -109,7 +109,7 @@ export default {
           categories,
           search: route.query.q ? route.query.q : "",
         }
-      }
+      } else return {}
     } catch (error) {
       console.error(error.message) //eslint-disable-line
     }
