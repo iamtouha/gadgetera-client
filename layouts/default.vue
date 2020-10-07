@@ -16,7 +16,7 @@
         >
       </v-toolbar-items>
       <v-spacer />
-      <template v-if="isMobile && $route.name !== 'products'" v-slot:extension>
+      <template v-if="isMobile" v-slot:extension>
         <v-text-field
           v-model="search"
           dense
@@ -25,10 +25,11 @@
           light
           hide-details
           label="search"
+          @keyup.enter="searchTextOnEnterKeypress"
         ></v-text-field>
-        <v-btn text class="accent">search</v-btn>
+        <v-btn nuxt text class="accent" @click="searchText">search</v-btn>
       </template>
-      <client-only v-if="!isMobile && $route.name !== 'products'">
+      <client-only v-if="!isMobile">
         <v-text-field
           v-model="search"
           style="max-width: 400px"
@@ -38,15 +39,18 @@
           solo
           hide-details
           label="search"
+          @keyup.enter="searchTextOnEnterKeypress"
         ></v-text-field>
         <v-btn
           class="black--text accent"
+          active-class
           :style="{
             'max-width': isMobile ? '40px' : '',
             'min-width': isMobile ? '40px' : '',
           }"
-          :to="'/search/' + search"
+          nuxt
           elevation="0"
+          @click="searchText"
         >
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
@@ -118,6 +122,15 @@ export default {
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown
+    },
+  },
+  methods: {
+    searchText() {
+      this.$router.push("/products?q=" + this.search)
+    },
+    searchTextOnEnterKeypress(e) {
+      e.target?.blur()
+      this.$router.push("/products?q=" + this.search)
     },
   },
 }

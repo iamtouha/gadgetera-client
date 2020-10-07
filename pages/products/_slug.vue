@@ -1,13 +1,19 @@
 <template>
   <v-main>
-    <v-container fluid>
+    <v-container>
       <v-row>
-        <v-col cols="12" md="6" class="pa-0">
-          <v-carousel hide-delimiters :height="isMobile ? '400px' : '600px'">
-            <v-carousel-item v-for="photo in product.photos" :key="photo.url">
-              <v-img height="100%" contain :src="photo.url"></v-img>
-            </v-carousel-item>
-          </v-carousel>
+        <v-col
+          :style="{ 'max-height': isMobile ? '400px' : '600px' }"
+          cols="12"
+          md="6"
+          class="pa-0"
+        >
+          <img
+            style="height: 100%"
+            class="mx-auto d-block"
+            :src="mainImgUrl"
+            alt=""
+          />
         </v-col>
         <v-col class="fill-height" cols="12" md="6">
           <v-card
@@ -66,6 +72,7 @@
         </v-col>
       </v-row>
     </v-container>
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <v-container class="ck-content" v-html="product.description"></v-container>
   </v-main>
 </template>
@@ -82,12 +89,15 @@ export default {
         query: productBySlug,
         variables: { slug: params.slug },
       })
+      const product = response.data.productBySlug
       return {
-        product: response.data.productBySlug,
+        product,
+        mainImgUrl: product.photos[0]?.url,
       }
     } else return {}
   },
   data: () => ({
+    mainImgUrl: "",
     product: {
       photos: [],
       variants: [],
@@ -109,6 +119,7 @@ export default {
       return options
     },
   },
+
   methods: {
     add2cart() {
       //

@@ -74,21 +74,19 @@
         </v-container>
       </div>
     </v-img>
-    <client-only>
-      <v-container>
-        <v-row>
-          <v-col
-            v-for="product in products"
-            :key="product.id"
-            cols="12"
-            sm="6"
-            md="4"
-          >
-            <product-card :product="product"></product-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </client-only>
+    <v-container>
+      <v-row>
+        <v-col
+          v-for="product in filteredProduct"
+          :key="product.id"
+          cols="12"
+          sm="6"
+          md="4"
+        >
+          <product-card :product="product"></product-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-main>
 </template>
 <script>
@@ -99,6 +97,23 @@ import ProductCard from "~/components/ProductCard.vue"
 export default {
   name: "Products",
   components: { ProductCard },
+  async asyncData({ app, route }) {
+    try {
+      const client = app.apolloProvider?.defaultClient
+      if (client) {
+        const response = await client.query({ query: productsQuery })
+        const { products, brands, categories } = response.data
+        return {
+          products,
+          brands,
+          categories,
+          search: route.query.q ? route.query.q : "",
+        }
+      }
+    } catch (error) {
+      console.error(error.message) //eslint-disable-line
+    }
+  },
   data() {
     return {
       products: [],
@@ -111,20 +126,13 @@ export default {
       sorting: ["name", "price", "date", "category", "brand"],
     }
   },
-  apollo: {
-    products: {
-      prefetch: false,
-      query: productsQuery,
-      update(data) {
-        this.brands = data.brands
-        this.categories = data.categories
-        return data.products
-      },
-    },
-  },
+
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown
+    },
+    query() {
+      return this.$route.query.q
     },
     searchText: {
       get() {
@@ -134,13 +142,7 @@ export default {
         this.search = val
       }, 500),
     },
-  },
-  created() {
-    const query = this.$route.query.q
-    if (query) this.search = query
-  },
-  methods: {
-    filter() {
+    filteredProduct() {
       const filtered = this.products
         .filter((p) => p.name.toLowerCase().includes(this.search.toLowerCase()))
         .filter((p) =>
@@ -148,8 +150,12 @@ export default {
         )
         .filter((p) => (this.category ? this.category === p.category.id : true))
         .sort()
-
       return filtered
+    },
+  },
+  watch: {
+    query(newVal) {
+      this.searchText = newVal
     },
   },
 }
