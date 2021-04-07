@@ -43,7 +43,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // baseUrl: "https://gadgetera.herokuapp.com"
-    baseUrl: "http://localhost:1338"
+    baseUrl: process.env.BASE_URL || "http://localhost:1338"
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
