@@ -60,24 +60,13 @@ export default {
   data() {
     return {
       products: [],
-      filter: false,
-      category: null,
-      brand: [],
-      sort: null
+      filter: false
     };
   },
 
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown;
-    },
-    searchText: {
-      get() {
-        return this.search;
-      },
-      set: debounce(function(val) {
-        this.search = val;
-      }, 500)
     }
   },
   watch: {
