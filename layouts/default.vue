@@ -1,7 +1,9 @@
 <template>
-  <v-app>
-    <v-app-bar dark color="primary" :hide-on-scroll="isMobile" app>
-      <v-toolbar-title class="mr-3">Gadget Era</v-toolbar-title>
+  <v-app dark>
+    <v-app-bar dark :hide-on-scroll="isMobile" app>
+      <v-toolbar-title class="mr-3">
+        <v-img max-height="50px" max-width="200px" contain src="/logo.svg" />
+      </v-toolbar-title>
 
       <v-toolbar-items :class="[isMobile ? 'd-none' : '']">
         <v-btn
@@ -15,46 +17,6 @@
           >{{ route.name }}</v-btn
         >
       </v-toolbar-items>
-      <v-spacer />
-      <template v-if="isMobile" v-slot:extension>
-        <v-text-field
-          v-model="search"
-          dense
-          flat
-          solo
-          light
-          hide-details
-          label="search"
-          @keyup.enter="searchTextOnEnterKeypress"
-        ></v-text-field>
-        <v-btn nuxt text class="accent" @click="searchText">search</v-btn>
-      </template>
-      <client-only v-if="!isMobile">
-        <v-text-field
-          v-model="search"
-          style="max-width: 400px"
-          light
-          flat
-          dense
-          solo
-          hide-details
-          label="search"
-          @keyup.enter="searchTextOnEnterKeypress"
-        ></v-text-field>
-        <v-btn
-          class="black--text accent"
-          active-class
-          :style="{
-            'max-width': isMobile ? '40px' : '',
-            'min-width': isMobile ? '40px' : '',
-          }"
-          nuxt
-          elevation="0"
-          @click="searchText"
-        >
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-      </client-only>
       <v-spacer />
 
       <v-toolbar-items>
@@ -81,9 +43,14 @@
     </v-app-bar>
 
     <nuxt></nuxt>
+    <v-footer class="py-10">
+      <p>
+        All rights reserved. Gadget Era @ 2021
+      </p>
+    </v-footer>
     <client-only>
       <v-bottom-navigation v-if="isMobile" app height="48px">
-        <v-tabs v-model="tab" color="primary" grow>
+        <v-tabs v-model="tab" class="nav-tab" color="primary" grow>
           <v-tab v-for="route in bottomNav" :key="route.path" :to="route.path">
             <v-icon>{{ route.icon }}</v-icon>
           </v-tab>
@@ -99,39 +66,48 @@ export default {
   data() {
     return {
       tab: 0,
-      search: "",
 
       routes: [
         {
           name: "Home",
-          path: "/",
+          path: "/"
         },
         {
           name: "Products",
-          path: "/products",
-        },
+          path: "/products"
+        }
       ],
       bottomNav: [
         { name: "Home", path: "/", icon: "mdi-home" },
         { name: "Shop", path: "/products", icon: "mdi-store" },
         { name: "Cart", path: "/cart", icon: "mdi-cart" },
-        { name: "Contact", path: "/contact", icon: "mdi-headset" },
-      ],
-    }
+        { name: "Contact", path: "/profile", icon: "mdi-account-circle" }
+      ]
+    };
   },
   computed: {
     isMobile() {
-      return this.$vuetify.breakpoint.smAndDown
-    },
+      return this.$vuetify.breakpoint.smAndDown;
+    }
   },
   methods: {
     searchText() {
-      this.$router.push("/products?q=" + this.search)
+      this.$router.push("/products?q=" + this.search);
     },
     searchTextOnEnterKeypress(e) {
-      e.target?.blur()
-      this.$router.push("/products?q=" + this.search)
-    },
-  },
-}
+      e.target?.blur();
+      this.$router.push("/products?q=" + this.search);
+    }
+  }
+};
 </script>
+<style lang="scss">
+@media only screen and (max-width: 379px) {
+  .nav-tab {
+    .v-slide-group__prev,
+    .v-slide-group__next {
+      display: none !important;
+    }
+  }
+}
+</style>

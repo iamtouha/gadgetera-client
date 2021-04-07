@@ -3,11 +3,11 @@
     class="product-card"
     :to="'/products/' + product.slug"
     :elevation="hover ? 3 : 0"
-    tile
+    rounded
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
-    <v-img :src="product.image.url" :lazy-src="product.image.url">
+    <v-img :src="product.photo.url" :lazy-src="product.photo.url">
       <v-chip
         v-if="product.discount"
         color="primary"
@@ -35,15 +35,15 @@ export default {
   props: {
     product: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
-      hover: false,
-    }
-  },
-}
+      hover: false
+    };
+  }
+};
 </script>
 
 <style>
