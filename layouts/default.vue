@@ -1,11 +1,11 @@
 <template>
   <v-app dark>
     <v-app-bar dark :hide-on-scroll="isMobile" app>
-      <v-toolbar-title class="mr-3">
-        <v-img max-height="50px" max-width="200px" contain src="/logo.svg" />
+      <v-toolbar-title class="mr-3 pt-1">
+        <img style="height:100%; width:200px;" src="/logo.svg" />
       </v-toolbar-title>
 
-      <v-toolbar-items :class="[isMobile ? 'd-none' : '']">
+      <v-toolbar-items class="main-toolbar-items">
         <v-btn
           v-for="route in routes"
           :key="route.name"
@@ -20,43 +20,37 @@
       <v-spacer />
 
       <v-toolbar-items>
-        <v-menu close-on-click close-on-content-click bottom nudge-bottom left>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-account</v-icon>
-            </v-btn>
-          </template>
-
-          <v-list>
-            <v-list-item>
-              <v-list-item-title>Cart</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Log in</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Sign up</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <v-btn to="/cart" nuxt elevation="0" color="accent" text>
+          <v-chip pill small class="pa-2">{{ cartLength }}</v-chip>
+          <v-icon>mdi-cart</v-icon>
+        </v-btn>
       </v-toolbar-items>
     </v-app-bar>
 
-    <nuxt></nuxt>
-    <v-footer class="py-10">
-      <p>
+    <v-main>
+      <nuxt></nuxt>
+    </v-main>
+
+    <v-snackbar v-model="snackbar">
+      {{ message }}
+      <template #action="{ attrs }">
+        <v-btn color="accent" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-footer class="py-3">
+      <p class="mb-0">
         All rights reserved. Gadget Era @ 2021
       </p>
     </v-footer>
-    <client-only>
-      <v-bottom-navigation v-if="isMobile" app height="48px">
-        <v-tabs v-model="tab" class="nav-tab" color="primary" grow>
-          <v-tab v-for="route in bottomNav" :key="route.path" :to="route.path">
-            <v-icon>{{ route.icon }}</v-icon>
-          </v-tab>
-        </v-tabs>
-      </v-bottom-navigation>
-    </client-only>
+    <v-bottom-navigation class="bottom-nav" app height="48px">
+      <v-tabs v-model="tab" class="nav-tab" color="primary" grow>
+        <v-tab v-for="route in bottomNav" :key="route.path" :to="route.path">
+          <v-icon>{{ route.icon }}</v-icon>
+        </v-tab>
+      </v-tabs>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
@@ -66,30 +60,42 @@ export default {
   data() {
     return {
       tab: 0,
-
       routes: [
-        {
-          name: "Home",
-          path: "/"
-        },
-        {
-          name: "Products",
-          path: "/products"
-        }
+        { name: "Home", path: "/" },
+        { name: "Products", path: "/products" },
+        { name: "Dashboard", path: "/user/" }
       ],
       bottomNav: [
         { name: "Home", path: "/", icon: "mdi-home" },
         { name: "Shop", path: "/products", icon: "mdi-store" },
         { name: "Cart", path: "/cart", icon: "mdi-cart" },
-        { name: "Contact", path: "/profile", icon: "mdi-account-circle" }
+        { name: "Dashboard", path: "/user", icon: "mdi-account-circle" }
       ]
     };
   },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown;
+    },
+    cartLength() {
+      return this.$store.getters["cart/cart"].length;
+    },
+    snackbar: {
+      get() {
+        return this.$store.getters["snackbar"];
+      },
+      set(val) {
+        if (val) {
+          return this.$store.commit("showAlert", "no message");
+        }
+        this.$store.commit("hideAlert");
+      }
+    },
+    message() {
+      return this.$store.getters["message"];
     }
   },
+
   methods: {
     searchText() {
       this.$router.push("/products?q=" + this.search);
@@ -109,5 +115,26 @@ export default {
       display: none !important;
     }
   }
+}
+@media only screen and (min-width: 960px) {
+  .bottom-nav {
+    display: none !important;
+  }
+}
+@media only screen and (max-width: 959px) {
+  .main-toolbar-items {
+    display: none !important;
+  }
+}
+.search-pan {
+  div.textbox-wrapper {
+    display: flex;
+  }
+}
+.semi-transparent-dark {
+  background: rgba($color: #000000, $alpha: 0.75) !important;
+}
+.semi-transparent-light {
+  background: rgba($color: #ffffff, $alpha: 0.75) !important;
 }
 </style>

@@ -1,10 +1,8 @@
 import colors from "vuetify/es5/util/colors";
 
 export default {
-  // Target: https://go.nuxtjs.dev/config-target
   target: "static",
 
-  // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: "%s | Gadget Era",
     title: "Gadget Era",
@@ -19,34 +17,34 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
   css: [],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  image: {
+    cloudinary: {
+      baseURL: "https://res.cloudinary.com/nuxt/image/upload/"
+    }
+  },
 
-  // Auto import components: https://go.nuxtjs.dev/config-components
+  plugins: ["~/plugins/axios"],
+
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-    // https://go.nuxtjs.dev/vuetify
-    "@nuxtjs/vuetify"
-  ],
+  buildModules: ["@nuxtjs/vuetify"],
 
-  // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
-    "@nuxtjs/axios"
+    "nuxt-client-init-module",
+    "@nuxtjs/markdownit",
+    "@nuxtjs/axios",
+    "@nuxtjs/strapi"
   ],
+  strapi: {
+    url: process.env.BASE_URL || "http://localhost:1338"
+  },
 
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // baseUrl: "https://gadgetera.herokuapp.com"
     baseUrl: process.env.BASE_URL || "http://localhost:1338"
   },
 
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
     theme: {
@@ -58,13 +56,20 @@ export default {
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
+          error: colors.yellow.accent2,
           success: colors.green.accent3
         }
       }
     }
   },
+  markdownit: {
+    runtime: true,
+    preset: "default",
+    linkify: true,
+    breaks: true
+  },
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {}
+  build: {
+    extractCSS: true
+  }
 };

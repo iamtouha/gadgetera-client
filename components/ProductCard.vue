@@ -1,30 +1,22 @@
 <template>
   <v-card
-    class="product-card"
-    :to="'/products/' + product.slug"
+    class="products-card"
+    :to="'/products/' + item.slug"
+    nuxt
     :elevation="hover ? 3 : 0"
     rounded
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
-    <v-img :src="product.photo.url" :lazy-src="product.photo.url">
-      <v-chip
-        v-if="product.discount"
-        color="primary"
-        style="font-size: 18px"
-        class="font-weight-bold accent--text text--lighten-3 float-right elevation-1 ma-2 pa-4"
-      >
-        {{ product.discount }}% off!
-      </v-chip>
-    </v-img>
+    <v-img :src="item.photo.url" :lazy-src="lazyUrl"> </v-img>
     <v-card-title
       style="word-break: break-word"
       class="text-center font-weight-regular"
     >
-      {{ product.name }}
+      {{ item.name }}
     </v-card-title>
     <v-card-text style="font-size: 1.2rem" class="text-center font-weight-bold"
-      >{{ product.price }}TK</v-card-text
+      >{{ item.price }}TK</v-card-text
     >
   </v-card>
 </template>
@@ -42,12 +34,29 @@ export default {
     return {
       hover: false
     };
+  },
+  computed: {
+    lazyUrl() {
+      return this.item.photo.formats?.thumbnail?.url;
+    },
+    item() {
+      const { name, variants, slug, photos, brand, category } = this.product;
+      const { price } = variants.find(item => item.inStock);
+      return {
+        name,
+        price,
+        slug,
+        photo: photos[0],
+        brand,
+        category
+      };
+    }
   }
 };
 </script>
 
 <style>
-.product-card {
+.products-card {
   transition-duration: 0.5s;
 }
 </style>

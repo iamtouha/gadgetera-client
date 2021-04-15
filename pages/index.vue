@@ -1,14 +1,19 @@
 <template>
-  <v-main>
+  <div style="display:contents;">
     <v-img
       class="home-main-image"
       max-height="500px"
-      position="top"
+      position="center"
       src="/home_main.jpg"
-      lazy-src="/home_main.jpg"
+      lazy-src="/home_main-lazy.jpg"
     >
       <v-row class="fill-height" justify="center" align="center">
-        <v-col class="search-pan rounded" cols="10" sm="8" md="6">
+        <v-col
+          class="search-pan semi-transparent-dark rounded"
+          cols="10"
+          sm="8"
+          md="6"
+        >
           <p class="text-center title font-weight-light">
             find gadgets suitable for you
           </p>
@@ -18,7 +23,7 @@
               hide-details
               outlined
               single-line
-              label="Search"
+              placeholder="Search Product name, Brand or Category"
               style="border-radius: 4px 0 0 4px"
             >
             </v-text-field>
@@ -29,6 +34,9 @@
               style="border-radius:0 4px 4px 0"
               tile
               color="accent"
+              class="black--text"
+              nuxt
+              :to="'/products?search=' + search"
             >
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
@@ -89,7 +97,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-main>
+  </div>
 </template>
 
 <script>
@@ -97,31 +105,11 @@ export default {
   name: "Home",
   async asyncData({ $axios }) {
     try {
-      const data = await $axios.$get("/products?_limit=3&_sort=price:DESC");
-      const products = data.map(product => {
-        const {
-          name,
-          stock,
-          price,
-          discount,
-          slug,
-          photos,
-          brand,
-          category
-        } = product;
-        return {
-          name,
-          price,
-          discount,
-          stock: stock > 0,
-          slug,
-          photo: photos[0],
-          brand,
-          category
-        };
-      });
+      const data = await $axios.$get(
+        "/products?_limit=3&_sort=created_at:DESC"
+      );
       return {
-        featuredProducts: products
+        featuredProducts: data
       };
     } catch (error) {
       throw error;
@@ -159,14 +147,3 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-.drop-shadow-white {
-  text-shadow: 0px 0px 4px white;
-}
-.search-pan {
-  div.textbox-wrapper {
-    display: flex;
-  }
-  background: rgba(0, 0, 0, 0.65);
-}
-</style>

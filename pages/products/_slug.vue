@@ -1,0 +1,204 @@
+<template>
+  <v-container class="mt-5">
+    <v-row>
+      <v-col cols="12" sm="6">
+        <carousel
+          centerMode
+          paginationPosition="bottom-overlay"
+          :paginationPadding="20"
+          :perPage="1"
+        >
+          <slide v-for="photo in product.photos" :key="photo.id">
+            <img :src="photo.url" class="product-image rounded" />
+          </slide>
+        </carousel>
+      </v-col>
+      <v-col cols="12" sm="6">
+        <v-card elevation="0" class="fill-height product-card">
+          <v-card-title>
+            <h1 class="title">
+              {{ product.name }}
+            </h1>
+          </v-card-title>
+          <v-card-subtitle>
+            <h2>{{ price }}BDT</h2>
+          </v-card-subtitle>
+          <v-card-text>
+            <p class="body-1 mb-0">Category: {{ product.category.name }}</p>
+            <p class="body-1">Brand: {{ product.brand.name }}</p>
+            <p class="mb-0">Variants</p>
+            <v-list-item-group
+              v-model="variant"
+              class="variant-list"
+              mandatory
+              color="accent"
+            >
+              <v-list-item
+                v-for="variant in product.variants"
+                :key="variant.id"
+                :disabled="!variant.inStock"
+                :value="variant.title"
+                class="rounded"
+              >
+                {{ variant.title }}
+                {{ variant.inStock ? "" : "(Out of Stock)" }}
+              </v-list-item>
+            </v-list-item-group>
+            <p class="mb-0 mt-4">Quantity</p>
+            <v-text-field
+              v-model="quantity"
+              class="quantity-field"
+              dense
+              outlined
+              readonly
+              hide-details
+              append-icon="mdi-plus-circle"
+              prepend-inner-icon="mdi-minus-circle"
+              @click:append="incrementQuantity"
+              @click:prepend-inner="decrementQuantity"
+            >
+            </v-text-field>
+          </v-card-text>
+          <v-card-actions class="mt-auto mb-0 product-card-actions">
+            <v-row>
+              <v-col cols="6">
+                <v-btn large text width="100%" @click="addToCart">
+                  <v-icon left>mdi-cart-plus</v-icon>
+                  Add to cart
+                </v-btn>
+              </v-col>
+              <v-col cols="6">
+                <v-btn
+                  large
+                  color="accent"
+                  elevation="0"
+                  class="black--text"
+                  width="100%"
+                  @click="orderNow"
+                >
+                  order now
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row class="pb-6">
+      <v-col cols="12" v-html="$md.render(product.description)"></v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import Carousel from "vue-carousel/src/Carousel.vue";
+import Slide from "vue-carousel/src/Slide.vue";
+export default {
+  name: "Product",
+  components: { Carousel, Slide },
+  data() {
+    return {
+      variant: null,
+      noStock: false,
+      quantity: 1,
+      price: 0,
+      product: {
+        photos: [],
+        variants: [],
+        brand: {},
+        category: {},
+        description: "loading description"
+      }
+    };
+  },
+
+  watch: {
+    variant(val) {
+      const variant = this.product.variants.find(({ title }) => title === val);
+      if (variant) {
+        this.price = variant.price;
+      }
+    }
+  },
+  head() {
+    return {
+      title: this.product.name
+    };
+  },
+  async fetch() {
+    try {
+      const slug = this.$route.params.slug;
+      const [product] = await this.$axios.$get("/products?slug=" + slug);
+      this.product = product;
+      const variant = product.variants.find(item => item.inStock);
+      if (!variant) {
+        this.price = product.variants[0].price;
+        this.noStock = true;
+        return;
+      }
+      this.variant = variant.title;
+      this.price = variant.price;
+    } catch (error) {
+      this.$nuxt.error(error);
+    }
+  },
+  methods: {
+    incrementQuantity() {
+      if (this.quantity < 10) {
+        this.quantity++;
+      }
+    },
+    decrementQuantity() {
+      if (this.quantity > 1) {
+        this.quantity--;
+      }
+    },
+    addToCart() {
+      if (this.noStock) {
+        return this.$nuxt.$emit("alert", "Product is currently out of stock");
+      }
+      const { id, name, photos } = this.product;
+      const thumbnail = photos[0].formats?.thumbnail.url;
+
+      const cartItem = {
+        product: { id, name, thumbnail: thumbnail || photos[0].url },
+        price: this.price,
+        quantity: this.quantity,
+        variant: this.variant
+      };
+      this.$store.commit("cart/addToCart", cartItem);
+      return this.$nuxt.$emit("alert", "Added to cart");
+    },
+    orderNow() {
+      this.addToCart();
+      this.$router.push("/checkout");
+    }
+  }
+};
+</script>
+<style lang="scss">
+.product-image {
+  max-width: 100%;
+}
+.variant-list {
+  .v-list-item {
+    overflow: hidden;
+  }
+}
+.product-card {
+  padding-bottom: 50px;
+  .product-card-actions {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  .quantity-field {
+    max-width: 130px;
+    .v-text-field__slot {
+      input {
+        text-align: center !important;
+      }
+    }
+  }
+}
+</style>
