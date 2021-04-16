@@ -1,6 +1,6 @@
 <template>
   <div style="display:contents;">
-    <v-card class="semi-transparent-dark" elevation="0">
+    <v-card dark class="semi-transparent-dark" elevation="0">
       <v-card-title>
         Log In
         <v-spacer></v-spacer>
@@ -14,12 +14,14 @@
           <v-text-field
             v-model="user.identifier"
             :dense="isMobile"
+            dark
             label="Email"
             filled
           ></v-text-field>
           <v-text-field
             v-model="user.password"
             :dense="isMobile"
+            dark
             hide-details
             label="Password"
             type="password"
@@ -32,7 +34,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer> </v-spacer>
-        <v-btn text large nuxt to="/user/signup">sign up</v-btn>
+        <v-btn text dark large nuxt to="/user/signup">sign up</v-btn>
         <v-btn
           elevation="0"
           large

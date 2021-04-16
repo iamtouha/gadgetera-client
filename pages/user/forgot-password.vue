@@ -1,5 +1,5 @@
 <template>
-  <v-card class="semi-transparent-dark" elevation="0">
+  <v-card dark class="semi-transparent-dark" elevation="0">
     <v-card-title>
       Forgot Password?
       <v-spacer></v-spacer>
@@ -14,6 +14,7 @@
         <v-text-field
           v-model="email"
           :rules="[rules.email]"
+          dark
           validate-on-blur
           label="Email"
           filled
@@ -22,7 +23,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer> </v-spacer>
-      <v-btn text large nuxt to="/user/login">cancel</v-btn>
+      <v-btn dark text large nuxt to="/user/login">cancel</v-btn>
       <v-btn
         elevation="0"
         large

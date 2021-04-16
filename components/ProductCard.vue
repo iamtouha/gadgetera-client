@@ -9,10 +9,7 @@
     @mouseleave="hover = false"
   >
     <v-img :src="item.photo.url" :lazy-src="lazyUrl"> </v-img>
-    <v-card-title
-      style="word-break: break-word"
-      class="text-center font-weight-regular"
-    >
+    <v-card-title class="text-center font-weight-regular">
       {{ item.name }}
     </v-card-title>
     <v-card-text style="font-size: 1.2rem" class="text-center font-weight-bold"

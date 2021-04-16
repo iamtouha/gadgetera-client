@@ -1,6 +1,6 @@
 <template>
   <div style="display:contents;">
-    <v-card rounded class="semi-transparent-dark" elevation="0">
+    <v-card dark rounded class="semi-transparent-dark" elevation="0">
       <v-card-title>
         Reset Password
         <v-spacer></v-spacer>
@@ -16,6 +16,7 @@
             :dense="isMobile"
             :rules="[rules.min7]"
             validate-on-blur
+            dark
             label="New Password"
             type="password"
             filled
@@ -25,6 +26,7 @@
             :dense="isMobile"
             :rules="[rules.match]"
             label="Repeat New Password"
+            dark
             type="password"
             filled
           ></v-text-field>
@@ -36,6 +38,7 @@
         <v-btn
           elevation="0"
           large
+          dark
           color="accent"
           class="black--text"
           @click="changePass"
@@ -77,9 +80,7 @@ export default {
       return this.$route.query.code;
     }
   },
-  created() {
-    console.log(this.$axios.setToken);
-  },
+
   methods: {
     changePass() {
       const valid = this.$refs.changePassForm?.validate();
@@ -92,6 +93,10 @@ export default {
         return;
       }
       this.loading = true;
+      this.$nuxt.$cookies.remove("jwt_token", {
+        expires: new Date("1971-01-01")
+      });
+      this.$axios.setToken();
       this.$axios
         .$post("/auth/reset-password", {
           code: this.code,

@@ -1,20 +1,29 @@
 <template>
   <v-container class="mt-5">
     <v-row>
-      <v-col cols="12" sm="6">
-        <carousel
-          centerMode
-          paginationPosition="bottom-overlay"
-          :paginationPadding="20"
-          :perPage="1"
-        >
-          <slide v-for="photo in product.photos" :key="photo.id">
-            <img :src="photo.url" class="product-image rounded" />
-          </slide>
-        </carousel>
+      <v-col cols="12" md="6" class="slider-wrapper">
+        <client-only>
+          <template #placeholder>
+            <img :src="thumbPhoto" class="rounded mx-auto" alt="" />
+          </template>
+          <v-carousel class="mx-auto product-carousel">
+            <v-carousel-item
+              v-for="(photo, i) in product.photos"
+              :key="photo.id"
+            >
+              <v-img
+                class="rounded"
+                :src="photo.url"
+                :lazy-src="i === 0 ? thumbPhoto : ''"
+                height="100%"
+              >
+              </v-img>
+            </v-carousel-item>
+          </v-carousel>
+        </client-only>
       </v-col>
-      <v-col cols="12" sm="6">
-        <v-card elevation="0" class="fill-height product-card">
+      <v-col cols="12" md="6">
+        <v-card elevation="0" class="product-card">
           <v-card-title>
             <h1 class="title">
               {{ product.name }}
@@ -24,8 +33,8 @@
             <h2>{{ price }}BDT</h2>
           </v-card-subtitle>
           <v-card-text>
-            <p class="body-1 mb-0">Category: {{ product.category.name }}</p>
-            <p class="body-1">Brand: {{ product.brand.name }}</p>
+            <!-- <p class="body-1 mb-0">Category: {{ product.category.name }}</p>
+            <p class="body-1">Brand: {{ product.brand.name }}</p> -->
             <p class="mb-0">Variants</p>
             <v-list-item-group
               v-model="variant"
@@ -34,6 +43,7 @@
               color="accent"
             >
               <v-list-item
+                style="max-width:400px;"
                 v-for="variant in product.variants"
                 :key="variant.id"
                 :disabled="!variant.inStock"
@@ -91,11 +101,8 @@
 </template>
 
 <script>
-import Carousel from "vue-carousel/src/Carousel.vue";
-import Slide from "vue-carousel/src/Slide.vue";
 export default {
   name: "Product",
-  components: { Carousel, Slide },
   data() {
     return {
       variant: null,
@@ -111,7 +118,13 @@ export default {
       }
     };
   },
-
+  computed: {
+    thumbPhoto() {
+      const [photo] = this.product.photos;
+      if (!photo) return "";
+      return photo.formats?.thumbnail.url || photo.url;
+    }
+  },
   watch: {
     variant(val) {
       const variant = this.product.variants.find(({ title }) => title === val);
@@ -199,6 +212,37 @@ export default {
         text-align: center !important;
       }
     }
+  }
+}
+.slider-wrapper {
+  .client-only-placeholder {
+    height: 500px;
+    overflow: hidden;
+    img {
+      display: block;
+      height: 100%;
+      width: auto;
+      margin: 0 auto;
+    }
+  }
+}
+.product-carousel {
+  height: 500px !important;
+}
+@media screen and (min-width: 960px) {
+  .product-card {
+    height: 500px;
+  }
+}
+@media screen and (max-width: 960px) {
+  .slider-wrapper {
+    .client-only-placeholder {
+      height: 450px;
+    }
+  }
+  .product-carousel {
+    max-width: 450px;
+    height: 450px !important;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div style="display:contents;">
-    <v-card rounded class="semi-transparent-dark" elevation="0">
+    <v-card dark rounded class="semi-transparent-dark" elevation="0">
       <v-card-title>
         Sign Up
         <v-spacer></v-spacer>
@@ -16,7 +16,8 @@
             :dense="isMobile"
             :rules="[rules.min5]"
             validate-on-blur
-            label="Username"
+            dark
+            label="Full Name"
             filled
           ></v-text-field>
           <v-text-field
@@ -24,6 +25,7 @@
             :dense="isMobile"
             :rules="[rules.email]"
             validate-on-blur
+            dark
             label="email"
             type="email"
             filled
@@ -33,6 +35,7 @@
             :dense="isMobile"
             :rules="[rules.min7]"
             validate-on-blur
+            dark
             label="Password"
             type="password"
             filled
@@ -42,6 +45,7 @@
             :dense="isMobile"
             :rules="[rules.match]"
             label="Repeat Password"
+            dark
             type="password"
             filled
           ></v-text-field>
@@ -49,7 +53,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer> </v-spacer>
-        <v-btn text nuxt large to="/user/login">log in</v-btn>
+        <v-btn text nuxt dark large to="/user/login">log in</v-btn>
         <v-btn
           elevation="0"
           large

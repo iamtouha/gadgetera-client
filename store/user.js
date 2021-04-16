@@ -16,7 +16,7 @@ export default {
     signOut(state, { $cookies, $router }) {
       const date = new Date();
       date.setFullYear(1970);
-      this.$axios.setToken(false);
+      this.$axios.setToken();
       $cookies.remove("jwt_token", {
         expires: date
       });

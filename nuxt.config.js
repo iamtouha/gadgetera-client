@@ -47,6 +47,10 @@ export default {
 
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
+    treeShake: true,
+    options: {
+      customProperties: true
+    },
     theme: {
       dark: true,
       themes: {
@@ -57,6 +61,15 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.yellow.accent2,
+          success: colors.green.accent3
+        },
+        light: {
+          primary: "#fe4a21",
+          accent: "#fe4a21",
+          secondary: colors.amber.darken3,
+          info: colors.teal.lighten1,
+          warning: colors.amber.base,
+          error: colors.red.base,
           success: colors.green.accent3
         }
       }

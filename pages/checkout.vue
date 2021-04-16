@@ -1,6 +1,6 @@
 <template>
   <v-container class="mt-4">
-    <h1 class="display-2">Checkout</h1>
+    <h1 class="display-2 mb-3">Checkout</h1>
     <v-row>
       <v-col cols="12" md="8" order-md="1" order="2">
         <v-card elevation="0">
@@ -13,13 +13,17 @@
                 <v-col class="py-1" cols="12">
                   <v-text-field
                     v-model="address.receiver"
-                    label="Full Name"
+                    :rules="[rules.min5]"
+                    :dense="isMobile"
+                    label="Receiver Name"
                     filled
                   ></v-text-field>
                 </v-col>
                 <v-col class="py-1" cols="12">
                   <v-text-field
                     v-model="address.phone"
+                    :rules="[rules.min11, rules.max17, rules.phone]"
+                    :dense="isMobile"
                     label="Phone Number"
                     filled
                   ></v-text-field>
@@ -28,6 +32,8 @@
                   <v-autocomplete
                     v-model="district_id"
                     :items="addressbook.districts"
+                    :rules="[rules.required]"
+                    :dense="isMobile"
                     item-text="name"
                     item-value="id"
                     label="District"
@@ -39,6 +45,8 @@
                   <v-autocomplete
                     v-model="address.sub_district"
                     :items="subdistricts"
+                    :rules="[rules.required]"
+                    :dense="isMobile"
                     no-data-text="Select a district"
                     item-text="name"
                     item-value="name"
@@ -51,6 +59,8 @@
                   <v-textarea
                     v-model="address.street_address"
                     rows="3"
+                    :dense="isMobile"
+                    :rules="[rules.required]"
                     label="Street Address"
                     filled
                   >
@@ -119,10 +129,12 @@
           <v-card-text>
             <v-form ref="paymentForm">
               <v-row>
-                <v-col class="py-1" cols="6">
+                <v-col class="py-1" cols="12" sm="6">
                   <v-select
                     v-model="payment.method"
                     :items="methods"
+                    :rules="[rules.required]"
+                    :dense="isMobile"
                     item-text="value"
                     item-value="key"
                     label="Payment Method"
@@ -135,6 +147,9 @@
                 <v-col class="py-1" cols="12">
                   <v-text-field
                     v-model="payment.account_no"
+                    :rules="[rules.min11, rules.max17]"
+                    :dense="isMobile"
+                    type="number"
                     label="Account No."
                     hint="sender phone number"
                     filled
@@ -144,6 +159,8 @@
                 <v-col class="py-1" cols="12">
                   <v-text-field
                     v-model="payment.transaction_id"
+                    :rules="[rules.min5]"
+                    :dense="isMobile"
                     label="Transaction ID"
                     filled
                   >
@@ -190,10 +207,21 @@ export default {
         method: "",
         account_no: "",
         transaction_id: ""
+      },
+      rules: {
+        required: v => !!v?.trim() || "Field is Required",
+        min5: v => v.trim().length >= 5 || "Too short",
+        min11: v => v.trim().length >= 11 || "Minimum 11 characters required",
+        max17: v => v.trim().length <= 17 || "Too long number",
+        phone: v => {
+          const re = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
+          return re.test(v) || "Invalid phone number";
+        }
       }
     };
   },
   computed: {
+    ...mapGetters(["user"]),
     ...mapGetters("cart", ["cartTotal", "cart"]),
     addressbook() {
       return addressbook;
@@ -202,13 +230,17 @@ export default {
       return this.addressbook.sub_districts.filter(
         dis => dis.district_id === this.district_id
       );
+    },
+    isMobile() {
+      return this.$vuetify.breakpoint.smAndDown;
     }
   },
   watch: {
     district_id(val) {
       const district = this.addressbook.districts.find(dis => dis.id === val);
-      this.address.district = district.name;
+      this.address.district = district?.name;
     }
-  }
+  },
+  methods: {}
 };
 </script>

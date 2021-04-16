@@ -14,12 +14,13 @@
           sm="8"
           md="6"
         >
-          <p class="text-center title font-weight-light">
+          <p class="text-center title font-weight-light white--text">
             find gadgets suitable for you
           </p>
           <div class="textbox-wrapper">
             <v-text-field
               v-model="search"
+              dark
               hide-details
               outlined
               single-line

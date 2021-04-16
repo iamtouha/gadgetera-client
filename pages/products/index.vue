@@ -80,7 +80,7 @@ export default {
       this.$fetch();
     }
   },
-  fetchOnServer: false,
+  // fetchOnServer: false,
   async fetch() {
     this.searchProduct();
   },
@@ -102,13 +102,7 @@ export default {
           _start: this.page * this.perPage
         };
         if (this.text) {
-          query["_where"] = {
-            _or: [
-              { name_contains: this.text },
-              { "category.name_contains": this.text },
-              { "brand.name_contains": this.text }
-            ]
-          };
+          query["name_contains"] = this.text;
         }
         if (this.search !== this.text) {
           this.search = this.text;

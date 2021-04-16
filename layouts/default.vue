@@ -1,8 +1,8 @@
 <template>
   <v-app dark>
     <v-app-bar dark :hide-on-scroll="isMobile" app>
-      <v-toolbar-title class="mr-3 pt-1">
-        <img style="height:100%; width:200px;" src="/logo.svg" />
+      <v-toolbar-title class="mr-3 pt-2">
+        <img style="height:auto; width:180px;" src="/logo.svg" />
       </v-toolbar-title>
 
       <v-toolbar-items class="main-toolbar-items">
@@ -20,7 +20,23 @@
       <v-spacer />
 
       <v-toolbar-items>
-        <v-btn to="/cart" nuxt elevation="0" color="accent" text>
+        <v-btn
+          elevation="0"
+          icon
+          text
+          @click="$vuetify.theme.dark = !$vuetify.theme.dark"
+        >
+          <v-icon v-if="$vuetify.theme.dark">mdi-weather-night</v-icon>
+          <v-icon v-else>mdi-white-balance-sunny</v-icon>
+        </v-btn>
+        <v-btn
+          to="/cart"
+          nuxt
+          elevation="0"
+          class="cart-icon"
+          color="accent"
+          text
+        >
           <v-chip pill small class="pa-2">{{ cartLength }}</v-chip>
           <v-icon>mdi-cart</v-icon>
         </v-btn>
@@ -125,6 +141,9 @@ export default {
   .main-toolbar-items {
     display: none !important;
   }
+  .cart-icon {
+    display: none;
+  }
 }
 .search-pan {
   div.textbox-wrapper {
@@ -136,5 +155,10 @@ export default {
 }
 .semi-transparent-light {
   background: rgba($color: #ffffff, $alpha: 0.75) !important;
+}
+.theme--light {
+  .v-card {
+    background: #f5f5f5 !important;
+  }
 }
 </style>
