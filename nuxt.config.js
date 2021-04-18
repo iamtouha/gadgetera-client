@@ -43,7 +43,7 @@ export default {
     routes: async () => {
       const baseUrl = process.env.BASE_URL || devUrl;
       const { data: products } = await axios.get(
-        baseUrl + "/products?_sort:updatedAt:DESC"
+        baseUrl + "/products?_sort=updatedAt:DESC"
       );
       const productPages = products.map(prod => ({
         url: "/products/" + prod.slug,
