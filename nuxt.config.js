@@ -1,6 +1,9 @@
 import colors from "vuetify/es5/util/colors";
 const axios = require("axios");
 
+// const devUrl="http://localhost:1338"
+const devUrl = "https://server.gadgeterabd.com";
+
 export default {
   target: "static",
 
@@ -38,7 +41,7 @@ export default {
     gzip: true,
     exclude: ["/cart", "/checkout", "/user", "/user/reset-password"],
     routes: async () => {
-      const baseUrl = process.env.BASE_URL || "http://localhost:1338";
+      const baseUrl = process.env.BASE_URL || devUrl;
       const { data: products } = await axios.get(
         baseUrl + "/products?_sort:updatedAt:DESC"
       );
@@ -76,11 +79,11 @@ export default {
     // ]
   },
   strapi: {
-    url: process.env.BASE_URL || "http://localhost:1338"
+    url: process.env.BASE_URL || devUrl
   },
 
   axios: {
-    baseUrl: process.env.BASE_URL || "http://localhost:1338"
+    baseUrl: process.env.BASE_URL || devUrl
   },
 
   vuetify: {
