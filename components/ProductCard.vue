@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="products-card"
+    class="products-card fill-height"
     :to="'/products/' + item.slug"
     nuxt
     :elevation="hover ? 3 : 0"
@@ -8,13 +8,13 @@
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
-    <v-img :src="item.photo.url" :lazy-src="lazyUrl"> </v-img>
+    <v-img :src="item.photo.url" height="270px" :lazy-src="lazyUrl"> </v-img>
     <v-card-title class="text-center font-weight-regular">
       {{ item.name }}
     </v-card-title>
-    <v-card-text style="font-size: 1.2rem" class="text-center font-weight-bold"
-      >{{ item.price }}TK</v-card-text
-    >
+    <v-card-text style="font-size: 1.2rem" class="text-center font-weight-bold">
+      {{ item.price }}TK
+    </v-card-text>
   </v-card>
 </template>
 
@@ -38,10 +38,10 @@ export default {
     },
     item() {
       const { name, variants, slug, photos, brand, category } = this.product;
-      const { price } = variants.find(item => item.inStock);
+      const vrt = variants.find(item => item.inStock);
       return {
         name,
-        price,
+        price: vrt ? vrt.price : variants[0].price,
         slug,
         photo: photos[0],
         brand,

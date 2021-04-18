@@ -47,7 +47,7 @@
                 v-for="variant in product.variants"
                 :key="variant.id"
                 :disabled="!variant.inStock"
-                :value="variant.title"
+                :value="variant.id"
                 class="rounded"
               >
                 {{ variant.title }}
@@ -72,9 +72,15 @@
           <v-card-actions class="mt-auto mb-0 product-card-actions">
             <v-row>
               <v-col cols="6">
-                <v-btn large text width="100%" @click="addToCart">
+                <v-btn
+                  :disabled="addedToCart"
+                  large
+                  text
+                  width="100%"
+                  @click="addToCart"
+                >
                   <v-icon left>mdi-cart-plus</v-icon>
-                  Add to cart
+                  {{ addedToCart ? "Added to cart" : "Add to cart" }}
                 </v-btn>
               </v-col>
               <v-col cols="6">
@@ -101,6 +107,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "Product",
   data() {
@@ -114,28 +121,49 @@ export default {
         variants: [],
         brand: {},
         category: {},
-        description: "loading description"
+        description: ""
       }
     };
   },
   computed: {
+    ...mapGetters("cart", ["cart"]),
     thumbPhoto() {
       const [photo] = this.product.photos;
       if (!photo) return "";
       return photo.formats?.thumbnail.url || photo.url;
+    },
+    addedToCart() {
+      return this.cart.some(
+        item =>
+          item.product.id === this.product.id &&
+          item.variant.id === this.variant
+      );
     }
   },
   watch: {
     variant(val) {
-      const variant = this.product.variants.find(({ title }) => title === val);
+      const variant = this.product.variants.find(({ id }) => id === val);
       if (variant) {
+        this.quantity = 1;
         this.price = variant.price;
       }
     }
   },
   head() {
     return {
-      title: this.product.name
+      title: this.product.name,
+      meta: [
+        {
+          hid: "description",
+          property: "og:description",
+          content: this.product.description
+        },
+        {
+          hid: "image",
+          property: "og:image",
+          content: this.product.photos[0]?.url
+        }
+      ]
     };
   },
   async fetch() {
@@ -152,7 +180,7 @@ export default {
       this.variant = variant.title;
       this.price = variant.price;
     } catch (error) {
-      this.$nuxt.error(error);
+      console.log(error);
     }
   },
   methods: {
@@ -168,22 +196,34 @@ export default {
     },
     addToCart() {
       if (this.noStock) {
-        return this.$nuxt.$emit("alert", "Product is currently out of stock");
+        return this.$store.commit(
+          "showAlert",
+          "Product is currently out of stock"
+        );
       }
-      const { id, name, photos } = this.product;
+      const { id, name, photos, slug } = this.product;
       const thumbnail = photos[0].formats?.thumbnail.url;
 
       const cartItem = {
-        product: { id, name, thumbnail: thumbnail || photos[0].url },
+        product: { id, slug, name, thumbnail: thumbnail || photos[0].url },
         price: this.price,
         quantity: this.quantity,
-        variant: this.variant
+        variant: this.product.variants.find(vrt => vrt.id === this.variant)
       };
       this.$store.commit("cart/addToCart", cartItem);
-      return this.$nuxt.$emit("alert", "Added to cart");
+      return this.$store.commit("showAlert", "Added to cart");
     },
     orderNow() {
-      this.addToCart();
+      if (this.noStock) {
+        return this.$store.commit(
+          "showAlert",
+          "Product is currently out of stock"
+        );
+      }
+      if (!this.addedToCart) {
+        this.addToCart();
+      }
+
       this.$router.push("/checkout");
     }
   }

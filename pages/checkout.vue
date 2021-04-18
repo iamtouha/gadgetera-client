@@ -1,5 +1,26 @@
 <template>
   <v-container class="mt-4">
+    <v-dialog v-model="saveAddressDialog" max-width="350px">
+      <v-card>
+        <v-card-title>
+          Save address?
+        </v-card-title>
+        <v-card-text>
+          Do you want to save this address for future purchases?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="placeOrder">no thanks</v-btn>
+          <v-btn
+            elevation="0"
+            color="accent"
+            class="black--text"
+            @click="placeOrder(true)"
+            >Okay</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <h1 class="display-2 mb-3">Checkout</h1>
     <v-row>
       <v-col cols="12" md="8" order-md="1" order="2">
@@ -8,7 +29,8 @@
             Shipping address
           </v-card-title>
           <v-card-text>
-            <v-form ref="addressForm">
+            <!-- shipping address form -->
+            <v-form ref="addressForm" lazy-validation>
               <v-row>
                 <v-col class="py-1" cols="12">
                   <v-text-field
@@ -31,7 +53,7 @@
                 <v-col class="py-1" cols="6">
                   <v-autocomplete
                     v-model="district_id"
-                    :items="addressbook.districts"
+                    :items="districts"
                     :rules="[rules.required]"
                     :dense="isMobile"
                     item-text="name"
@@ -84,15 +106,22 @@
                 </tr>
                 <tr>
                   <th>Delivery Charge:</th>
-                  <td>{{ delivery_Charge }}BDT</td>
+                  <td>{{ delivery_charge }}BDT</td>
                 </tr>
-                <tr>
-                  <th>Discount({{ coupon }}):</th>
-                  <td>-{{ 0 }}BDT</td>
+                <tr v-if="discount">
+                  <th>Discount({{ discount.code }}):</th>
+                  <td>-{{ discount.discount }}BDT</td>
                 </tr>
                 <tr>
                   <th>Total:</th>
-                  <td>{{ cartTotal + delivery_Charge }}BDT</td>
+                  <td>
+                    {{
+                      cartTotal +
+                        delivery_charge -
+                        (discount ? discount.discount : 0)
+                    }}
+                    BDT
+                  </td>
                 </tr>
               </tbody>
             </v-simple-table>
@@ -100,6 +129,7 @@
           <v-card-actions>
             <v-text-field
               v-model="coupon"
+              :disabled="Boolean(discount)"
               dense
               hide-details
               outlined
@@ -113,21 +143,25 @@
               elevation="0"
               style="border-radius:0 4px 4px 0"
               tile
+              :loading="discountLoading"
               color="accent"
               class="black--text"
+              @click="applyDiscount"
             >
-              <v-icon>mdi-plus</v-icon>
+              <v-icon v-if="discount">mdi-close</v-icon>
+              <v-icon v-else>mdi-plus</v-icon>
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
       <v-col cols="12" md="8" order-md="3" order="3">
+        <!-- payment form -->
         <v-card elevation="0">
           <v-card-title>
             Payment
           </v-card-title>
           <v-card-text>
-            <v-form ref="paymentForm">
+            <v-form ref="paymentForm" lazy-validation>
               <v-row>
                 <v-col class="py-1" cols="12" sm="6">
                   <v-select
@@ -172,7 +206,14 @@
         </v-card>
       </v-col>
       <v-col class="text-center" cols="12" order="4">
-        <v-btn elevation="0" large color="accent" class="black--text">
+        <v-btn
+          elevation="0"
+          large
+          color="accent"
+          class="black--text"
+          :loading="loading"
+          @click="saveAddress"
+        >
           Place Order
         </v-btn>
       </v-col>
@@ -181,16 +222,23 @@
 </template>
 
 <script>
+import isEqual from "lodash.isequal";
 import { mapGetters } from "vuex";
 import addressbook from "~/assets/addressbook.json";
+
+const lowCostAreas = ["47"];
+
 export default {
   name: "Checkout",
+  middleware: "no_cart_item",
   data() {
     return {
+      loading: false,
+      discountLoading: false,
+      saveAddressDialog: false,
       district_id: "",
       coupon: "",
-      discount: null,
-      delivery_Charge: 120,
+      delivery_charge: 120,
       methods: [
         { key: "bkash", value: "bKash" },
         { key: "nagad", value: "Nagad" },
@@ -222,12 +270,15 @@ export default {
   },
   computed: {
     ...mapGetters(["user"]),
-    ...mapGetters("cart", ["cartTotal", "cart"]),
-    addressbook() {
-      return addressbook;
+    ...mapGetters("cart", ["cartTotal", "cart", "discount"]),
+    isEqual() {
+      return isEqual(this.user?.address, this.address);
+    },
+    districts() {
+      return addressbook.districts;
     },
     subdistricts() {
-      return this.addressbook.sub_districts.filter(
+      return addressbook.sub_districts.filter(
         dis => dis.district_id === this.district_id
       );
     },
@@ -237,10 +288,109 @@ export default {
   },
   watch: {
     district_id(val) {
-      const district = this.addressbook.districts.find(dis => dis.id === val);
+      switch (lowCostAreas.includes(val)) {
+        case true:
+          this.delivery_charge = 60;
+          break;
+
+        default:
+          this.delivery_charge = 120;
+          break;
+      }
+      const district = this.districts.find(dis => dis.id === val);
       this.address.district = district?.name;
+    },
+    "user.address": {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        if (val && typeof val !== "string") {
+          this.district_id = this.districts.find(
+            dst => dst.name === val.district
+          )?.id;
+          this.address = JSON.parse(JSON.stringify(val));
+        }
+      }
     }
   },
-  methods: {}
+  created() {
+    if (this.discount) {
+      this.coupon = this.discount.code;
+    }
+    this.$store.dispatch("findAddress");
+  },
+  methods: {
+    applyDiscount() {
+      // if discount is available, clear it and stop
+      if (this.discount) {
+        this.$store.commit("cart/addDiscount", null);
+        return (this.coupon = "");
+      }
+      if (!this.coupon) return;
+      // apply for cupon verification
+      this.discountLoading = true;
+      this.$axios
+        .$get(`/coupons/${this.coupon}?order=${this.cartTotal}`)
+        .then(coupon => {
+          this.$store.commit("cart/addDiscount", coupon);
+          this.$store.commit("showAlert", "Coupon Applied");
+        })
+        .catch(err => console.log(err.message))
+        .finally(() => (this.discountLoading = false));
+    },
+    async placeOrder(saveAddress) {
+      this.saveAddressDialog = false;
+
+      // verify inputs
+
+      if (!this.cart.length)
+        return this.$store.commit("showAlert", "Add products to cart");
+      this.loading = true;
+      try {
+        const order = {
+          saveAddress,
+          address: this.address,
+          payment: this.payment,
+          delivery_charge: this.delivery_charge,
+          coupon: this.discount ? this.discount.id : null,
+          total:
+            this.cartTotal +
+            this.delivery_charge -
+            (this.discount ? this.discount.discount : 0),
+          cart: this.cart.map(item => ({
+            product: item.product.id,
+            variant: item.variant.id,
+            quantity: parseInt(item.quantity)
+          }))
+        };
+
+        await this.$axios.$post("/orders", order);
+        this.$store.commit("showAlert", "Order placed successfully");
+
+        this.moveNext();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    moveNext() {
+      this.saveAddressDialog = false;
+      this.$store.commit("cart/addDiscount", null);
+      this.$store.commit("cart/discardCart");
+      this.$router.push("/");
+    },
+    saveAddress() {
+      const valid =
+        this.$refs.addressForm?.validate() &&
+        this.$refs.paymentForm?.validate();
+      if (!valid) return;
+
+      if (this.user && !isEqual(this.user?.address, this.address)) {
+        return (this.saveAddressDialog = true);
+      }
+      this.placeOrder();
+    }
+  }
 };
 </script>

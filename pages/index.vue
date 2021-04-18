@@ -2,7 +2,6 @@
   <div style="display:contents;">
     <v-img
       class="home-main-image"
-      max-height="500px"
       position="center"
       src="/home_main.jpg"
       lazy-src="/home_main-lazy.jpg"
@@ -106,9 +105,7 @@ export default {
   name: "Home",
   async asyncData({ $axios }) {
     try {
-      const data = await $axios.$get(
-        "/products?_limit=3&_sort=created_at:DESC"
-      );
+      const data = await $axios.$get("/products?_limit=3&_sort=createdAt:DESC");
       return {
         featuredProducts: data
       };
@@ -148,3 +145,13 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.home-main-image {
+  height: 500px;
+}
+@media (max-width: 680px) {
+  .home-main-image {
+    height: 400px;
+  }
+}
+</style>

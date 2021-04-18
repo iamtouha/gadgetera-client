@@ -1,10 +1,10 @@
 <template>
   <v-app dark>
-    <v-app-bar dark :hide-on-scroll="isMobile" app>
+    <v-app-bar elevation="0" dark :hide-on-scroll="isMobile" app>
       <v-toolbar-title class="mr-3 pt-2">
         <img style="height:auto; width:180px;" src="/logo.svg" />
       </v-toolbar-title>
-
+      <v-spacer />
       <v-toolbar-items class="main-toolbar-items">
         <v-btn
           v-for="route in routes"
@@ -17,7 +17,6 @@
           >{{ route.name }}</v-btn
         >
       </v-toolbar-items>
-      <v-spacer />
 
       <v-toolbar-items>
         <v-btn

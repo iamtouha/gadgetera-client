@@ -28,8 +28,11 @@ export const actions = {
       .$get("/users/me")
       .then(user => commit("setUser", user))
       .catch(err => {
-        if ([401, 403].includes(err.response.status)) {
-          $cookies.remove("jwt_token");
+        console.log(err);
+        if ([401, 403].includes(err.response?.status)) {
+          $cookies.remove("jwt_token", {
+            expires: new Date("1970-01-01")
+          });
         }
         redirect("/");
       });

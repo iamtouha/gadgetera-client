@@ -11,13 +11,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, i) in cart" :key="item.product.id">
+        <tr v-for="(item, i) in cart" :key="item.product.id + item.variant.id">
           <td>{{ i + 1 }}</td>
           <td>
-            <v-avatar left>
+            <v-avatar class="" left>
               <v-img :src="item.product.thumbnail"></v-img>
             </v-avatar>
-            {{ item.product.name }} ({{ item.variant }})
+            {{ item.product.name }} ({{ item.variant.title }})
             <span class="mx-2">&times;</span>
             {{ item.quantity }}
           </td>
@@ -36,7 +36,7 @@
         </tr>
         <tr>
           <td class="text-right" colspan="2">cart total:</td>
-          <td class="text-right">{{ total }}</td>
+          <td class="text-right">{{ cartTotal }}</td>
           <td></td>
         </tr>
       </tbody>
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "Cart",
   data() {
@@ -60,14 +61,18 @@ export default {
     };
   },
   computed: {
-    cart() {
-      return this.$store.getters["cart/cart"];
-    },
-    total() {
-      return this.$store.getters["cart/cartTotal"];
-    },
+    ...mapGetters("cart", ["cart", "cartTotal", "discount"]),
+
     isMobile() {
       this.$vuetify.breakpoints.xsOnly;
+    }
+  },
+  watch: {
+    cartTotal(val) {
+      if (!this.discount) return;
+      if (val < this.discount.minimum_order) {
+        this.$store.commit("cart/addDiscount", null);
+      }
     }
   }
 };

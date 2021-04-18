@@ -1,4 +1,5 @@
 import colors from "vuetify/es5/util/colors";
+const axios = require("axios");
 
 export default {
   target: "static",
@@ -16,14 +17,7 @@ export default {
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
-
-  css: [],
-
-  image: {
-    cloudinary: {
-      baseURL: "https://res.cloudinary.com/nuxt/image/upload/"
-    }
-  },
+  css: ["~/assets/main.css"],
 
   plugins: ["~/plugins/axios"],
 
@@ -35,8 +29,52 @@ export default {
     "nuxt-client-init-module",
     "@nuxtjs/markdownit",
     "@nuxtjs/axios",
-    "@nuxtjs/strapi"
+    "@nuxtjs/strapi",
+    "@nuxtjs/sitemap"
   ],
+
+  sitemap: {
+    hostname: process.env.BASE_URL || "https://gadgeterabd.com",
+    gzip: true,
+    exclude: ["/cart", "/checkout", "/user", "/user/reset-password"],
+    routes: async () => {
+      const baseUrl = process.env.BASE_URL || "http://localhost:1338";
+      const { data: products } = await axios.get(
+        baseUrl + "/products?_sort:updatedAt:DESC"
+      );
+      const productPages = products.map(prod => ({
+        url: "/products/" + prod.slug,
+        changefreq: "weekly",
+        lastmod: prod.updatedAt,
+        priority: 0.8
+      }));
+      return [
+        {
+          url: "/",
+          changefreq: "weekly",
+          priority: 1
+        },
+        {
+          url: "/products",
+          changefreq: "weekly",
+          lastmod: products[0].updatedAt,
+          priority: 1
+        },
+        ...productPages
+      ];
+    }
+
+    // routes: [
+    //   '/page/1',
+    //   '/page/2',
+    //   {
+    //     url: '/page/3',
+    //     changefreq: 'daily',
+    //     priority: 1,
+    //     lastmod: '2017-06-30T13:30:00.000Z'
+    //   }
+    // ]
+  },
   strapi: {
     url: process.env.BASE_URL || "http://localhost:1338"
   },

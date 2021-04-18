@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import debounce from "lodash.debounce";
 import qs from "qs";
 export default {
   name: "Products",
@@ -82,7 +81,27 @@ export default {
   },
   // fetchOnServer: false,
   async fetch() {
-    this.searchProduct();
+    try {
+      this.loading = true;
+      this.products = [];
+      const query = {
+        _sort: "createdAt:DESC",
+        _limit: this.limit,
+        _start: this.page * this.perPage
+      };
+      if (this.text) {
+        query["name_contains"] = this.text;
+      }
+      if (this.search !== this.text) {
+        this.search = this.text;
+      }
+      const data = await this.$axios.$get("/products?" + qs.stringify(query));
+      this.products = data;
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      this.loading = false;
+    }
   },
   methods: {
     changeParam() {
@@ -91,29 +110,6 @@ export default {
         path: this.$route.path,
         query: { search: this.search }
       });
-    },
-    async searchProduct() {
-      try {
-        this.loading = true;
-        this.products = [];
-        const query = {
-          _sort: "created_at:DESC",
-          _limit: this.limit,
-          _start: this.page * this.perPage
-        };
-        if (this.text) {
-          query["name_contains"] = this.text;
-        }
-        if (this.search !== this.text) {
-          this.search = this.text;
-        }
-        const data = await this.$axios.$get("/products?" + qs.stringify(query));
-        this.products = data;
-      } catch (error) {
-        this.$nuxt.error(error);
-      } finally {
-        this.loading = false;
-      }
     }
   }
 };
