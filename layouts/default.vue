@@ -42,7 +42,7 @@
       </v-toolbar-items>
     </v-app-bar>
 
-    <v-main>
+    <v-main style="margin-bottom:100px;">
       <nuxt></nuxt>
     </v-main>
 
@@ -54,10 +54,22 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-footer class="py-3">
-      <p class="mb-0">
-        All rights reserved. Gadget Era @ 2021
-      </p>
+    <v-footer app absolute min-height="170px">
+      <v-row>
+        <v-col cols="12" sm="6" md="4">
+          <v-list class="pb-10 pb-sm-2" dense color="transparent">
+            <v-list-item to="/contact-us">
+              contact us
+            </v-list-item>
+            <v-list-item to="/privacy-policy">
+              privacy policy
+            </v-list-item>
+            <v-list-item to="/terms-and-conditions">
+              terms and conditions
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
     </v-footer>
     <v-bottom-navigation class="bottom-nav" app height="48px">
       <v-tabs v-model="tab" class="nav-tab" color="primary" grow>
@@ -149,12 +161,7 @@ export default {
     display: flex;
   }
 }
-.semi-transparent-dark {
-  background: rgba($color: #000000, $alpha: 0.75) !important;
-}
-.semi-transparent-light {
-  background: rgba($color: #ffffff, $alpha: 0.75) !important;
-}
+
 .theme--light {
   .v-card {
     background: #f5f5f5 !important;

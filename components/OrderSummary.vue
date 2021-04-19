@@ -13,8 +13,16 @@
 
     <v-card-text>
       <p>
-        Transaction ID: {{ order.payment.transaction_id }} <br />
+        Transaction ID:
+        {{
+          order.cash_on_delivery
+            ? "(Cash on delivery)"
+            : order.payments[0].transaction_id
+        }}
+        <br />
         Receiver: {{ order.shipping_address.receiver }}
+        <br />
+        email: {{ order.shipping_address.email }}
         <br />
         Phone: {{ order.shipping_address.phone }}
         <br />

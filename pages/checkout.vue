@@ -50,6 +50,15 @@
                     filled
                   ></v-text-field>
                 </v-col>
+                <v-col class="py-1" cols="12">
+                  <v-text-field
+                    v-model="address.email"
+                    :rules="[rules.email]"
+                    :dense="isMobile"
+                    label="Email"
+                    filled
+                  ></v-text-field>
+                </v-col>
                 <v-col class="py-1" cols="6">
                   <v-autocomplete
                     v-model="district_id"
@@ -154,7 +163,16 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="12" md="8" order-md="3" order="3">
+      <v-col cols="12" md="4" order="3" order-md="4">
+        <v-list subheader class="rounded">
+          <v-subheader>Payment Options:</v-subheader>
+
+          <v-list-item dense v-for="acc in accounts" :key="acc.type">
+            {{ acc.type }}: {{ acc.account_no }}
+          </v-list-item>
+        </v-list>
+      </v-col>
+      <v-col cols="12" md="8" order-md="3" order="4">
         <!-- payment form -->
         <v-card elevation="0">
           <v-card-title>
@@ -163,7 +181,17 @@
           <v-card-text>
             <v-form ref="paymentForm" lazy-validation>
               <v-row>
-                <v-col class="py-1" cols="12" sm="6">
+                <v-col order-sm="2" class="py-1" cols="12" sm="6">
+                  <v-checkbox
+                    :dense="isMobile"
+                    v-model="cod"
+                    :hint="cod ? 'Delivery charge is required in Advance' : ''"
+                    persistent-hint
+                    label="Cash On Delivery"
+                  >
+                  </v-checkbox>
+                </v-col>
+                <v-col order-sm="1" class="py-1" cols="12" sm="6">
                   <v-select
                     v-model="payment.method"
                     :items="methods"
@@ -171,7 +199,7 @@
                     :dense="isMobile"
                     item-text="value"
                     item-value="key"
-                    label="Payment Method"
+                    label="Method"
                     filled
                   >
                   </v-select>
@@ -236,17 +264,21 @@ export default {
       loading: false,
       discountLoading: false,
       saveAddressDialog: false,
+      cod: false,
       district_id: "",
       coupon: "",
+
       delivery_charge: 120,
       methods: [
         { key: "bkash", value: "bKash" },
         { key: "nagad", value: "Nagad" },
         { key: "rocket", value: "Rocket" }
       ],
+      accounts: [],
       address: {
         receiver: "",
         phone: "",
+        email: "",
         district: "",
         sub_district: "",
         street_address: ""
@@ -258,6 +290,10 @@ export default {
       },
       rules: {
         required: v => !!v?.trim() || "Field is Required",
+        email: v => {
+          const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+          return re.test(String(v).toLowerCase()) || "Invalid email";
+        },
         min5: v => v.trim().length >= 5 || "Too short",
         min11: v => v.trim().length >= 11 || "Minimum 11 characters required",
         max17: v => v.trim().length <= 17 || "Too long number",
@@ -267,6 +303,9 @@ export default {
         }
       }
     };
+  },
+  head: {
+    title: "Checkout"
   },
   computed: {
     ...mapGetters(["user"]),
@@ -290,7 +329,7 @@ export default {
     district_id(val) {
       switch (lowCostAreas.includes(val)) {
         case true:
-          this.delivery_charge = 60;
+          this.delivery_charge = 70;
           break;
 
         default:
@@ -312,6 +351,11 @@ export default {
         }
       }
     }
+  },
+  async fetch() {
+    const payment = await this.$axios.$get("/payment");
+    this.accounts = payment.accounts;
+    console.log(payment);
   },
   created() {
     if (this.discount) {
@@ -349,6 +393,7 @@ export default {
       try {
         const order = {
           saveAddress,
+          cash_on_delivery: this.cod,
           address: this.address,
           payment: this.payment,
           delivery_charge: this.delivery_charge,

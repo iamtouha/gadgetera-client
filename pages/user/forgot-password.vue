@@ -55,6 +55,9 @@ export default {
       }
     };
   },
+  head: {
+    title: "Forgot password"
+  },
   methods: {
     forgotPass() {
       this.loading = true;

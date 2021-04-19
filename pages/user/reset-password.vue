@@ -72,6 +72,9 @@ export default {
       }
     };
   },
+  head: {
+    title: "Reset Password"
+  },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.xsOnly;

@@ -239,7 +239,7 @@ export default {
   }
 }
 .product-card {
-  padding-bottom: 50px;
+  padding-bottom: 70px;
   .product-card-actions {
     position: absolute;
     bottom: 0;

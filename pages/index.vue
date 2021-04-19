@@ -10,36 +10,30 @@
         <v-col
           class="search-pan semi-transparent-dark rounded"
           cols="10"
-          sm="8"
-          md="6"
+          sm="6"
+          md="4"
         >
           <p class="text-center title font-weight-light white--text">
             find gadgets suitable for you
           </p>
           <div class="textbox-wrapper">
-            <v-text-field
+            <v-autocomplete
               v-model="search"
+              :items="products"
+              item-text="name"
+              item-value="slug"
+              no-data-text="No products found"
               dark
               hide-details
               outlined
               single-line
-              placeholder="Search Product name, Brand or Category"
-              style="border-radius: 4px 0 0 4px"
+              placeholder="Search Product"
+              @input="searchItem"
             >
-            </v-text-field>
-            <v-btn
-              large
-              height="56px"
-              elevation="0"
-              style="border-radius:0 4px 4px 0"
-              tile
-              color="accent"
-              class="black--text"
-              nuxt
-              :to="'/products?search=' + search"
-            >
-              <v-icon>mdi-magnify</v-icon>
-            </v-btn>
+              <template #append>
+                <v-icon color="accent">mdi-magnify</v-icon>
+              </template>
+            </v-autocomplete>
           </div>
         </v-col>
       </v-row>
@@ -57,7 +51,7 @@
       </v-row>
       <v-row>
         <v-col
-          v-for="product in featuredProducts"
+          v-for="product in featured"
           :key="product.slug"
           cols="12"
           sm="6"
@@ -101,13 +95,15 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "Home",
   async asyncData({ $axios }) {
     try {
-      const data = await $axios.$get("/products?_limit=3&_sort=createdAt:DESC");
+      const data = await $axios.$get("/homepage");
       return {
-        featuredProducts: data
+        featured: data.featured_products
       };
     } catch (error) {
       throw error;
@@ -117,12 +113,13 @@ export default {
     return {
       //
       search: "",
-      featuredProducts: [],
+      featured: [],
       reviews: []
     };
   },
 
   computed: {
+    ...mapGetters(["products"]),
     isMobile() {
       if (process.server) return true;
       return this.$vuetify.breakpoint.smAndDown;
@@ -139,9 +136,14 @@ export default {
       {
         hid: "image",
         property: "og:image",
-        content: "/logo.svg"
+        content: "https://gadgeterabd.com/gadgetera.png"
       }
     ]
+  },
+  methods: {
+    searchItem(val) {
+      this.$nuxt.$router.push("/products/" + val);
+    }
   }
 };
 </script>

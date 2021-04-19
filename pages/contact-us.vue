@@ -9,8 +9,9 @@
 
 <script>
 export default {
-  name: "ContactUs"
+  name: "ContactUs",
+  head: {
+    title: "Contact Us"
+  }
 };
 </script>
-
-<style></style>

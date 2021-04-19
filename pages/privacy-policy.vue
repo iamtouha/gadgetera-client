@@ -243,6 +243,9 @@
 
 <script>
 export default {
-  name: "PrivacyPolicy"
+  name: "PrivacyPolicy",
+  head: {
+    title: "Privacy Policy"
+  }
 };
 </script>

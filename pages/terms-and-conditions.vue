@@ -297,8 +297,9 @@
 
 <script>
 export default {
-  name: "Terms&Conditions"
+  name: "Terms&Conditions",
+  head: {
+    title: "Terms and conditions"
+  }
 };
 </script>
-
-<style></style>

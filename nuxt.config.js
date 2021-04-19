@@ -1,8 +1,7 @@
 import colors from "vuetify/es5/util/colors";
 const axios = require("axios");
 
-// const devUrl="http://localhost:1338"
-const devUrl = "https://server.gadgeterabd.com";
+const devUrl = "http://localhost:1337";
 
 export default {
   target: "static",

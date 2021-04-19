@@ -63,6 +63,9 @@ export default {
       }
     };
   },
+  head: {
+    title: "Login"
+  },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.xsOnly;

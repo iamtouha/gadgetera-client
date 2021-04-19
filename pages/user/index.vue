@@ -131,6 +131,9 @@ export default {
       //
     };
   },
+  head: {
+    title: "User Dashboard"
+  },
   computed: {
     isMobile() {
       return this.$vuetify.breakpoint.xsOnly;

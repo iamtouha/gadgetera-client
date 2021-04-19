@@ -60,6 +60,9 @@ export default {
       //
     };
   },
+  head: {
+    title: "Cart"
+  },
   computed: {
     ...mapGetters("cart", ["cart", "cartTotal", "discount"]),
 
