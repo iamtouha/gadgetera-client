@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <v-app-bar elevation="0" dark :hide-on-scroll="isMobile" app>
+    <v-app-bar elevation="0" dark app>
       <v-toolbar-title class="mr-3 pt-2">
         <img style="height:auto; width:180px;" src="/logo.svg" />
       </v-toolbar-title>
@@ -25,7 +25,7 @@
           text
           @click="$vuetify.theme.dark = !$vuetify.theme.dark"
         >
-          <v-icon v-if="$vuetify.theme.dark">mdi-weather-night</v-icon>
+          <v-icon v-if="$vuetify.theme.dark">mdi-brightness-4</v-icon>
           <v-icon v-else>mdi-white-balance-sunny</v-icon>
         </v-btn>
         <v-btn
@@ -71,7 +71,7 @@
         </v-col>
       </v-row>
     </v-footer>
-    <v-bottom-navigation class="bottom-nav" app height="48px">
+    <v-bottom-navigation class="bottom-nav" app fixed height="48px">
       <v-tabs v-model="tab" class="nav-tab" color="primary" grow>
         <v-tab v-for="route in bottomNav" :key="route.path" :to="route.path">
           <v-icon>{{ route.icon }}</v-icon>

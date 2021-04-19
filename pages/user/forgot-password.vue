@@ -63,14 +63,14 @@ export default {
       this.loading = true;
       const valid = this.$refs.emailForm?.validate();
       if (!valid) {
-        this.$nuxt.$emit("alert", "Invalid input");
+        this.$store.commit("showAlert", "Invalid input");
         return;
       }
       this.$axios
         .$post("/auth/forgot-password", { email: this.email })
         .then(() =>
-          this.$nuxt.$emit(
-            "auth-alert",
+          this.$store.commit(
+            "showAlert",
             "Reset password link sent to your email."
           )
         )

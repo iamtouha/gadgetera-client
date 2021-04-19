@@ -6,8 +6,6 @@
           <v-row class="fill-height" justify="center" align="center">
             <v-col cols="12" sm="8" md="6">
               <router-view></router-view>
-              <v-card rounded class="semi-transparent-dark" elevation="0">
-              </v-card>
             </v-col>
           </v-row>
         </v-container>

@@ -22,8 +22,8 @@
     </v-row>
     <v-divider />
     <v-row class="mt-1">
-      <v-col v-show="!searched.length" cols="12">
-        <p class="text-center">No products found</p>
+      <v-col v-show="products.length && !searched.length" cols="12">
+        <p class="text-center">searched product was not found</p>
       </v-col>
 
       <v-col
@@ -46,12 +46,12 @@
 
 <script>
 import qs from "qs";
-import { mapGetters } from "vuex";
 import debounce from "lodash.debounce";
 export default {
   name: "Products",
   data() {
     return {
+      products: [],
       loading: false,
       text: "",
       page: 1,
@@ -63,7 +63,6 @@ export default {
     title: "Products"
   },
   computed: {
-    ...mapGetters(["products"]),
     search: {
       get() {
         return this.text;
@@ -73,9 +72,10 @@ export default {
       }, 200)
     },
     searched() {
+      if (!this.text) return this.products;
       return this.products.filter(product => {
         const name = product.name.toLowerCase();
-        return name.includes(this.search.toLowerCase());
+        return name.includes(this.text.toLowerCase());
       });
     },
     paginated() {
@@ -86,7 +86,9 @@ export default {
       return Math.ceil(this.searched.length / this.perPage);
     }
   },
-
+  fetch() {
+    this.products = this.$store.getters["products"];
+  },
   // fetchOnServer: false,
   // async fetch() {
   //   try {
