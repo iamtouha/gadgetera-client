@@ -150,7 +150,9 @@ export default {
   async fetch() {
     try {
       await this.fetchProducts();
-    } catch (error) {}
+    } catch (error) {
+      this.$nuxt.error(error);
+    }
   },
 
   watch: {
@@ -167,6 +169,7 @@ export default {
 
         this.products = products;
       } catch (error) {
+        this.$nuxt.error(error);
       } finally {
         this.loading = false;
       }
@@ -203,7 +206,7 @@ export default {
         );
         return products;
       } catch (error) {
-        alert(error.message);
+        this.$nuxt.error(error);
       }
     }
   }

@@ -35,7 +35,8 @@ export default {
       pageNotFound: "404 Not Found",
       otherError: "An error occurred",
       notFoundNote: "The page you looking for is not available at this moment.",
-      otherNote: "Sorry, something went wrong."
+      otherNote:
+        "Sorry, something went wrong. May occur due to poor netowrk connectivity."
     };
   },
 
