@@ -1,5 +1,3 @@
-const colors = require("vuetify/es5/util/colors");
-
 export default {
   head: {
     titleTemplate: "%s | Gadget Era",
@@ -50,13 +48,13 @@ export default {
       dark: false,
       themes: {
         light: {
-          primary: colors.grey.darken4,
-          accent: colors.grey.darken3,
-          secondary: colors.grey.lighten5,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          primary: "#212121",
+          accent: "#424242",
+          secondary: "#FAFAFA",
+          info: "#26A69A",
+          warning: "#FFC107",
+          error: "#DD2C00",
+          success: "#00E676"
         }
       }
     }
