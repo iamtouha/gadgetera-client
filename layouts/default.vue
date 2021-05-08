@@ -1,170 +1,161 @@
 <template>
-  <v-app dark>
-    <v-app-bar elevation="0" dark app>
-      <v-toolbar-title class="mr-3 pt-2">
-        <img style="height:auto; width:180px;" src="/logo.svg" />
+  <v-app>
+    <v-app-bar elevate-on-scroll color="secondary" class="main-app-bar" app>
+      <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer" />
+      <v-toolbar-title class=" mr-auto ml-0">
+        Gadget
+        <span class="font-weight-bold">
+          Era
+        </span>
       </v-toolbar-title>
-      <v-spacer />
-      <v-toolbar-items class="main-toolbar-items">
-        <v-btn
-          v-for="route in routes"
-          :key="route.name"
-          :to="route.path"
-          class="transparent"
-          exact
-          elevation="0"
-          nuxt
-          >{{ route.name }}</v-btn
-        >
+      <v-toolbar-items class="d-none d-md-block ml-3">
+        <v-btn to="/" exact nuxt text>
+          Home
+        </v-btn>
+        <v-btn to="/products" exact nuxt text>
+          shop
+        </v-btn>
+        <v-btn to="/categories" exact nuxt text>
+          Categories
+        </v-btn>
+        <v-btn to="/brands" exact nuxt text>
+          Brands
+        </v-btn>
+        <v-btn to="/contact" exact nuxt text>
+          Contact us
+        </v-btn>
       </v-toolbar-items>
+      <v-spacer />
 
       <v-toolbar-items>
         <v-btn
-          elevation="0"
-          icon
+          v-if="isLoggedIn"
           text
-          @click="$vuetify.theme.dark = !$vuetify.theme.dark"
+          class="text-none d-none d-md-inline-flex"
+          to="/account"
+          nuxt
+          exact
         >
-          <v-icon v-if="$vuetify.theme.dark">mdi-brightness-4</v-icon>
-          <v-icon v-else>mdi-white-balance-sunny</v-icon>
+          {{ user.name }}
         </v-btn>
         <v-btn
-          to="/cart"
+          v-else
+          class="d-none d-md-inline-flex"
+          to="/signup"
           nuxt
-          elevation="0"
-          class="cart-icon"
-          color="accent"
           text
+          exact
         >
-          <v-chip pill small class="pa-2">{{ cartLength }}</v-chip>
-          <v-icon>mdi-cart</v-icon>
+          Sign Up
+          <v-icon right>
+            mdi-login
+          </v-icon>
         </v-btn>
+
+        <v-btn text icon class="d-sm-none" @click="cartSheet = true">
+          <v-icon>mdi-cart</v-icon>
+          <v-chip style="padding:5px;" x-small>
+            {{ cartItems.length }}
+          </v-chip>
+        </v-btn>
+        <v-menu
+          v-model="cartMenu"
+          :close-on-content-click="false"
+          max-width="400px"
+          min-width="400px"
+          offset-y
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn class="d-none d-sm-block" v-bind="attrs" text icon v-on="on">
+              <v-icon>mdi-cart</v-icon>
+              <v-chip style="padding:5px;" x-small>
+                {{ cartItems.length }}
+              </v-chip>
+            </v-btn>
+          </template>
+          <cart @close="cartMenu = false" />
+        </v-menu>
       </v-toolbar-items>
     </v-app-bar>
+    <client-only>
+      <v-navigation-drawer
+        v-model="drawer"
+        width="250px"
+        class="d-md-none"
+        :app="isMobile"
+      >
+        <nav-drawer-content />
+      </v-navigation-drawer>
+    </client-only>
 
-    <v-main style="margin-bottom:100px;">
-      <nuxt></nuxt>
+    <v-main class="secondary mt-2">
+      <Nuxt />
+      <v-bottom-sheet v-model="cartSheet">
+        <v-card>
+          <v-card-title>
+            Cart
+          </v-card-title>
+          <cart closebtn @close="cartSheet = false" />
+        </v-card>
+      </v-bottom-sheet>
     </v-main>
-
     <v-snackbar v-model="snackbar">
-      {{ message }}
+      {{ alertMessage }}
       <template #action="{ attrs }">
-        <v-btn color="accent" text v-bind="attrs" @click="snackbar = false">
+        <v-btn
+          color="red accent-3"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
           Close
         </v-btn>
       </template>
     </v-snackbar>
-    <v-footer app absolute min-height="170px">
-      <v-row>
-        <v-col cols="12" sm="6" md="4">
-          <v-list class="pb-10 pb-sm-2" dense color="transparent">
-            <v-list-item to="/contact-us">
-              contact us
-            </v-list-item>
-            <v-list-item to="/privacy-policy">
-              privacy policy
-            </v-list-item>
-            <v-list-item to="/terms-and-conditions">
-              terms and conditions
-            </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
+    <v-footer>
+      <!--  -->
     </v-footer>
-    <v-bottom-navigation class="bottom-nav" app fixed height="48px">
-      <v-tabs v-model="tab" class="nav-tab" color="primary" grow>
-        <v-tab v-for="route in bottomNav" :key="route.path" :to="route.path">
-          <v-icon>{{ route.icon }}</v-icon>
-        </v-tab>
-      </v-tabs>
-    </v-bottom-navigation>
   </v-app>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "DefaultLayout",
-  data() {
-    return {
-      tab: 0,
-      routes: [
-        { name: "Home", path: "/" },
-        { name: "Products", path: "/products" },
-        { name: "Dashboard", path: "/user/" }
-      ],
-      bottomNav: [
-        { name: "Home", path: "/", icon: "mdi-home" },
-        { name: "Shop", path: "/products", icon: "mdi-store" },
-        { name: "Cart", path: "/cart", icon: "mdi-cart" },
-        { name: "Dashboard", path: "/user", icon: "mdi-account-circle" }
-      ]
-    };
-  },
+  data: () => ({
+    //
+    cartSheet: false,
+    cartMenu: false,
+    drawer: false
+  }),
   computed: {
+    ...mapGetters("cart", ["cartItems"]),
+    ...mapGetters(["alertMessage", "isLoggedIn", "user"]),
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown;
     },
-    cartLength() {
-      return this.$store.getters["cart/cart"].length;
-    },
     snackbar: {
       get() {
-        return this.$store.getters["snackbar"];
+        return this.$store.getters.snackbar;
       },
       set(val) {
-        if (val) {
-          return this.$store.commit("showAlert", "no message");
-        }
-        this.$store.commit("hideAlert");
+        // eslint-disable-next-line curly
+        if (!val) this.$store.commit("HIDE_ALERT");
       }
-    },
-    message() {
-      return this.$store.getters["message"];
     }
   },
-
-  methods: {
-    searchText() {
-      this.$router.push("/products?q=" + this.search);
-    },
-    searchTextOnEnterKeypress(e) {
-      e.target?.blur();
-      this.$router.push("/products?q=" + this.search);
+  watch: {
+    cartItems: {
+      deep: true,
+      handler() {
+        this.$store.commit("cart/SAVE_CART");
+      }
     }
   }
 };
 </script>
 <style lang="scss">
-@media only screen and (max-width: 379px) {
-  .nav-tab {
-    .v-slide-group__prev,
-    .v-slide-group__next {
-      display: none !important;
-    }
-  }
-}
-@media only screen and (min-width: 960px) {
-  .bottom-nav {
-    display: none !important;
-  }
-}
-@media only screen and (max-width: 959px) {
-  .main-toolbar-items {
-    display: none !important;
-  }
-  .cart-icon {
-    display: none;
-  }
-}
-.search-pan {
-  div.textbox-wrapper {
-    display: flex;
-  }
-}
-
-.theme--light {
-  .v-card {
-    background: #f5f5f5 !important;
-  }
+.v-application {
+  font-feature-settings: "lnum" 1 !important;
 }
 </style>

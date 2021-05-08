@@ -1,64 +1,89 @@
-export function state() {
-  return {
-    snackbar: false,
-    message: "",
-    products: []
-  };
-}
+export const state = () => ({
+  user: null,
+  address: null,
+  alertMessage: null,
+  token: null
+});
+
 export const getters = {
-  snackbar: ({ snackbar }) => snackbar,
-  message: ({ message }) => message,
-  products: ({ products }) => products
+  user: ({ user }) => user || {},
+  isLoggedIn: ({ user }) => Boolean(user),
+  address: ({ address }) => address,
+  token: ({ token }) => token,
+  alertMessage: ({ alertMessage }) => alertMessage,
+  snackbar: ({ alertMessage }) => Boolean(alertMessage)
 };
 export const mutations = {
-  showAlert(state, message) {
-    state.snackbar = true;
-    state.message = message;
+  SET_USER(state, { name, email }) {
+    state.user = { name, email };
   },
-  hideAlert(state) {
-    state.snackbar = false;
+  SET_TOKEN(state, jwt) {
+    state.token = jwt;
   },
-  addProducts(state, payload) {
-    state.products = payload.map(product => {
-      const variant = product.variants.find(item => item.inStock);
-      const photo = product.photos[0];
-      return {
-        thumbnail: photo.formats?.thumbnail.url || photo.url,
-        photo: photo.url,
-        caption: photo.caption,
-        name: product.name,
-        slug: product.slug,
-        price: variant ? variant.price : product.variants[0].price,
-        brand: product.brand.name,
-        category: product.brand.category
-      };
-    });
+  SET_ADDRESS(state, address) {
+    state.address = address;
+  },
+  LOG_OUT(state) {
+    state.user = null;
+    state.address = null;
+    state.token = null;
+  },
+  HIDE_ALERT(state) {
+    state.alertMessage = null;
+  },
+  SHOW_ALERT(state, message) {
+    state.alertMessage = message;
   }
 };
 
 export const actions = {
-  async nuxtServerInit({ commit }) {
-    const products = await this.$axios.$get(
-      "/products?_sort=createdAt:DESC&_limit=300"
-    );
-    commit("addProducts", products);
-  },
-  nuxtClientInit({ commit }, { $cookies, $axios, redirect }) {
-    const token = $cookies.get("jwt_token");
-    if (!token) return;
-
-    $axios.setToken(token, "Bearer");
-    $axios
-      .$get("/users/me")
-      .then(user => commit("setUser", user))
-      .catch(err => {
-        console.log(err);
-        if ([401, 403].includes(err.response?.status)) {
-          $cookies.remove("jwt_token", {
-            expires: new Date("1970-01-01")
-          });
+  async nuxtServerInit({ commit }, { $cookies, $axios, app }) {
+    try {
+      const token = $cookies.get("jwt_token");
+      if (token) {
+        commit("SET_TOKEN", token);
+        const user = await app.$axios.$get("/users/me");
+        commit("SET_USER", user);
+        if (user.address) {
+          const address = await $axios.$get("/addresses/" + user.address);
+          commit("SET_ADDRESS", address);
         }
-        redirect("/");
+      }
+      commit("cart/SET_CART");
+    } catch (error) {}
+  },
+  async logIn({ commit }, payload) {
+    try {
+      const { user, jwt } = await this.$axios.$post("/auth/local", {
+        identifier: payload.email,
+        password: payload.password
       });
+      this.$cookies.set("jwt_token", jwt);
+      commit("SET_TOKEN", jwt);
+      commit("SHOW_ALERT", `Welcome back, ${user.name}!`);
+      commit("SET_USER", user);
+      commit("SET_ADDRESS", user.address);
+    } catch (error) {
+      return error;
+    }
+  },
+  async signUp({ commit }, payload) {
+    try {
+      const { user, jwt } = await this.$axios.$post(
+        "/auth/local/register",
+        payload
+      );
+      commit("SHOW_ALERT", "Signup successful. Thanks for joining us!");
+      this.$cookies.set("jwt_token", jwt);
+      commit("SET_TOKEN", jwt);
+      commit("SET_USER", user);
+    } catch (error) {
+      return error;
+    }
+  },
+  logOut({ commit }) {
+    this.$cookies.remove("jwt_token");
+    this.$cookies.remove("cart");
+    return commit("LOG_OUT");
   }
 };

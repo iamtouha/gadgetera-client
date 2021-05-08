@@ -1,20 +1,39 @@
 <template>
   <v-card
-    class="products-card fill-height"
-    :to="'/products/' + item.slug"
+    outlined
     nuxt
-    :elevation="hover ? 3 : 0"
-    rounded
-    @mouseenter="hover = true"
-    @mouseleave="hover = false"
+    :to="'/products/' + product.slug"
+    class="fill-height product-card"
   >
-    <v-img :src="item.photo.url" height="270px" :lazy-src="lazyUrl"> </v-img>
-    <v-card-title class="text-center font-weight-regular">
-      {{ item.name }}
+    <v-img
+      aspect-ratio="1"
+      content-class="product-card-content-wrapper"
+      :src="product.images[0].url"
+    >
+      <v-chip
+        v-show="product.discount"
+        class="offer-chip rounded"
+        style="top:5px; right:5px;"
+      >
+        {{ Math.ceil(100 * product.discount) }}% off
+      </v-chip>
+    </v-img>
+    <v-card-actions class="py-1 px-4">
+      <p class="mb-0 text-subtitle-2">
+        {{ product.brand.name }}
+      </p>
+      <v-spacer />
+      <p class="mb-0 text-subtitle-1 text-sm-h6">
+        &#2547;
+        {{ product.price }}
+      </p>
+    </v-card-actions>
+    <v-card-title
+      style="line-height:1.5rem"
+      class="text-subtitle-1 text-md-h6 font-weight-regular pt-1"
+    >
+      {{ product.name }}
     </v-card-title>
-    <v-card-text style="font-size: 1.2rem" class="text-center font-weight-bold">
-      {{ item.price }}TK
-    </v-card-text>
   </v-card>
 </template>
 
@@ -22,38 +41,20 @@
 export default {
   name: "ProductCard",
   props: {
-    product: {
-      type: Object,
-      required: true
-    }
+    product: { type: Object, default: () => ({}) }
   },
   data() {
     return {
-      hover: false
+      //
     };
-  },
-  computed: {
-    lazyUrl() {
-      return this.item.photo.formats?.thumbnail?.url;
-    },
-    item() {
-      const { name, variants, slug, photos, brand, category } = this.product;
-      const vrt = variants.find(item => item.inStock);
-      return {
-        name,
-        price: vrt ? vrt.price : variants[0].price,
-        slug,
-        photo: photos[0],
-        brand,
-        category
-      };
-    }
   }
 };
 </script>
-
 <style>
-.products-card {
-  transition-duration: 0.5s;
+.product-card-content-wrapper {
+  position: relative;
+}
+.product-card-content-wrapper .offer-chip {
+  position: absolute;
 }
 </style>

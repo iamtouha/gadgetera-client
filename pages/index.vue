@@ -1,159 +1,172 @@
 <template>
-  <div style="display:contents;">
-    <v-img
-      class="home-main-image"
-      position="center"
-      src="/home_main.jpg"
-      lazy-src="/home_main-lazy.jpg"
-    >
-      <v-row class="fill-height" justify="center" align="center">
-        <v-col
-          class="search-pan semi-transparent-dark rounded"
-          cols="10"
-          sm="6"
-          md="4"
+  <v-container>
+    <!-- homepage carousel start -->
+    <client-only>
+      <template #placeholder>
+        <!-- placeholder image for server side loading -->
+        <div class="banner-placeholder mb-6">
+          <div class="image" />
+        </div>
+      </template>
+
+      <v-carousel
+        continuous
+        cycle
+        :interval="7000"
+        class="rounded"
+        hide-delimiters
+        show-arrows-on-hover
+        height="auto"
+      >
+        <v-carousel-item
+          v-for="banner in content.banners"
+          :key="banner.title"
+          :href="banner.href"
+          target="_blank"
         >
-          <p class="text-center title font-weight-light white--text">
-            find gadgets suitable for you
-          </p>
-          <div class="textbox-wrapper">
-            <v-autocomplete
-              v-model="search"
-              :items="products"
-              item-text="name"
-              item-value="slug"
-              no-data-text="No products found"
-              dark
-              hide-details
-              outlined
-              single-line
-              placeholder="Search Product"
-              @input="searchItem"
-            >
-              <template #append>
-                <v-icon color="accent">mdi-magnify</v-icon>
-              </template>
-            </v-autocomplete>
-          </div>
-        </v-col>
-      </v-row>
-    </v-img>
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <h1
-            :style="{ fontSize: isMobile ? '28px' : '36px' }"
-            class="font-weight-light mt-10"
+          <v-img
+            class="main-banner-img"
+            content-class="image-body"
+            :src="banner.content.url"
+            :lazy-src="banner.content.formats.thumbnail.url"
+            :aspect-ratio="isMobile ? 1.77 : 3"
           >
-            You may like
-          </h1>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
-          v-for="product in featured"
-          :key="product.slug"
-          cols="12"
-          sm="6"
-          md="4"
-        >
-          <product-card :product="product"></product-card>
-        </v-col>
-      </v-row>
-      <v-row v-if="reviews.length">
-        <v-col cols="12">
-          <h1
-            :style="{ fontSize: isMobile ? '28px' : '36px' }"
-            class="font-weight-light"
-          >
-            What customers say
-          </h1>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col v-for="(review, i) in reviews" :key="i" sm="6" md="4" cols="12">
-          <v-list-item three-line>
-            <v-list-item-avatar>
-              <v-img :src="review.photo.url"> </v-img>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>{{ review.username }}</v-list-item-title>
-              <v-list-item-subtitle
-                style="
-                    text-overflow: unset;
-                    white-space: unset;
-                    -webkit-line-clamp: unset;
-                  "
-                >{{ review.body }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+            <!-- banner overlay -->
+            <v-overlay :opacity="0.6" absolute>
+              <v-row justify="center" align="center" class="fill-height">
+                <v-col cols="12" class="text-center">
+                  <h1
+                    class="text-h6 text-sm-h5 text-md-h4 font-weight-bold text-center mb-3"
+                  >
+                    {{ banner.title }}
+                  </h1>
+                  <p
+                    class="text-body-2 text-sm-subtitle-1 text-center mb-3 mb-sm-8"
+                  >
+                    {{ banner.subtitle }}
+                  </p>
+                  <v-btn
+                    large
+                    color="secondary"
+                    outlined
+                    :href="banner.href"
+                    target="_blank"
+                  >
+                    {{ banner.hero_button }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-overlay>
+            <!-- banner overlay end -->
+          </v-img>
+        </v-carousel-item>
+      </v-carousel>
+    </client-only>
+    <!-- homepage carousel end -->
+
+    <!-- featured products -->
+    <h2 class="text-h5 text-sm-h4 text-md h2 text-center mb-10 mt-12">
+      Featured Products
+    </h2>
+    <v-row class="mb-6">
+      <v-col
+        v-for="product in content.featured_products"
+        :key="product.id"
+        cols="12"
+        sm="6"
+      >
+        <featured-card :product="product" />
+      </v-col>
+    </v-row>
+    <!-- featured products end -->
+
+    <!-- brands -->
+    <h2 class="text-h5 text-sm-h4 text-md h2 text-center mb-10 mt-12">
+      Brands
+    </h2>
+    <v-row class="mb-6">
+      <v-col v-for="brand in brands" :key="brand.id" cols="4" sm="3" md="2">
+        <v-card outlined>
+          <v-img :aspect-ratio="1" contain :src="brand.logo.url" />
+        </v-card>
+      </v-col>
+    </v-row>
+    <!-- brands end -->
+  </v-container>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
   name: "Home",
-  async asyncData({ $axios }) {
-    try {
-      const data = await $axios.$get("/homepage");
-      return {
-        featured: data.featured_products
-      };
-    } catch (error) {
-      throw error;
-    }
-  },
   data() {
     return {
-      //
-      search: "",
-      featured: [],
-      reviews: []
+      touchDevice: false,
+      content: {
+        banners: [],
+        best_deals: [],
+        featured_products: [],
+        new_arrivals: []
+      },
+      categories: [],
+      brands: []
     };
   },
 
-  computed: {
-    ...mapGetters(["products"]),
-    isMobile() {
-      if (process.server) return true;
-      return this.$vuetify.breakpoint.smAndDown;
-    }
+  async fetch() {
+    const [homepage, brands, categories] = await Promise.all([
+      this.$axios.$get("/homepage"),
+      this.$axios.$get("/brands"),
+      this.$axios.$get("/categories")
+    ]);
+    this.content = homepage;
+    this.categories = categories;
+    this.brands = brands;
   },
   head: {
-    title: "Home",
-    meta: [
-      {
-        hid: "description",
-        property: "og:description",
-        content: "Gadget Era is a multi-branded retail electronics seller"
-      },
-      {
-        hid: "image",
-        property: "og:image",
-        content: "https://gadgeterabd.com/gadgetera.png"
-      }
-    ]
+    title: "Gadget Era"
   },
-  methods: {
-    searchItem(val) {
-      this.$nuxt.$router.push("/products/" + val);
+  computed: {
+    isTouch() {
+      return this.$vuetify.breakpoint.smAndDown;
+    },
+    isMobile() {
+      return this.$vuetify.breakpoint.xsOnly;
+    },
+    isTouchDevice() {
+      if (!window) {
+        return;
+      }
+      return (
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      );
     }
-  }
+  },
+
+  methods: {}
 };
 </script>
-<style lang="scss">
-.home-main-image {
-  height: 500px;
+<style>
+.banner-placeholder {
+  width: 100%;
+  position: relative;
 }
-@media (max-width: 680px) {
-  .home-main-image {
-    height: 400px;
+.banner-placeholder .image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-top: 33%;
+  background-image: url(/home-banner-placeholder.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+@media (max-width: 600px) {
+  .banner-placeholder .image {
+    padding-top: 45%;
   }
 }
 </style>

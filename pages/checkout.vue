@@ -1,246 +1,133 @@
 <template>
-  <v-container class="mt-4">
-    <v-dialog v-model="saveAddressDialog" max-width="350px">
-      <v-card>
-        <v-card-title>
-          Save address?
-        </v-card-title>
-        <v-card-text>
-          Do you want to save this address for future purchases?
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="placeOrder">no thanks</v-btn>
-          <v-btn
-            elevation="0"
-            color="accent"
-            class="black--text"
-            @click="placeOrder(true)"
-            >Okay</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <h1 class="display-2 mb-3">Checkout</h1>
+  <v-container>
     <v-row>
-      <v-col cols="12" md="8" order-md="1" order="2">
-        <v-card elevation="0">
-          <v-card-title>
-            Shipping address
-          </v-card-title>
+      <v-col cols="12" md="5">
+        <v-card outlined>
+          <v-card-title>Cart</v-card-title>
+          <cart increment :checkout-btn="false" increment-btns />
           <v-card-text>
-            <!-- shipping address form -->
-            <v-form ref="addressForm" lazy-validation>
-              <v-row>
-                <v-col class="py-1" cols="12">
-                  <v-text-field
-                    v-model="address.receiver"
-                    :rules="[rules.min5]"
-                    :dense="isMobile"
-                    label="Receiver Name"
-                    filled
-                  ></v-text-field>
-                </v-col>
-                <v-col class="py-1" cols="12">
-                  <v-text-field
-                    v-model="address.phone"
-                    :rules="[rules.min11, rules.max17, rules.phone]"
-                    :dense="isMobile"
-                    label="Phone Number"
-                    filled
-                  ></v-text-field>
-                </v-col>
-                <v-col class="py-1" cols="12">
-                  <v-text-field
-                    v-model="address.email"
-                    :rules="[rules.email]"
-                    :dense="isMobile"
-                    label="Email"
-                    filled
-                  ></v-text-field>
-                </v-col>
-                <v-col class="py-1" cols="6">
-                  <v-autocomplete
-                    v-model="district_id"
-                    :items="districts"
-                    :rules="[rules.required]"
-                    :dense="isMobile"
-                    item-text="name"
-                    item-value="id"
-                    label="District"
-                    filled
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col class="py-1" cols="6">
-                  <v-autocomplete
-                    v-model="address.sub_district"
-                    :items="subdistricts"
-                    :rules="[rules.required]"
-                    :dense="isMobile"
-                    no-data-text="Select a district"
-                    item-text="name"
-                    item-value="name"
-                    label="Sub District"
-                    filled
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col class="py-1" cols="12">
-                  <v-textarea
-                    v-model="address.street_address"
-                    rows="3"
-                    :dense="isMobile"
-                    :rules="[rules.required]"
-                    label="Street Address"
-                    filled
-                  >
-                  </v-textarea>
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-col>
+            <v-divider />
+            <div class="mx-0 px-2 my-3 d-flex">
+              <v-text-field
+                v-model="couponCode"
+                single-line
+                label="Coupon"
+                class="coupon-input"
+                placeholder="Coupon"
+                clearable
+                outlined
+                dense
+                hide-details
+              />
+              <v-btn
+                max-width="150px"
+                height="40px"
+                text
+                class="primary"
+                @click="getCoupon"
+              >
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+            </div>
 
-      <v-col cols="12" md="4" order-md="2" order="1">
-        <v-card elevation="0">
-          <v-card-title>Order Summary</v-card-title>
-          <v-card-text>
-            <v-simple-table class="text-right">
+            <v-simple-table class="text-body-2 doc-table">
               <tbody>
                 <tr>
-                  <th>Cart Total:</th>
-                  <td>{{ cartTotal }}BDT</td>
+                  <td>Cart total</td>
+                  <td>&#2547; {{ Math.ceil(cartTotal) }}</td>
+                </tr>
+                <tr v-if="coupon">
+                  <td>Discount ({{ coupon.code }})</td>
+                  <td>- &#2547; {{ coupon.discount }}</td>
                 </tr>
                 <tr>
-                  <th>Delivery Charge:</th>
-                  <td>{{ delivery_charge }}BDT</td>
-                </tr>
-                <tr v-if="discount">
-                  <th>Discount({{ discount.code }}):</th>
-                  <td>-{{ discount.discount }}BDT</td>
+                  <td>Shipping charge</td>
+                  <td>&#2547; {{ shipping }}</td>
                 </tr>
                 <tr>
-                  <th>Total:</th>
-                  <td>
+                  <td class="text-subtitle-2">
+                    Subtotal
+                  </td>
+                  <td class="text-subtitle-2">
+                    &#2547;
                     {{
-                      cartTotal +
-                        delivery_charge -
-                        (discount ? discount.discount : 0)
+                      Math.ceil(cartTotal) +
+                        shipping -
+                        (coupon ? coupon.discount : 0)
                     }}
-                    BDT
                   </td>
                 </tr>
               </tbody>
             </v-simple-table>
-          </v-card-text>
-          <v-card-actions>
-            <v-text-field
-              v-model="coupon"
-              :disabled="Boolean(discount)"
-              dense
-              hide-details
-              outlined
-              single-line
-              placeholder="Discount Coupon"
-              style="border-radius: 4px 0 0 4px;max-width:300px;"
-            >
-            </v-text-field>
-            <v-btn
-              height="40px"
-              elevation="0"
-              style="border-radius:0 4px 4px 0"
-              tile
-              :loading="discountLoading"
-              color="accent"
-              class="black--text"
-              @click="applyDiscount"
-            >
-              <v-icon v-if="discount">mdi-close</v-icon>
-              <v-icon v-else>mdi-plus</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="4" order="3" order-md="4">
-        <v-list subheader class="rounded">
-          <v-subheader>Payment Options:</v-subheader>
-
-          <v-list-item dense v-for="acc in accounts" :key="acc.type">
-            {{ acc.type }}: {{ acc.account_no }}
-          </v-list-item>
-        </v-list>
-      </v-col>
-      <v-col cols="12" md="8" order-md="3" order="4">
-        <!-- payment form -->
-        <v-card elevation="0">
-          <v-card-title>
-            Payment
-          </v-card-title>
-          <v-card-text>
-            <v-form ref="paymentForm" lazy-validation>
-              <v-row>
-                <v-col order-sm="2" class="py-1" cols="12" sm="6">
-                  <v-checkbox
-                    :dense="isMobile"
-                    v-model="cod"
-                    :hint="cod ? 'Delivery charge is required in Advance' : ''"
-                    persistent-hint
-                    label="Cash On Delivery"
-                  >
-                  </v-checkbox>
-                </v-col>
-                <v-col order-sm="1" class="py-1" cols="12" sm="6">
-                  <v-select
-                    v-model="payment.method"
-                    :items="methods"
-                    :rules="[rules.required]"
-                    :dense="isMobile"
-                    item-text="value"
-                    item-value="key"
-                    label="Method"
-                    filled
-                  >
-                  </v-select>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="py-1" cols="12">
-                  <v-text-field
-                    v-model="payment.account_no"
-                    :rules="[rules.min11, rules.max17]"
-                    :dense="isMobile"
-                    type="number"
-                    label="Account No."
-                    hint="sender phone number"
-                    filled
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col class="py-1" cols="12">
-                  <v-text-field
-                    v-model="payment.transaction_id"
-                    :rules="[rules.min5]"
-                    :dense="isMobile"
-                    label="Transaction ID"
-                    filled
-                  >
-                  </v-text-field>
-                </v-col>
-              </v-row>
-            </v-form>
+            <v-list subheader class="mt-3">
+              <v-subheader>Payment Options</v-subheader>
+              <v-list-item v-for="option in payment.options" :key="option.id">
+                <v-list-item-content class="py-0">
+                  <v-list-item-title>
+                    {{ option.name }}
+                    <v-icon>mdi-chevron-right</v-icon>
+                    {{ option.account }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ option.note }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col class="text-center" cols="12" order="4">
+      <v-col cols="12" md="7">
+        <h1 class="title">
+          Shipping Address
+        </h1>
+        <v-divider />
+        <v-text-field v-model="address.receiver" label="Receiver Name" />
+        <v-text-field v-model="address.email" label="Email" />
+        <v-text-field v-model="address.phone" label="Phone" />
+        <v-row>
+          <v-col cols="6">
+            <v-autocomplete
+              v-model="district"
+              :items="districts"
+              item-text="name"
+              item-value="id"
+              label="District"
+            />
+          </v-col>
+          <v-col cols="6">
+            <v-autocomplete
+              v-model="address.sub_district"
+              :items="subDistricts"
+              item-text="name"
+              item-value="name"
+              label="Sub District"
+            />
+          </v-col>
+        </v-row>
+        <v-text-field v-model="address.street_address" label="Street Address" />
+        <h1 class="title mt-6">
+          Payment
+        </h1>
+        <v-divider />
+        <v-checkbox
+          v-model="order.cash_on_delivery"
+          label="Cash on delivery"
+          hint="Shipping charge is required in advance for Cash On Delivery"
+          persistent-hint
+        />
+        <v-select
+          v-model="order.option"
+          label="Method"
+          :items="['bkash', 'nagad', 'rocket']"
+        />
+        <v-text-field v-model="order.trx_id" label="Transaction Id" />
         <v-btn
-          elevation="0"
+          :loading="placing_order"
+          class="primary mt-2"
+          text
           large
-          color="accent"
-          class="black--text"
-          :loading="loading"
-          @click="saveAddress"
+          @click="placeOrder"
         >
           Place Order
         </v-btn>
@@ -250,192 +137,182 @@
 </template>
 
 <script>
-import isEqual from "lodash.isequal";
-import { mapGetters } from "vuex";
-import addressbook from "~/assets/addressbook.json";
-
-const lowCostAreas = ["47"];
-
+/* eslint-disable camelcase */
+import { mapGetters, mapMutations } from "vuex";
+import { subDistricts, districts } from "~/assets/addressbook.json";
 export default {
   name: "Checkout",
-  middleware: "no_cart_item",
-  data() {
-    return {
-      loading: false,
-      discountLoading: false,
-      saveAddressDialog: false,
-      cod: false,
-      district_id: "",
-      coupon: "",
-
-      delivery_charge: 120,
-      methods: [
-        { key: "bkash", value: "bKash" },
-        { key: "nagad", value: "Nagad" },
-        { key: "rocket", value: "Rocket" }
-      ],
-      accounts: [],
-      address: {
-        receiver: "",
-        phone: "",
-        email: "",
-        district: "",
-        sub_district: "",
-        street_address: ""
-      },
-      payment: {
-        method: "",
-        account_no: "",
-        transaction_id: ""
-      },
-      rules: {
-        required: v => !!v?.trim() || "Field is Required",
-        email: v => {
-          const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-          return re.test(String(v).toLowerCase()) || "Invalid email";
-        },
-        min5: v => v.trim().length >= 5 || "Too short",
-        min11: v => v.trim().length >= 11 || "Minimum 11 characters required",
-        max17: v => v.trim().length <= 17 || "Too long number",
-        phone: v => {
-          const re = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
-          return re.test(v) || "Invalid phone number";
-        }
-      }
-    };
-  },
-  head: {
-    title: "Checkout"
+  data: () => ({
+    district: "",
+    couponCode: "",
+    placing_order: false,
+    coupon: null,
+    address: {
+      district: "",
+      sub_district: "",
+      street_address: "",
+      phone: "",
+      receiver: "",
+      email: ""
+    },
+    order: {
+      option: "",
+      trx_id: "",
+      cash_on_delivery: false
+    },
+    payment: {
+      options: [],
+      domestic_districts: "",
+      shipping_charge: 0
+    },
+    shipping: 120
+  }),
+  async fetch() {
+    try {
+      const data = await this.$axios.$get("/payment");
+      this.payment = data;
+    } catch (error) {}
   },
   computed: {
-    ...mapGetters(["user"]),
-    ...mapGetters("cart", ["cartTotal", "cart", "discount"]),
-    isEqual() {
-      return isEqual(this.user?.address, this.address);
-    },
+    ...mapGetters("cart", ["cartItems", "cartTotal"]),
     districts() {
-      return addressbook.districts;
+      return districts;
     },
-    subdistricts() {
-      return addressbook.sub_districts.filter(
-        dis => dis.district_id === this.district_id
-      );
+    subDistricts() {
+      if (this.district) {
+        return subDistricts.filter(item => item.district_id === this.district);
+      }
+      return [];
     },
-    isMobile() {
-      return this.$vuetify.breakpoint.smAndDown;
+    savedAddress() {
+      return this.$store.getters.address;
     }
   },
   watch: {
-    district_id(val) {
-      switch (lowCostAreas.includes(val)) {
-        case true:
-          this.delivery_charge = 70;
-          break;
-
-        default:
-          this.delivery_charge = 120;
-          break;
+    district(val) {
+      if (val) {
+        const item = districts.find(item => item.id === val);
+        this.address.district = item.name;
       }
-      const district = this.districts.find(dis => dis.id === val);
-      this.address.district = district?.name;
     },
-    "user.address": {
-      deep: true,
-      immediate: true,
-      handler(val) {
-        if (val && typeof val !== "string") {
-          this.district_id = this.districts.find(
-            dst => dst.name === val.district
-          )?.id;
-          this.address = JSON.parse(JSON.stringify(val));
-        }
+    "address.district"(val) {
+      const arr = this.payment.domestic_districts
+        .split(",")
+        .map(item => item.trim().toLowerCase());
+      if (arr.includes(val?.trim().toLowerCase())) {
+        return (this.shipping = this.payment.domestic_shipping_charge);
+      }
+      this.shipping = this.payment.shipping_charge;
+    },
+    couponCode() {
+      if (this.coupon) {
+        this.coupon = null;
+      }
+    },
+    cartTotal(val) {
+      if (this.coupon && val < this.coupon.minimum_order) {
+        this.coupon = null;
+        this.SHOW_ALERT("Coupon requirement not fulfilled");
+        this.couponCode = "";
       }
     }
-  },
-  async fetch() {
-    const payment = await this.$axios.$get("/payment");
-    this.accounts = payment.accounts;
-    console.log(payment);
   },
   created() {
-    if (this.discount) {
-      this.coupon = this.discount.code;
+    if (this.savedAddress) {
+      const district = districts.find(
+        dis => dis.name === this.savedAddress.district
+      );
+      this.district = district.id;
+      this.address = JSON.parse(JSON.stringify(this.savedAddress));
     }
-    this.$store.dispatch("findAddress");
   },
   methods: {
-    applyDiscount() {
-      // if discount is available, clear it and stop
-      if (this.discount) {
-        this.$store.commit("cart/addDiscount", null);
-        return (this.coupon = "");
-      }
-      if (!this.coupon) return;
-      // apply for cupon verification
-      this.discountLoading = true;
-      this.$axios
-        .$get(`/coupons/${this.coupon}?order=${this.cartTotal}`)
-        .then(coupon => {
-          this.$store.commit("cart/addDiscount", coupon);
-          this.$store.commit("showAlert", "Coupon Applied");
-        })
-        .catch(err => console.log(err.message))
-        .finally(() => (this.discountLoading = false));
-    },
-    async placeOrder(saveAddress) {
-      this.saveAddressDialog = false;
-
-      // verify inputs
-
-      if (!this.cart.length)
-        return this.$store.commit("showAlert", "Add products to cart");
-      this.loading = true;
+    ...mapMutations(["SHOW_ALERT"]),
+    ...mapMutations("cart", ["DUMP_CART"]),
+    async getCoupon() {
       try {
-        const order = {
-          saveAddress,
-          cash_on_delivery: this.cod,
-          address: this.address,
-          payment: this.payment,
-          delivery_charge: this.delivery_charge,
-          coupon: this.discount ? this.discount.id : null,
-          total:
-            this.cartTotal +
-            this.delivery_charge -
-            (this.discount ? this.discount.discount : 0),
-          cart: this.cart.map(item => ({
-            product: item.product.id,
-            variant: item.variant.id,
-            quantity: parseInt(item.quantity)
-          }))
-        };
-
-        await this.$axios.$post("/orders", order);
-        this.$store.commit("showAlert", "Order placed successfully");
-
-        this.moveNext();
+        const coupon = await this.$axios.$get("/coupons/" + this.couponCode);
+        if (coupon.minimum_order > this.cartTotal) {
+          return this.SHOW_ALERT("Minimum order requirement not fulfilled.");
+        }
+        this.coupon = coupon;
+        this.SHOW_ALERT("Coupon Applied");
       } catch (error) {
-        console.error(error);
-      } finally {
-        this.loading = false;
+        // eslint-disable-next-line
+        console.log(error);
       }
     },
-    moveNext() {
-      this.saveAddressDialog = false;
-      this.$store.commit("cart/addDiscount", null);
-      this.$store.commit("cart/discardCart");
-      this.$router.push("/");
-    },
-    saveAddress() {
-      const valid =
-        this.$refs.addressForm?.validate() &&
-        this.$refs.paymentForm?.validate();
-      if (!valid) return;
+    async placeOrder() {
+      this.placing_order = true;
+      try {
+        const cart = this.cartItems.map(item => ({
+          product: item.product.id,
+          quantity: item.quantity
+        }));
+        if (!cart.length) {
+          return this.SHOW_ALERT("Cart cannot be empty");
+        }
+        const {
+          receiver,
+          email,
+          street_address,
+          district,
+          sub_district,
+          phone
+        } = this.address;
 
-      if (this.user && !isEqual(this.user?.address, this.address)) {
-        return (this.saveAddressDialog = true);
+        if (
+          !receiver ||
+          !phone ||
+          !street_address ||
+          !district ||
+          !sub_district
+        ) {
+          return this.SHOW_ALERT("Please fill up the address fields");
+        }
+
+        // eslint-disable-next-line no-useless-escape
+        const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        if (!re.test(email?.toLowerCase())) {
+          return this.SHOW_ALERT("Please add a valid Email");
+        }
+        if (!this.order.option || !this.order.trx_id) {
+          return this.SHOW_ALERT("please fill up the transaction details");
+        }
+        const obj = {
+          cart,
+          address: {
+            receiver,
+            district,
+            sub_district,
+            street_address,
+            email,
+            phone
+          },
+          trx_id: this.order.trx_id,
+          cash_on_delivery: this.order.cash_on_delivery,
+          payment_method: this.order.option
+        };
+        if (this.coupon) {
+          obj.coupon = this.coupon.code;
+        }
+        const order = await this.$axios.$post("/orders", obj);
+        this.DUMP_CART();
+        this.$router.push({ name: "thank-you", params: { order: order.id } });
+      } catch (error) {
+        //
+      } finally {
+        this.placing_order = false;
       }
-      this.placeOrder();
     }
   }
 };
 </script>
+<style>
+.coupon-input {
+  max-width: 350px !important;
+}
+.doc-table tr td:last-of-type {
+  text-align: right;
+}
+</style>

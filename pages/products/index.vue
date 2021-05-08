@@ -1,117 +1,211 @@
 <template>
-  <v-container class="mt-10">
-    <v-row class="fill-height" justify="center" align="center">
-      <v-col class="search-pan" cols="12" sm="8" md="6">
-        <div class="textbox-wrapper">
-          <v-text-field
-            v-model="search"
-            hide-details
-            outlined
-            single-line
-            placeholder="Search Product name, Brand or Category"
-          >
-            <template #append>
-              <v-icon color="accent">mdi-magnify</v-icon>
-            </template>
-          </v-text-field>
-        </div>
-      </v-col>
-    </v-row>
-    <v-row class="mt-5 mb-1">
-      <h1 class="display-1">Products</h1>
-    </v-row>
-    <v-divider />
-    <v-row class="mt-1">
-      <v-col v-show="products.length && !searched.length" cols="12">
-        <p class="text-center">searched product was not found</p>
-      </v-col>
+  <v-container fluid>
+    <v-text-field
+      v-model="searchText"
+      outlined
+      style="max-width:350px"
+      clearable
+      class="mx-auto"
+      hide-details
+      single-line
+      placeholder="Search products"
+      append-icon="mdi-magnify"
+      @keyup.enter="fetchProducts"
+      @click:append="fetchProducts"
+    />
 
-      <v-col
-        v-for="product in paginated"
-        :key="product.slug"
-        cols="6"
-        md="4"
-        lg="3"
-      >
-        <product-page-card :product="product" />
+    <!-- filter panel (desktop) -->
+    <v-row>
+      <v-col cols="3" class="d-none d-md-block">
+        <v-card outlined min-height="500px">
+          <filter-panel v-model="filter">
+            <v-card-actions slot-scope="{ apply, clear }">
+              <v-spacer />
+              <v-btn v-if="filter" text @click="clear">
+                clear
+              </v-btn>
+              <v-btn text class="primary" @click="apply">
+                <v-icon left>
+                  mdi-filter
+                </v-icon>
+                filter
+              </v-btn>
+            </v-card-actions>
+          </filter-panel>
+        </v-card>
+      </v-col>
+      <!-- filter panel end (desktop) -->
+
+      <v-col cols="12" md="9">
+        <v-toolbar color="transparent" elevation="0">
+          <v-toolbar-title class="d-none d-sm-block">
+            Products
+          </v-toolbar-title>
+          <v-spacer />
+          <v-select
+            v-model="sort"
+            prepend-icon="mdi-sort"
+            hide-details
+            style="max-width:210px"
+            single-line
+            label="Sort by"
+            :items="sorting"
+            item-text="label"
+            item-value="key"
+          />
+        </v-toolbar>
+        <v-divider />
+        <div style="height:5px">
+          <v-progress-linear v-show="loading" indeterminate />
+        </div>
+
+        <!-- Products grid -->
+        <v-row align="stretch" class="mt-3">
+          <v-col
+            v-for="prod in products"
+            :key="prod.id"
+            cols="12"
+            sm="4"
+            lg="3"
+          >
+            <product-card :product="prod" />
+          </v-col>
+          <v-col v-show="!products.length" cols="12" class="text-center">
+            No products available
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="text-center">
+            <v-btn
+              v-show="query"
+              :disabled="!products.length"
+              :loading="loadingMore"
+              color="primary"
+              outlined
+              large
+              class="mx-auto"
+              @click="loadMore"
+            >
+              load more
+            </v-btn>
+          </v-col>
+        </v-row>
+        <!-- Products grid end -->
       </v-col>
     </v-row>
-    <v-pagination
-      v-model="page"
-      :length="length"
-      class="mx-auto mt-3"
-    ></v-pagination>
+
+    <!-- floating fab icon -->
+    <v-btn fab bottom fixed right class="d-md-none" @click="sheet = true">
+      <v-icon>
+        mdi-filter
+      </v-icon>
+    </v-btn>
+
+    <!-- bottom filter panel (for mobile devices) -->
+    <v-bottom-sheet v-model="sheet" class="bg-white">
+      <v-card>
+        <filter-panel v-model="filter" single>
+          <v-card-actions slot-scope="{ apply, clear }">
+            <v-spacer />
+            <v-btn v-if="filter" text @click="clear">
+              clear
+            </v-btn>
+            <v-btn v-else text @click="sheet = false">
+              Close
+            </v-btn>
+            <v-btn text class="primary" @click="apply">
+              <v-icon left>
+                mdi-filter
+              </v-icon>
+              filter
+            </v-btn>
+          </v-card-actions>
+        </filter-panel>
+      </v-card>
+    </v-bottom-sheet>
   </v-container>
 </template>
 
 <script>
 import qs from "qs";
-import debounce from "lodash.debounce";
 export default {
   name: "Products",
-  data() {
-    return {
-      products: [],
-      loading: false,
-      text: "",
-      page: 1,
-      perPage: 12,
-      limit: 300
-    };
+  data: () => ({
+    products: [],
+    sheet: false,
+    loading: true,
+    loadingMore: false,
+    sort: "createdAt:DESC",
+    start: 0,
+    limit: 12,
+    searchText: "",
+    query: null,
+    filter: null,
+    sorting: [
+      { key: "createdAt:DESC", label: "Date" },
+      { key: "price:ASC", label: "Price Ascending" },
+      { key: "price:DESC", label: "Price Descending" }
+    ]
+  }),
+  async fetch() {
+    try {
+      await this.fetchProducts();
+    } catch (error) {}
   },
-  head: {
-    title: "Products"
+
+  watch: {
+    sort: "fetchProducts",
+    filter: "fetchProducts"
   },
-  computed: {
-    search: {
-      get() {
-        return this.text;
-      },
-      set: debounce(function(val) {
-        this.text = val;
-      }, 200)
+
+  methods: {
+    async fetchProducts() {
+      this.loading = true;
+      this.query = this.getQuery();
+      try {
+        const products = await this.performFetch();
+
+        this.products = products;
+      } catch (error) {
+      } finally {
+        this.loading = false;
+      }
     },
-    searched() {
-      if (!this.text) return this.products;
-      return this.products.filter(product => {
-        const name = product.name.toLowerCase();
-        return name.includes(this.text.toLowerCase());
-      });
+    getQuery() {
+      let query = {
+        _limit: this.limit,
+        _sort: this.sort,
+        _start: 0
+      };
+      if (this.filter) {
+        query = { ...query, ...this.filter };
+      }
+      if (this.searchText) {
+        query.name_contains = this.searchText;
+      }
+      return query;
     },
-    paginated() {
-      const start = (this.page - 1) * this.perPage;
-      return this.searched.slice(start, start + this.perPage);
+
+    async loadMore() {
+      this.loadingMore = true;
+      this.query._start += this.limit;
+      const products = await this.performFetch();
+      this.loadingMore = false;
+      if (!products.length) {
+        return this.$store.commit("SHOW_ALERT", "No more product to show");
+      }
+      this.products = [...this.products, ...products];
     },
-    length() {
-      return Math.ceil(this.searched.length / this.perPage);
+    async performFetch() {
+      try {
+        const products = await this.$axios.$get(
+          "/products?" + qs.stringify(this.query)
+        );
+        return products;
+      } catch (error) {
+        alert(error.message);
+      }
     }
-  },
-  fetch() {
-    this.products = this.$store.getters["products"];
-  },
-  // fetchOnServer: false,
-  // async fetch() {
-  //   try {
-  //     this.loading = true;
-  //     this.products = [];
-  //     const query = {
-  //       _sort: "createdAt:DESC",
-  //       _limit: this.limit
-  //     };
-  //     if (this.text) {
-  //       query["name_contains"] = this.text;
-  //     }
-  //     if (this.search !== this.text) {
-  //       this.search = this.text;
-  //     }
-  //     const data = await this.$axios.$get("/products?" + qs.stringify(query));
-  //     this.products = data;
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   } finally {
-  //     this.loading = false;
-  //   }
-  // },
-  methods: {}
+  }
 };
 </script>
