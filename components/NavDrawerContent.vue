@@ -37,7 +37,7 @@
       </v-list-item>
       <v-list-item nuxt exact to="/contact">
         <v-list-item-avatar>
-          <v-icon>mdi-shelp-circle-outline</v-icon>
+          <v-icon>mdi-help-circle-outline</v-icon>
         </v-list-item-avatar>
         <v-list-item-title>Contact Us</v-list-item-title>
       </v-list-item>

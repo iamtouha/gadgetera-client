@@ -3,7 +3,7 @@
     <v-card color="transparent">
       <div class="d-flex flex-no-wrap">
         <v-avatar class="ma-3 rounded" size="100" tile>
-          <v-img :aspect-ratio="1" :src="logo" />
+          <v-img contain :aspect-ratio="1" :src="logo" />
         </v-avatar>
         <div class="d-flex flex-column justify-end">
           <v-card-title class="text-h4">

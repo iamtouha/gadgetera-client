@@ -102,13 +102,8 @@
     <v-snackbar v-model="snackbar">
       {{ alertMessage }}
       <template #action="{ attrs }">
-        <v-btn
-          color="red accent-3"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
+        <v-btn color="white" text icon v-bind="attrs" @click="snackbar = false">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
       </template>
     </v-snackbar>

@@ -167,6 +167,7 @@ export default {
         product: this.product,
         quantity: 1
       });
+      this.$store.commit("SHOW_ALERT", "added to cart");
     },
     viewCat() {
       this.$nuxt.$router.push("/categories/" + this.subcategory.category.key);
