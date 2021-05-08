@@ -1,4 +1,4 @@
-import colors from "vuetify/es5/util/colors";
+const colors = require("vuetify/es5/util/colors");
 
 export default {
   head: {
