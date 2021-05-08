@@ -104,6 +104,9 @@
     <!-- bottom filter panel (for mobile devices) -->
     <v-bottom-sheet v-model="sheet" class="bg-white">
       <v-card>
+        <v-card-title>
+          Filter
+        </v-card-title>
         <filter-panel v-model="filter" single>
           <v-card-actions slot-scope="{ apply, clear }">
             <v-spacer />
@@ -113,7 +116,14 @@
             <v-btn v-else text @click="sheet = false">
               Close
             </v-btn>
-            <v-btn text class="primary" @click="apply">
+            <v-btn
+              text
+              class="primary"
+              @click="
+                apply;
+                sheet = false;
+              "
+            >
               <v-icon left>
                 mdi-filter
               </v-icon>
