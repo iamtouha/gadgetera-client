@@ -98,9 +98,13 @@
     <v-btn fab bottom right fixed class="d-sm-none" @click="addToCart">
       <v-icon>mdi-cart-plus</v-icon>
     </v-btn>
+    <!-- eslint-disable vue/no-v-html -->
     <v-row class="mt-8">
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <v-col cols="12" v-html="$md.render(product.description)" />
+      <v-col
+        cols="12"
+        class="description-wrapper"
+        v-html="$md.render(product.description)"
+      />
     </v-row>
   </v-container>
 </template>
@@ -140,7 +144,6 @@ export default {
   head() {
     return {
       title: this.product.name,
-
       meta: [
         {
           hid: "description",
@@ -209,5 +212,8 @@ export default {
   .add2cart-row {
     justify-content: center;
   }
+}
+.description-wrapper img {
+  max-width: 100% !important;
 }
 </style>
