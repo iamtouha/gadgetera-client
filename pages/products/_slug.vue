@@ -119,6 +119,7 @@ export default {
       category: {}
     }
   }),
+
   async fetch() {
     try {
       const slug = this.$route.params.slug;
@@ -135,6 +136,24 @@ export default {
     } catch (error) {
       this.$nuxt.error(error);
     }
+  },
+  head() {
+    return {
+      title: this.product.name,
+
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.product.description
+        },
+        {
+          hid: "og:image",
+          name: "og:image",
+          content: this.product.images[0].url
+        }
+      ]
+    };
   },
   methods: {
     addToCart() {

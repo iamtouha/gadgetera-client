@@ -73,7 +73,7 @@
             v-model="range"
             hide-details
             :min="100"
-            :max="15000"
+            :max="50000"
           />
           <v-row class="mt-2">
             <v-col cols="6">
@@ -121,7 +121,7 @@ export default {
       category: null,
       subcategory: null,
       brand: null,
-      range: [100, 15000],
+      range: [100, 50000],
       categories: [],
       subcategories: [],
       brands: []
