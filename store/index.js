@@ -1,9 +1,9 @@
-export const state = () => ({
+export const state = {
   user: null,
   address: null,
   alertMessage: null,
   token: null
-});
+};
 
 export const getters = {
   user: ({ user }) => user || {},
