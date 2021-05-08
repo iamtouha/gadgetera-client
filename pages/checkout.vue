@@ -171,7 +171,9 @@ export default {
     try {
       const data = await this.$axios.$get("/payment");
       this.payment = data;
-    } catch (error) {}
+    } catch (error) {
+      this.$nuxt.error(error);
+    }
   },
   computed: {
     ...mapGetters("cart", ["cartItems", "cartTotal"]),
