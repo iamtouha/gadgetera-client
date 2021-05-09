@@ -38,7 +38,7 @@ export const mutations = {
 };
 
 export const actions = {
-  async nuxtClientInit({ commit }, { $cookies, $axios }) {
+  async nuxtClientInit({ commit }, { $cookies, $axios, app }) {
     try {
       const token = $cookies.get("jwt_token");
       if (token) {
@@ -67,7 +67,10 @@ export const actions = {
       }
       commit("cart/SET_CART");
     } catch (error) {
-      console.log(error);
+      if (error.response) {
+        $cookies.remove("jwt_token");
+      }
+      app.nuxt.error(error);
     }
   },
   async logIn({ commit }, payload) {
