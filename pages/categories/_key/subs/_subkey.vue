@@ -89,6 +89,23 @@ export default {
       this.loading = false;
     }
   },
+  head() {
+    return {
+      title: this.subcategory.name,
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.subcategory.description
+        },
+        {
+          hid: "og:image",
+          name: "og:image",
+          content: this.cover
+        }
+      ]
+    };
+  },
   methods: {
     async fetchMore() {
       try {

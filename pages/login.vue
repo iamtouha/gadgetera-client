@@ -50,6 +50,11 @@ export default {
       password: ""
     }
   }),
+  head() {
+    return {
+      title: "Log In"
+    };
+  },
   methods: {
     login() {
       if (!this.user.email || !this.user.password) {

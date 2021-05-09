@@ -76,6 +76,23 @@ export default {
     } finally {
       this.loading = false;
     }
+  },
+  head() {
+    return {
+      title: this.category.name,
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.category.description
+        },
+        {
+          hid: "og:image",
+          name: "og:image",
+          content: this.cover
+        }
+      ]
+    };
   }
 };
 </script>

@@ -89,6 +89,11 @@ export default {
       this.$nuxt.error(error);
     }
   },
+  head() {
+    return {
+      title: "Account"
+    };
+  },
   computed: {
     ...mapGetters(["user", "address"])
   },

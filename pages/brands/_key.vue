@@ -78,6 +78,23 @@ export default {
       this.loading = false;
     }
   },
+  head() {
+    return {
+      title: this.brand.name,
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.brand.description
+        },
+        {
+          hid: "og:image",
+          name: "og:image",
+          content: this.logo
+        }
+      ]
+    };
+  },
   methods: {
     async fetchMore() {
       try {

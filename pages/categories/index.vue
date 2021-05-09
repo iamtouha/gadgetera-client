@@ -64,6 +64,11 @@ export default {
       this.loading = false;
     }
   },
+  head() {
+    return {
+      title: "Categories"
+    };
+  },
   computed: {
     filtered() {
       return this.categories.filter(cat => {

@@ -59,6 +59,11 @@ export default {
       this.loading = false;
     }
   },
+  head() {
+    return {
+      title: "Brands"
+    };
+  },
   computed: {
     filtered() {
       return this.brands.filter(cat => {

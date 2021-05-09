@@ -175,6 +175,11 @@ export default {
       this.$nuxt.error(error);
     }
   },
+  head() {
+    return {
+      title: "Checkout"
+    };
+  },
   computed: {
     ...mapGetters("cart", ["cartItems", "cartTotal"]),
     districts() {

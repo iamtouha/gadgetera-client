@@ -164,7 +164,11 @@ export default {
       this.$nuxt.error(error);
     }
   },
-
+  head() {
+    return {
+      title: "Products"
+    };
+  },
   watch: {
     sort: "fetchProducts",
     filter: "fetchProducts"

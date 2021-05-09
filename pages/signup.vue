@@ -68,6 +68,11 @@ export default {
     },
     viewPass: false
   }),
+  head() {
+    return {
+      title: "Sign Up"
+    };
+  },
   methods: {
     ...mapMutations(["SHOW_ALERT"]),
     signup() {
@@ -91,6 +96,7 @@ export default {
         this.$store
           .dispatch("signUp", { username: name, email, password })
           .then(() => this.$nuxt.$router.push("/account"))
+          .catch(err => err)
           .finally(() => {
             this.loading = false;
           });
@@ -99,5 +105,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

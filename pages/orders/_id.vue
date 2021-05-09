@@ -151,6 +151,11 @@ export default {
       this.$nuxt.error(error);
     }
   },
+  head() {
+    return {
+      title: "Order Details"
+    };
+  },
   computed: {
     cartTotal() {
       const total = this.order.cart.reduce(
