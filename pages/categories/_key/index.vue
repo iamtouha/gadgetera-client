@@ -29,7 +29,11 @@
           nuxt
           :to="`/categories/${category.key}/subs/${subcat.key}`"
         >
-          <v-img aspect-ratio="1.77" :src="subcat.cover.url" />
+          <v-img
+            aspect-ratio="1.77"
+            :src="subcat.cover.url"
+            :lazy-src="subcat.cover.formats.thumbnail.url"
+          />
           <v-card-title>
             {{ subcat.name }}
           </v-card-title>

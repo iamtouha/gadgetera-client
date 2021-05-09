@@ -98,18 +98,16 @@
     <v-btn fab bottom right fixed class="d-sm-none" @click="addToCart">
       <v-icon>mdi-cart-plus</v-icon>
     </v-btn>
-    <!-- eslint-disable vue/no-v-html -->
     <v-row class="mt-8">
-      <v-col
-        cols="12"
-        class="description-wrapper"
-        v-html="$md.render(product.description)"
-      />
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <v-col cols="12" class="ck-content" v-html="product.description" />
     </v-row>
   </v-container>
 </template>
 
 <script>
+import "~/assets/ck_style.css";
+
 export default {
   name: "Product",
   data: () => ({
@@ -213,8 +211,5 @@ export default {
   .add2cart-row {
     justify-content: center;
   }
-}
-.description-wrapper img {
-  max-width: 100% !important;
 }
 </style>

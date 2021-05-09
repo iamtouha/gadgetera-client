@@ -12,7 +12,7 @@
         <p class="headline text-center mt-4">
           {{ note }}
         </p>
-        <v-btn nuxt to="/" text>
+        <v-btn nuxt to="/" text outlined>
           <v-icon>mdi-arrow-left</v-icon>
           Home Page
         </v-btn>

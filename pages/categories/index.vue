@@ -16,7 +16,7 @@
         placeholder="Search categories"
       />
     </v-toolbar>
-    <v-divider />
+    <v-divider class="my-1" />
     <div style="height:5px">
       <v-progress-linear v-show="loading" indeterminate />
     </div>
@@ -29,7 +29,11 @@
         md="4"
       >
         <v-card outlined nuxt :to="'/categories/' + category.key">
-          <v-img aspect-ratio="1.77" :src="category.cover.url" />
+          <v-img
+            aspect-ratio="1.77"
+            :src="category.cover.url"
+            :lazy-src="category.cover.formats.thumbnail.url"
+          />
           <v-card-title>
             {{ category.name }}
           </v-card-title>
