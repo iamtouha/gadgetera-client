@@ -9,6 +9,7 @@
       aspect-ratio="1"
       content-class="product-card-content-wrapper"
       :src="product.images[0].url"
+      :lazy-src="product.images[0].formats.thumbnail.url"
     >
       <v-chip
         v-show="product.discount"

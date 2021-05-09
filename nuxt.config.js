@@ -34,7 +34,6 @@ export default {
     "@nuxtjs/axios",
     "nuxt-webfontloader",
     "cookie-universal-nuxt",
-    "@nuxtjs/markdownit",
     "@nuxtjs/sitemap"
   ],
 
@@ -43,9 +42,6 @@ export default {
     gzip: true,
     exclude: ["/checkout", "/account", "/orders"],
     routes: generateRoutes
-  },
-  markdownit: {
-    runtime: true
   },
 
   axios: {

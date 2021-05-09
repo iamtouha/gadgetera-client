@@ -24,8 +24,8 @@
       <v-col
         v-for="product in products"
         :key="product.id"
-        cols="6"
-        sm="4"
+        cols="12"
+        sm="6"
         md="4"
         lg="3"
       >

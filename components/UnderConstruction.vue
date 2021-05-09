@@ -8,11 +8,12 @@
           class="mx-auto"
           contain
           src="/under_construction.svg"
+          lazy-src="/under_construction.svg"
         />
         <p class="headline text-center mt-4">
           Page Under Construction.
         </p>
-        <v-btn nuxt to="/" text>
+        <v-btn nuxt to="/" text outlined>
           <v-icon>mdi-arrow-left</v-icon>
           go back
         </v-btn>
