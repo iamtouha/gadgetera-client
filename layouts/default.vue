@@ -74,7 +74,9 @@
               </v-chip>
             </v-btn>
           </template>
-          <cart @close="cartMenu = false" />
+          <client-only>
+            <cart @close="cartMenu = false" />
+          </client-only>
         </v-menu>
       </v-toolbar-items>
     </v-app-bar>
@@ -96,7 +98,9 @@
           <v-card-title>
             Cart
           </v-card-title>
-          <cart closebtn @close="cartSheet = false" />
+          <client-only>
+            <cart closebtn @close="cartSheet = false" />
+          </client-only>
         </v-card>
       </v-bottom-sheet>
     </v-main>
