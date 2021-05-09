@@ -1,7 +1,28 @@
 <template>
   <v-app>
+    <client-only>
+      <v-navigation-drawer
+        v-model="drawer"
+        width="250px"
+        class="d-md-none"
+        :app="isMobile"
+      >
+        <nav-drawer-content />
+      </v-navigation-drawer>
+    </client-only>
+
     <v-main class="secondary mt-2">
       <Nuxt />
+      <v-bottom-sheet v-model="cartSheet">
+        <v-card>
+          <v-card-title>
+            Cart
+          </v-card-title>
+          <client-only>
+            <cart closebtn @close="cartSheet = false" />
+          </client-only>
+        </v-card>
+      </v-bottom-sheet>
     </v-main>
   </v-app>
 </template>
