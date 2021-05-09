@@ -1,4 +1,5 @@
 export default {
+  target: "server",
   head: {
     titleTemplate: "%s | Gadget Era",
     title: "Gadget Era",

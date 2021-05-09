@@ -1,7 +1,7 @@
 export default function({ $axios, store }) {
   $axios.onRequest(config => {
-    if (store.getters.token) {
-      config.headers.Authorization = "Bearer " + store.getters.token;
+    if (store.state.token) {
+      config.headers.Authorization = "Bearer " + store.state.token;
     }
     return config;
   });

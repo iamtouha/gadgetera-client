@@ -107,8 +107,48 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-footer>
-      <!--  -->
+    <v-footer app absolute class="py-3">
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-list-item dense>
+            <v-icon left>
+              mdi-phone
+            </v-icon>
+            {{ contact.phone }}
+          </v-list-item>
+          <v-list-item dense>
+            <v-icon left>
+              mdi-email-outline
+            </v-icon>
+            {{ contact.email }}
+          </v-list-item>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-list-item two-line>
+            <v-list-item-content>
+              <v-list-item-subtitle
+                class="text-subtitle-1 primary--text text-sm-right"
+              >
+                Social Networks
+              </v-list-item-subtitle>
+              <v-list-item-title class="text-sm-right">
+                <v-btn
+                  v-for="network in networks"
+                  :key="network.name"
+                  icon
+                  text
+                  color="primary"
+                  large
+                  target="_blank"
+                  :href="network.link"
+                >
+                  <v-icon>{{ network.icon }}</v-icon>
+                </v-btn>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-col>
+      </v-row>
     </v-footer>
   </v-app>
 </template>
@@ -121,7 +161,28 @@ export default {
     //
     cartSheet: false,
     cartMenu: false,
-    drawer: false
+    drawer: false,
+    networks: [
+      {
+        name: "Facebook",
+        icon: "mdi-facebook",
+        link: "https://www.facebook.com/gadgetEraBangladesh"
+      },
+      {
+        name: "Messenger",
+        icon: "mdi-facebook-messenger",
+        link: "https://m.me/gadgetEraBangladesh"
+      },
+      {
+        name: "Instagram",
+        icon: "mdi-instagram",
+        link: "https://www.instagram.com/gadget.era/"
+      }
+    ],
+    contact: {
+      phone: "01936299699",
+      email: "gadgeterabd@gmail.com"
+    }
   }),
   computed: {
     ...mapGetters("cart", ["cartItems"]),
