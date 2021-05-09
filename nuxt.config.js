@@ -1,7 +1,7 @@
 /* eslint-disable nuxt/no-cjs-in-config */
 const axios = require("axios");
 export default {
-  target: "static",
+  target: "server",
   head: {
     titleTemplate: "%s | Gadget Era",
     title: "Gadget Era",
