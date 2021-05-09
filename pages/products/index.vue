@@ -116,14 +116,7 @@
             <v-btn v-else text @click="sheet = false">
               Close
             </v-btn>
-            <v-btn
-              text
-              class="primary"
-              @click="
-                apply;
-                sheet = false;
-              "
-            >
+            <v-btn text class="primary" @click="applyFilter(apply)">
               <v-icon left>
                 mdi-filter
               </v-icon>
@@ -222,6 +215,10 @@ export default {
       } catch (error) {
         this.$nuxt.error(error);
       }
+    },
+    applyFilter(callback) {
+      this.sheet = false;
+      callback();
     }
   }
 };
