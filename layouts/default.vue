@@ -28,30 +28,31 @@
       <v-spacer />
 
       <v-toolbar-items>
-        <v-btn
-          v-if="isLoggedIn"
-          text
-          class="text-none d-none d-md-inline-flex"
-          to="/account"
-          nuxt
-          exact
-        >
-          {{ user.name }}
-        </v-btn>
-        <v-btn
-          v-else
-          class="d-none d-md-inline-flex"
-          to="/signup"
-          nuxt
-          text
-          exact
-        >
-          Sign Up
-          <v-icon right>
-            mdi-login
-          </v-icon>
-        </v-btn>
-
+        <client-only>
+          <v-btn
+            v-if="isLoggedIn"
+            text
+            class="text-none d-none d-md-inline-flex"
+            to="/account"
+            nuxt
+            exact
+          >
+            {{ user.name }}
+          </v-btn>
+          <v-btn
+            v-else
+            class="d-none d-md-inline-flex"
+            to="/signup"
+            nuxt
+            text
+            exact
+          >
+            Sign Up
+            <v-icon right>
+              mdi-login
+            </v-icon>
+          </v-btn>
+        </client-only>
         <v-btn text icon class="d-sm-none" @click="cartSheet = true">
           <v-icon>mdi-cart</v-icon>
           <v-chip style="padding:5px;" x-small>
@@ -107,7 +108,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-footer app absolute class="py-3">
+    <v-footer class="py-3">
       <v-row>
         <v-col cols="12" sm="6">
           <v-list-item dense>

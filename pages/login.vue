@@ -59,6 +59,7 @@ export default {
       this.$store
         .dispatch("logIn", this.user)
         .then(() => this.$nuxt.$router.push("/"))
+        .catch(err => err)
         .finally(() => (this.loading = false));
     }
   }

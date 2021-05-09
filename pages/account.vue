@@ -9,11 +9,14 @@
           <v-card-subtitle>
             {{ user.email }}
           </v-card-subtitle>
-          <v-card-text v-if="address">
-            phone: {{ address.phone }}<br />
-            address: {{ address.street_address }}, {{ address.sub_district }},
-            {{ address.district }}
-          </v-card-text>
+          <client-only>
+            <v-card-text v-if="address">
+              phone: {{ address.phone }}<br />
+              address: {{ address.street_address }}, {{ address.sub_district }},
+              {{ address.district }}
+            </v-card-text>
+          </client-only>
+
           <v-card-actions>
             <v-btn text @click="logOut">
               log out
@@ -29,26 +32,36 @@
           My Orders
         </h6>
         <v-divider />
-        <div class="row mt-3">
-          <v-col
-            v-for="order in orders"
-            :key="order.id"
-            cols="12"
-            sm="6"
-            md="6"
-            lg="4"
-          >
-            <v-card nuxt :to="'/orders/' + order.order_id" outlined>
-              <v-card-title class="text-subtitle-1">
-                #{{ order.order_id }}
-              </v-card-title>
-              <v-card-subtitle>
-                {{ order.createdAt | formatDate }}
-              </v-card-subtitle>
-              <v-card-subtitle> status: {{ order.status }} </v-card-subtitle>
-            </v-card>
-          </v-col>
-        </div>
+
+        <client-only>
+          <template #placeholder>
+            <v-row class="mt-3">
+              <v-col cols="12" sm="6" md="6" lg="4">
+                <v-skeleton-loader type="article" />
+              </v-col>
+            </v-row>
+          </template>
+          <v-row class="mt-3">
+            <v-col
+              v-for="order in orders"
+              :key="order.id"
+              cols="12"
+              sm="6"
+              md="6"
+              lg="4"
+            >
+              <v-card nuxt :to="'/orders/' + order.order_id" outlined>
+                <v-card-title class="text-subtitle-1">
+                  #{{ order.order_id }}
+                </v-card-title>
+                <v-card-subtitle>
+                  {{ order.createdAt | formatDate }}
+                </v-card-subtitle>
+                <v-card-subtitle> status: {{ order.status }} </v-card-subtitle>
+              </v-card>
+            </v-col>
+          </v-row>
+        </client-only>
       </v-col>
     </v-row>
   </v-container>
@@ -67,11 +80,14 @@ export default {
   data: () => ({
     orders: []
   }),
+  fetchOnServer: false,
   async fetch() {
     try {
       const orders = await this.$axios.$get("/orders");
       this.orders = orders;
-    } catch (error) {}
+    } catch (error) {
+      this.$nuxt.error(error);
+    }
   },
   computed: {
     ...mapGetters(["user", "address"])

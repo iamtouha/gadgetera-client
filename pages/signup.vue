@@ -90,9 +90,7 @@ export default {
 
         this.$store
           .dispatch("signUp", { username: name, email, password })
-          .then(() => {
-            this.$nuxt.$router.push("/account");
-          })
+          .then(() => this.$nuxt.$router.push("/account"))
           .finally(() => {
             this.loading = false;
           });

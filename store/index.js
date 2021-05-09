@@ -71,19 +71,15 @@ export const actions = {
     }
   },
   async logIn({ commit }, payload) {
-    try {
-      const { user, jwt } = await this.$axios.$post("/auth/local", {
-        identifier: payload.email,
-        password: payload.password
-      });
-      this.$cookies.set("jwt_token", jwt);
-      commit("SET_TOKEN", jwt);
-      commit("SHOW_ALERT", `Welcome back, ${user.name}!`);
-      commit("SET_USER", user);
-      commit("SET_ADDRESS", user.address);
-    } catch (error) {
-      return error;
-    }
+    const { user, jwt } = await this.$axios.$post("/auth/local", {
+      identifier: payload.email,
+      password: payload.password
+    });
+    this.$cookies.set("jwt_token", jwt);
+    commit("SET_TOKEN", jwt);
+    commit("SHOW_ALERT", `Welcome back, ${user.name}!`);
+    commit("SET_USER", user);
+    commit("SET_ADDRESS", user.address);
   },
   async signUp({ commit }, payload) {
     try {

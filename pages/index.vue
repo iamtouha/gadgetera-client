@@ -1,12 +1,15 @@
 <template>
   <v-container>
-    <!-- homepage carousel start -->
     <client-only>
       <template #placeholder>
         <!-- placeholder image for server side loading -->
-        <div class="banner-placeholder mb-6">
-          <div class="image" />
-        </div>
+        <v-img
+          :aspect-ratio="img.width / img.height"
+          width="100%"
+          class="img-placeholder"
+          :src="img.url"
+          :lazy-src="img.formats && img.formats.thumbnail.url"
+        />
       </template>
 
       <v-carousel
@@ -27,6 +30,7 @@
           <v-img
             class="main-banner-img"
             content-class="image-body"
+            :alt="banner.title"
             :src="banner.content.url"
             :lazy-src="banner.content.formats.thumbnail.url"
             :aspect-ratio="isMobile ? 1.77 : 3"
@@ -101,6 +105,7 @@ export default {
   data() {
     return {
       touchDevice: false,
+      img: {},
       content: {
         banners: [],
         best_deals: [],
@@ -119,11 +124,27 @@ export default {
       this.$axios.$get("/categories")
     ]);
     this.content = homepage;
+    this.img = homepage.banners[0].content;
     this.categories = categories;
     this.brands = brands;
   },
-  head: {
-    title: "Gadget Era"
+  head() {
+    return {
+      title: "Home",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content:
+            "Gadget Era is an online retail shop for top quality Mobile Accessories, Watches, Gadgets, Electronics and many more."
+        },
+        {
+          hid: "og:image",
+          name: "og:image",
+          content: "/home-banner-placeholder.jpg"
+        }
+      ]
+    };
   },
   computed: {
     isTouch() {
@@ -148,25 +169,12 @@ export default {
 };
 </script>
 <style>
-.banner-placeholder {
-  width: 100%;
-  position: relative;
+.img-placeholder {
+  max-height: 350px;
 }
-.banner-placeholder .image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding-top: 33%;
-  background-image: url(/home-banner-placeholder.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-}
-
 @media (max-width: 600px) {
-  .banner-placeholder .image {
-    padding-top: 45%;
+  .img-placeholder {
+    max-height: 300px;
   }
 }
 </style>
