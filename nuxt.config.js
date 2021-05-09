@@ -1,3 +1,5 @@
+/* eslint-disable nuxt/no-cjs-in-config */
+const axios = require("axios");
 export default {
   target: "static",
   head: {
@@ -32,9 +34,16 @@ export default {
     "@nuxtjs/axios",
     "nuxt-webfontloader",
     "cookie-universal-nuxt",
-    "@nuxtjs/markdownit"
+    "@nuxtjs/markdownit",
+    "@nuxtjs/sitemap"
   ],
 
+  sitemap: {
+    hostname: process.env.BASE_URL || "https://gadgeterabd.com",
+    gzip: true,
+    exclude: ["/checkout", "/account", "/orders"],
+    routes: generateRoutes
+  },
   markdownit: {
     runtime: true
   },
@@ -76,3 +85,72 @@ export default {
     }
   }
 };
+
+async function generateRoutes() {
+  const baseUrl = process.env.BASE_URL || "http://localhost:1337";
+  const { data: products } = await axios.get(
+    baseUrl + "/products?_sort=updatedAt:DESC"
+  );
+  const { data: categories } = await axios.get(
+    baseUrl + "/categories?_sort=updatedAt:DESC"
+  );
+  const { data: brands } = await axios.get(
+    baseUrl + "/brands?_sort=updatedAt:DESC"
+  );
+  const { data: subcats } = await axios.get(
+    baseUrl + "/subcategories?_sort=updatedAt:DESC"
+  );
+  const productPages = products.map(prod => ({
+    url: "/products/" + prod.slug,
+    changefreq: "weekly",
+    lastmod: prod.updatedAt,
+    priority: 0.8
+  }));
+  const categoryPages = categories.map(prod => ({
+    url: "/categories/" + prod.key,
+    changefreq: "weekly",
+    lastmod: prod.updatedAt,
+    priority: 0.8
+  }));
+  const brandPages = brands.map(prod => ({
+    url: "/brands/" + prod.key,
+    changefreq: "weekly",
+    lastmod: prod.updatedAt,
+    priority: 0.8
+  }));
+  const subcatPages = subcats.map(prod => ({
+    url: "/subcategories/" + prod.key,
+    changefreq: "weekly",
+    lastmod: prod.updatedAt,
+    priority: 0.8
+  }));
+  return [
+    {
+      url: "/",
+      changefreq: "weekly",
+      priority: 1
+    },
+    {
+      url: "/products",
+      changefreq: "weekly",
+      lastmod: products[0].updatedAt,
+      priority: 1
+    },
+    {
+      url: "/categories",
+      changefreq: "weekly",
+      lastmod: categories[0].updatedAt,
+      priority: 1
+    },
+    {
+      url: "/brands",
+      changefreq: "weekly",
+      lastmod: brands[0].updatedAt,
+      priority: 1
+    },
+    ...productPages,
+    ...categoryPages,
+    ...brandPages,
+    ...subcatPages
+  ];
+}
