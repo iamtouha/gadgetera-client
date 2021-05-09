@@ -22,6 +22,7 @@ export default {
   buildModules: ["@nuxtjs/eslint-module", "@nuxtjs/vuetify"],
 
   modules: [
+    "nuxt-client-init-module",
     "@nuxtjs/axios",
     "nuxt-webfontloader",
     "cookie-universal-nuxt",
