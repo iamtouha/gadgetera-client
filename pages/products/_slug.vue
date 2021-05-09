@@ -153,7 +153,7 @@ export default {
         {
           hid: "og:image",
           name: "og:image",
-          content: this.product.images[0].url
+          content: this.image.url
         }
       ]
     };

@@ -1,9 +1,9 @@
 /* eslint-disable curly */
 export const namespaced = true;
 
-export const state = {
+export const state = () => ({
   items: []
-};
+});
 export const getters = {
   cartItems: ({ items }) => items,
   cartTotal: ({ items }) => {

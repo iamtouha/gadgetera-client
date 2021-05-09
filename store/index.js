@@ -1,9 +1,10 @@
-export const state = {
+/* eslint-disable camelcase, no-console */
+export const state = () => ({
   user: null,
   address: null,
   alertMessage: null,
   token: null
-};
+});
 
 export const getters = {
   user: ({ user }) => user || {},
@@ -37,20 +38,37 @@ export const mutations = {
 };
 
 export const actions = {
-  async nuxtServerInit({ commit }, { $cookies, $axios, app }) {
+  async nuxtServerInit({ commit }, { $cookies, $axios }) {
     try {
       const token = $cookies.get("jwt_token");
       if (token) {
         commit("SET_TOKEN", token);
-        const user = await app.$axios.$get("/users/me");
-        commit("SET_USER", user);
-        if (user.address) {
-          const address = await $axios.$get("/addresses/" + user.address);
-          commit("SET_ADDRESS", address);
+        const { id, email, name, address } = await $axios.$get("/users/me");
+        commit("SET_USER", { id, email, name });
+        if (address) {
+          const {
+            receiver,
+            district,
+            sub_district,
+            email,
+            phone,
+            street_address
+          } = await $axios.$get("/addresses/" + address);
+
+          commit("SET_ADDRESS", {
+            receiver,
+            district,
+            sub_district,
+            email,
+            phone,
+            street_address
+          });
         }
       }
       commit("cart/SET_CART");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   },
   async logIn({ commit }, payload) {
     try {
