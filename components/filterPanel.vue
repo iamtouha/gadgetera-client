@@ -8,7 +8,15 @@
     >
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Categories {{ categoryActive ? "(applied)" : "" }}
+          Categories
+          <v-chip
+            v-show="categoryActive"
+            style="max-width:55px;"
+            class="mx-1 px-2"
+            x-small
+          >
+            applied
+          </v-chip>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-chip-group v-model="category" column>
@@ -47,7 +55,15 @@
 
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Brands {{ brandActive ? "(applied)" : "" }}
+          Brands
+          <v-chip
+            v-show="brandActive"
+            style="max-width:55px;"
+            class="mx-1 px-2"
+            x-small
+          >
+            applied
+          </v-chip>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-chip-group v-model="brand">
@@ -66,7 +82,15 @@
       </v-expansion-panel>
       <v-expansion-panel>
         <v-expansion-panel-header>
-          Price Range {{ rangeActive ? "(applied)" : "" }}
+          Price Range
+          <v-chip
+            v-show="rangeActive"
+            style="max-width:55px;"
+            class="mx-1 px-2"
+            x-small
+          >
+            applied
+          </v-chip>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-range-slider
