@@ -2,80 +2,83 @@
   <v-container>
     <v-row>
       <v-col cols="12" md="5">
-        <v-card outlined>
-          <v-card-title>Cart</v-card-title>
-          <cart increment :checkout-btn="false" increment-btns />
-          <v-card-text>
-            <v-divider />
-            <div class="mx-0 px-2 my-3 d-flex">
-              <v-text-field
-                v-model="couponCode"
-                single-line
-                label="Coupon"
-                class="coupon-input"
-                placeholder="Coupon"
-                clearable
-                outlined
-                dense
-                hide-details
-              />
-              <v-btn
-                max-width="150px"
-                height="40px"
-                text
-                class="primary"
-                @click="getCoupon"
-              >
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
-            </div>
+        <client-only>
+          <v-card outlined>
+            <v-card-title>Cart</v-card-title>
+            <cart increment :checkout-btn="false" increment-btns />
 
-            <v-simple-table class="text-body-2 doc-table">
-              <tbody>
-                <tr>
-                  <td>Cart total</td>
-                  <td>&#2547; {{ Math.ceil(cartTotal) }}</td>
-                </tr>
-                <tr v-if="coupon">
-                  <td>Discount ({{ coupon.code }})</td>
-                  <td>- &#2547; {{ coupon.discount }}</td>
-                </tr>
-                <tr>
-                  <td>Shipping charge</td>
-                  <td>&#2547; {{ shipping }}</td>
-                </tr>
-                <tr>
-                  <td class="text-subtitle-2">
-                    Subtotal
-                  </td>
-                  <td class="text-subtitle-2">
-                    &#2547;
-                    {{
-                      Math.ceil(cartTotal) +
-                        shipping -
-                        (coupon ? coupon.discount : 0)
-                    }}
-                  </td>
-                </tr>
-              </tbody>
-            </v-simple-table>
-            <v-list subheader class="mt-3">
-              <v-subheader>Payment Options</v-subheader>
-              <v-list-item v-for="option in payment.options" :key="option.id">
-                <v-list-item-content class="py-0">
-                  <v-list-item-title>
-                    {{ option.name }}
-                    <v-icon>mdi-chevron-right</v-icon>
-                    {{ option.account }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ option.note }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-        </v-card>
+            <v-card-text>
+              <v-divider />
+              <div class="mx-0 px-2 my-3 d-flex">
+                <v-text-field
+                  v-model="couponCode"
+                  single-line
+                  label="Coupon"
+                  class="coupon-input"
+                  placeholder="Coupon"
+                  clearable
+                  outlined
+                  dense
+                  hide-details
+                />
+                <v-btn
+                  max-width="150px"
+                  height="40px"
+                  text
+                  class="primary"
+                  @click="getCoupon"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </div>
+
+              <v-simple-table class="text-body-2 doc-table">
+                <tbody>
+                  <tr>
+                    <td>Cart total</td>
+                    <td>&#2547; {{ Math.ceil(cartTotal) }}</td>
+                  </tr>
+                  <tr v-if="coupon">
+                    <td>Discount ({{ coupon.code }})</td>
+                    <td>- &#2547; {{ coupon.discount }}</td>
+                  </tr>
+                  <tr>
+                    <td>Shipping charge</td>
+                    <td>&#2547; {{ shipping }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-subtitle-2">
+                      Subtotal
+                    </td>
+                    <td class="text-subtitle-2">
+                      &#2547;
+                      {{
+                        Math.ceil(cartTotal) +
+                          shipping -
+                          (coupon ? coupon.discount : 0)
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
+              <v-list subheader class="mt-3">
+                <v-subheader>Payment Options</v-subheader>
+                <v-list-item v-for="option in payment.options" :key="option.id">
+                  <v-list-item-content class="py-0">
+                    <v-list-item-title>
+                      {{ option.name }}
+                      <v-icon>mdi-chevron-right</v-icon>
+                      {{ option.account }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ option.note }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </client-only>
       </v-col>
       <v-col cols="12" md="7">
         <h1 class="title">
@@ -113,7 +116,11 @@
         <v-checkbox
           v-model="order.cash_on_delivery"
           label="Cash on delivery"
-          hint="Shipping charge is required in advance for Cash On Delivery"
+          :hint="
+            !isDomestic && order.cash_on_delivery
+              ? 'Shipping charge is required in advance'
+              : ''
+          "
           persistent-hint
         />
         <v-select
@@ -193,6 +200,13 @@ export default {
     },
     savedAddress() {
       return this.$store.getters.address;
+    },
+    isDomestic() {
+      const dist = this.address.district?.trim().toLowerCase();
+      const arr = this.payment.domestic_districts
+        .split(",")
+        .map(item => item?.trim().toLowerCase());
+      return arr.includes(dist);
     }
   },
   watch: {
@@ -202,11 +216,8 @@ export default {
         this.address.district = item.name;
       }
     },
-    "address.district"(val) {
-      const arr = this.payment.domestic_districts
-        .split(",")
-        .map(item => item.trim().toLowerCase());
-      if (arr.includes(val?.trim().toLowerCase())) {
+    isDomestic(val) {
+      if (val) {
         return (this.shipping = this.payment.domestic_shipping_charge);
       }
       this.shipping = this.payment.shipping_charge;
@@ -224,7 +235,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     if (this.savedAddress) {
       const district = districts.find(
         dis => dis.name === this.savedAddress.district
@@ -259,50 +270,21 @@ export default {
         if (!cart.length) {
           return this.SHOW_ALERT("Cart cannot be empty");
         }
-        const {
-          receiver,
-          email,
-          street_address,
-          district,
-          sub_district,
-          phone
-        } = this.address;
-
-        if (
-          !receiver ||
-          !phone ||
-          !street_address ||
-          !district ||
-          !sub_district
-        ) {
-          return this.SHOW_ALERT("Please fill up the address fields");
+        const isSubdist = this.subDistricts.find(
+          item => item.name === this.address.sub_district
+        );
+        if (!isSubdist) {
+          this.address.sub_district = "";
         }
 
-        // eslint-disable-next-line no-useless-escape
-        const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        if (!re.test(email?.toLowerCase())) {
-          return this.SHOW_ALERT("Please add a valid Email");
-        }
-        if (!this.order.option || !this.order.trx_id) {
-          return this.SHOW_ALERT("please fill up the transaction details");
-        }
         const obj = {
           cart,
-          address: {
-            receiver,
-            district,
-            sub_district,
-            street_address,
-            email,
-            phone
-          },
+          address: this.address,
           trx_id: this.order.trx_id,
           cash_on_delivery: this.order.cash_on_delivery,
           payment_method: this.order.option
         };
-        if (this.coupon) {
-          obj.coupon = this.coupon.code;
-        }
+
         const order = await this.$axios.$post("/orders", obj);
         this.DUMP_CART();
         this.$router.push({ name: "thank-you", params: { order: order.id } });

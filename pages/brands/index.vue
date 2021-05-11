@@ -1,13 +1,14 @@
 <template>
   <v-container>
     <v-toolbar flat color="transparent">
-      <v-toolbar-title style="min-width:100px;">
+      <v-toolbar-title class="d-none d-sm-block" style="min-width:100px;">
         Brands
       </v-toolbar-title>
-      <v-spacer />
+      <v-spacer class="d-none d-sm-block" />
       <v-text-field
         v-model="search"
-        style="max-width:300px;"
+        style="max-width:450px; width:100%;"
+        class="mx-auto mx-sm-0"
         outlined
         single-line
         hide-details

@@ -38,7 +38,7 @@ export default {
   ],
 
   sitemap: {
-    hostname: process.env.BASE_URL || "https://gadgeterabd.com",
+    hostname: "https://gadgeterabd.com",
     gzip: true,
     exclude: ["/checkout", "/account", "/orders"],
     routes: generateRoutes
@@ -49,7 +49,7 @@ export default {
   },
   webfontloader: {
     google: {
-      families: ["Raleway:200,300,400,500,600"]
+      families: ["Raleway:200,300,400,500,600,700"]
     }
   },
 
@@ -65,7 +65,7 @@ export default {
           secondary: "#FAFAFA",
           info: "#26A69A",
           warning: "#FFC107",
-          error: "#DD2C00",
+          error: "#FF8A80",
           success: "#00E676"
         }
       }
