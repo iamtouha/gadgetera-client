@@ -119,13 +119,17 @@
     <v-footer class="py-3">
       <v-row>
         <v-col cols="12" sm="6">
-          <v-list-item dense>
+          <v-list-item style="max-width:220px;" dense @click="openDialer">
             <v-icon left>
               mdi-phone
             </v-icon>
             {{ contact.phone }}
           </v-list-item>
-          <v-list-item dense>
+          <v-list-item
+            style="max-width:250px;"
+            dense
+            :href="'mailto:' + contact.email"
+          >
             <v-icon left>
               mdi-email-outline
             </v-icon>
@@ -155,6 +159,14 @@
                 </v-btn>
               </v-list-item-title>
             </v-list-item-content>
+          </v-list-item>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-list-item dense nuxt to="/terms-and-conditions">
+            Terms and conditions
+          </v-list-item>
+          <v-list-item dense nuxt to="/privacy-policy">
+            Privacy policy
           </v-list-item>
         </v-col>
       </v-row>
@@ -189,7 +201,7 @@ export default {
       }
     ],
     contact: {
-      phone: "01936299699",
+      phone: "+880-19362-99699",
       email: "gadgeterabd@gmail.com"
     }
   }),
@@ -215,6 +227,11 @@ export default {
       handler() {
         this.$store.commit("cart/SAVE_CART");
       }
+    }
+  },
+  methods: {
+    openDialer() {
+      window.open("tel:" + this.contact.phone);
     }
   }
 };
