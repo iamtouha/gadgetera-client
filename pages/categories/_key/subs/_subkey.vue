@@ -1,46 +1,55 @@
 <template>
-  <v-container>
-    <v-img :src="cover" :lazy-src="thumbnail" class="subcategory-cover rounded">
-      <v-overlay class="align-end justify-start" absolute>
-        <v-card dark width="100%" color="transparent">
-          <v-card-title class="text-h5 text-md-h4 text-lg-h3">
-            {{ subcategory.name }}
-          </v-card-title>
-          <v-card-subtitle class="text-subtitle-1">
-            {{ subcategory.description }}
-          </v-card-subtitle>
-        </v-card>
-      </v-overlay>
-    </v-img>
-    <v-divider />
-    <div style="height:5px">
+  <div style="display:contents;">
+    <v-container style="max-width:1920px;" class="pa-0">
+      <v-img :src="cover" :lazy-src="thumbnail" class="subcategory-cover">
+        <v-overlay class="align-end justify-start" absolute>
+          <v-card dark width="100%" color="transparent">
+            <v-card-title class="text-h5 text-md-h4 text-lg-h3">
+              {{ subcategory.name }}
+            </v-card-title>
+            <v-card-subtitle class="text-subtitle-1">
+              {{ subcategory.description }}
+            </v-card-subtitle>
+          </v-card>
+        </v-overlay>
+      </v-img>
+    </v-container>
+    <div class="loadingbar-wrapper">
       <v-progress-linear v-show="loading" indeterminate />
     </div>
-    <p class="text-h6 mt-6">
-      showing {{ products.length }} out of
-      {{ subcategory.products.length }} Products in "{{ subcategory.name }}"
-    </p>
-    <v-row>
-      <v-col
-        v-for="product in products"
-        :key="product.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
-        <product-card :product="product" />
-      </v-col>
-      <v-col v-if="!products.length" class="text-center" cols="12">
-        No products available
-      </v-col>
-      <v-col class="text-center" cols="12">
-        <v-btn :disabled="!products.length" outlined large @click="fetchMore">
-          load more
-        </v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+    <v-container>
+      <client-only>
+        <template #placeholder>
+          Loading...
+        </template>
+        <p class="text-h6 mt-6">
+          showing {{ products.length }} out of
+          {{ subcategory.products.length }} Products in "{{ subcategory.name }}"
+        </p>
+      </client-only>
+
+      <v-row>
+        <v-col
+          v-for="product in products"
+          :key="product.id"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+        >
+          <product-card :product="product" />
+        </v-col>
+        <v-col v-if="!products.length" class="text-center" cols="12">
+          No products available
+        </v-col>
+        <v-col class="text-center" cols="12">
+          <v-btn :disabled="!products.length" outlined large @click="fetchMore">
+            load more
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
