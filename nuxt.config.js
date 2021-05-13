@@ -45,7 +45,8 @@ export default {
   },
 
   axios: {
-    baseUrl: process.env.BASE_URL || "http://localhost:1337"
+    baseUrl: process.env.BASE_URL || "http://localhost:1337",
+    retry: true
   },
   webfontloader: {
     google: {

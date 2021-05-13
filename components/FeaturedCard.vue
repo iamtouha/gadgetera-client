@@ -47,16 +47,6 @@ export default {
     },
     isMobile() {
       return this.$vuetify.breakpoint.xsOnly;
-    },
-    isTouchDevice() {
-      if (!window) {
-        return;
-      }
-      return (
-        "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0 ||
-        navigator.msMaxTouchPoints > 0
-      );
     }
   }
 };

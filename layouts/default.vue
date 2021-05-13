@@ -95,7 +95,7 @@
       </v-navigation-drawer>
     </client-only>
 
-    <v-main class="secondary mt-2">
+    <v-main class="secondary">
       <Nuxt />
       <v-bottom-sheet v-model="cartSheet">
         <v-card>
@@ -239,5 +239,10 @@ export default {
 <style lang="scss">
 .v-application {
   font-feature-settings: "lnum" 1 !important;
+}
+.loadingbar-wrapper {
+  max-width: 1920px;
+  height: 5px;
+  margin: 0 auto;
 }
 </style>

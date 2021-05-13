@@ -14,29 +14,23 @@
       @click:append="fetchProducts"
     />
 
-    <!-- filter panel (desktop) -->
     <v-row>
-      <v-col cols="3" class="d-none d-md-block">
-        <v-card outlined min-height="500px">
-          <filter-panel v-model="filter">
-            <v-card-actions slot-scope="{ apply, clear }">
-              <v-spacer />
-              <v-btn v-if="filter" text @click="clear">
-                clear
-              </v-btn>
-              <v-btn text class="primary" @click="apply">
-                <v-icon left>
-                  mdi-filter
-                </v-icon>
-                filter
-              </v-btn>
-            </v-card-actions>
-          </filter-panel>
+      <!-- filter panel (desktop) -->
+      <v-col cols="4" lg="3" class="d-none d-md-block">
+        <v-card outlined>
+          <v-card-title>
+            Filter
+          </v-card-title>
+          <v-card-text class="px-0">
+            <clinet-only>
+              <filter-panel ref="desktopFilter" v-model="filter" />
+            </clinet-only>
+          </v-card-text>
         </v-card>
       </v-col>
       <!-- filter panel end (desktop) -->
 
-      <v-col cols="12" md="9">
+      <v-col cols="12" md="8" lg="9">
         <v-toolbar color="transparent" elevation="0">
           <v-toolbar-title class="d-none d-sm-block">
             Products
@@ -66,6 +60,7 @@
             :key="prod.id"
             cols="12"
             sm="4"
+            md="6"
             lg="3"
           >
             <product-card :product="prod" />
@@ -95,47 +90,45 @@
     </v-row>
 
     <!-- floating fab icon -->
-    <v-btn fab bottom fixed right class="d-md-none" @click="sheet = true">
+    <v-btn fab bottom fixed right class="d-md-none" @click="dialog = true">
       <v-icon>
         mdi-filter
       </v-icon>
     </v-btn>
 
     <!-- bottom filter panel (for mobile devices) -->
-    <v-bottom-sheet v-model="sheet" class="bg-white">
-      <v-card>
-        <v-card-title>
-          Filter
-        </v-card-title>
-        <filter-panel v-model="filter" single>
-          <v-card-actions slot-scope="{ apply, clear }">
+    <clinet-only>
+      <v-bottom-sheet v-model="dialog" scrollable hide-overlay>
+        <v-card>
+          <v-card-text class="pa-0 pt-2" style="max-height:350px;">
+            <filter-panel ref="mobileFilter" v-model="filter" single />
+          </v-card-text>
+          <v-divider />
+          <v-card-actions>
             <v-spacer />
-            <v-btn v-if="filter" text @click="clear">
-              clear
-            </v-btn>
-            <v-btn v-else text @click="sheet = false">
-              Close
-            </v-btn>
-            <v-btn text class="primary" @click="applyFilter(apply)">
-              <v-icon left>
-                mdi-filter
-              </v-icon>
-              filter
+            <v-btn text @click="dialog = false">
+              close
             </v-btn>
           </v-card-actions>
-        </filter-panel>
-      </v-card>
-    </v-bottom-sheet>
+        </v-card>
+      </v-bottom-sheet>
+    </clinet-only>
   </v-container>
 </template>
 
 <script>
 import qs from "qs";
+import axios from "axios";
+import debounce from "lodash.debounce";
+
+const CancelToken = axios.CancelToken;
+let cancel;
+
 export default {
   name: "Products",
   data: () => ({
     products: [],
-    sheet: false,
+    dialog: false,
     loading: true,
     loadingMore: false,
     sort: "createdAt:DESC",
@@ -152,7 +145,11 @@ export default {
   }),
   async fetch() {
     try {
-      await this.fetchProducts();
+      this.query = this.getQuery();
+      const products = await this.performFetch();
+      if (products && products !== "cancelled") {
+        this.products = products;
+      }
     } catch (error) {
       this.$nuxt.error(error);
     }
@@ -162,25 +159,30 @@ export default {
       title: "Products"
     };
   },
+  computed: {
+    filterRef() {
+      return this.$vuetify.breakpoint.smAndDown
+        ? "mobileFilter"
+        : "desktopFilter";
+    }
+  },
   watch: {
     sort: "fetchProducts",
-    filter: "fetchProducts"
+    filter: "fetchProducts",
+    searchText: "fetchProducts"
   },
 
   methods: {
-    async fetchProducts() {
-      this.loading = true;
-      this.query = this.getQuery();
-      try {
-        const products = await this.performFetch();
-
-        this.products = products;
-      } catch (error) {
-        this.$nuxt.error(error);
-      } finally {
-        this.loading = false;
-      }
+    removeField(name) {
+      this.$refs[this.filterRef]?.removeQuery(name);
     },
+    fetchProducts: debounce(async function() {
+      this.query = this.getQuery();
+      const products = await this.performFetch();
+      if (products !== "cancelled") {
+        this.products = products;
+      }
+    }, 100),
     getQuery() {
       let query = {
         _limit: this.limit,
@@ -200,25 +202,41 @@ export default {
       this.loadingMore = true;
       this.query._start += this.limit;
       const products = await this.performFetch();
+
       this.loadingMore = false;
-      if (!products.length) {
+      if (products === "cancelled") {
+        return;
+      }
+      if (!products?.length) {
         return this.$store.commit("SHOW_ALERT", "No more product to show");
       }
       this.products = [...this.products, ...products];
     },
     async performFetch() {
+      this.loading = true;
+
       try {
+        if (cancel !== undefined) {
+          cancel();
+        }
         const products = await this.$axios.$get(
-          "/products?" + qs.stringify(this.query)
+          "/products?" + qs.stringify(this.query),
+          {
+            cancelToken: new CancelToken(function(c) {
+              cancel = c;
+            })
+          }
         );
+        this.loading = false;
         return products;
       } catch (error) {
-        this.$nuxt.error(error);
+        if (axios.isCancel(error)) {
+          return "cancelled";
+        } else {
+          this.loading = false;
+          this.$nuxt.error(error);
+        }
       }
-    },
-    applyFilter(callback) {
-      this.sheet = false;
-      callback();
     }
   }
 };
