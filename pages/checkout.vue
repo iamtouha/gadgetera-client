@@ -287,7 +287,7 @@ export default {
 
         const order = await this.$axios.$post("/orders", obj);
         this.DUMP_CART();
-        this.$router.push({ name: "thank-you", params: { order: order.id } });
+        this.$router.push({ name: "thank-you", params: { order: order.order_id } });
       } catch (error) {
         //
       } finally {
