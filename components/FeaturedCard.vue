@@ -15,7 +15,7 @@
 
         <v-card-actions>
           <v-btn class="ml-2 mt-3" text large>
-            Shop Now
+            shop now
             <v-icon right>
               mdi-arrow-right
             </v-icon>

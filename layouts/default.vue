@@ -51,7 +51,12 @@
               mdi-login
             </v-icon>
           </v-btn>
-          <v-btn text icon class="d-sm-none" @click="cartSheet = true">
+          <v-btn
+            text
+            icon
+            class="d-sm-none mobile-cart-btn"
+            @click="cartSheet = true"
+          >
             <v-icon>mdi-cart</v-icon>
             <v-chip style="padding:5px;" x-small>
               {{ cartItems.length }}
@@ -67,7 +72,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-btn
-                class="d-none d-sm-block"
+                class="d-none d-sm-block cart-btn"
                 v-bind="attrs"
                 text
                 icon
@@ -97,7 +102,7 @@
 
     <v-main class="secondary">
       <Nuxt />
-      <v-bottom-sheet v-model="cartSheet">
+      <v-bottom-sheet v-model="cartSheet" hide-overlay>
         <v-card>
           <v-card-title>
             Cart

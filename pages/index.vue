@@ -51,6 +51,7 @@
                   </p>
                   <v-btn
                     large
+                    class="hero-button"
                     color="secondary"
                     outlined
                     :href="banner.href"
@@ -76,8 +77,9 @@
       <v-col
         v-for="product in content.featured_products"
         :key="product.id"
+        class="featured-product"
         cols="12"
-        sm="6"
+        md="6"
       >
         <featured-card :product="product" />
       </v-col>

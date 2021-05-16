@@ -39,10 +39,10 @@
         No products added
       </v-list-item-title>
     </v-list-item>
-    <v-list-item v-if="checkoutBtn">
+    <v-list-item v-if="checkoutBtn" class="action-item">
       <v-list-item-content>
         <v-spacer />
-        <v-btn v-if="closebtn" text @click="$emit('close')">
+        <v-btn v-if="closebtn" class="close-btn" text @click="$emit('close')">
           Close
         </v-btn>
         <v-btn text class="primary" @click="toCheckout">
