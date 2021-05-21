@@ -24,7 +24,7 @@
             class="pa-1"
           >
             <v-img
-              class="rounded"
+              class="rounded cursor-pointer"
               max-width="100%"
               aspect-ratio="1"
               :src="img.formats.thumbnail.url"
@@ -36,14 +36,14 @@
         </v-row>
       </v-col>
       <v-col cols="12" sm="6">
-        <h1 class="text-md-h4 text-sm-h5 text-h6 mb-sm-6 mb-3">
+        <h1 class="text-md-h4 text-sm-h5 text-h6 mb-3">
           {{ product.name }}
         </h1>
-        <h1 v-if="!product.discount" class="mb-3 text-h6 text-sm-h5 text-md-h4">
+        <h1 v-if="!product.discount" class="mb-3 text-h6 font-weight-bold">
           {{ product.price | groupNum }}
         </h1>
         <h1 v-else class="text-body-1 d-flex">
-          <span class="text-h6 text-sm-h5 text-md-h4">
+          <span class="text-h6 font-weight-bold">
             {{
               Math.ceil(product.price - product.price * product.discount)
                 | groupNum
@@ -54,7 +54,10 @@
             </span>
           </span>
         </h1>
-        <v-simple-table class="transparent mt-4">
+        <p class="mt-4">
+          {{ product.overview }}
+        </p>
+        <v-simple-table dense class="transparent">
           <tbody style="cursor:pointer">
             <nuxt-link tag="tr" :to="'/categories/' + subcategory.category.key">
               <th>Category</th>
@@ -157,7 +160,7 @@ export default {
         {
           hid: "description",
           name: "description",
-          content: this.product.description
+          content: this.product.overview
         },
         {
           hid: "og:image",
