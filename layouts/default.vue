@@ -92,7 +92,7 @@
     <client-only>
       <v-navigation-drawer
         v-model="drawer"
-        width="250px"
+        width="220px"
         class="d-md-none"
         :app="isMobile"
       >
@@ -102,7 +102,7 @@
 
     <v-main class="secondary">
       <Nuxt />
-      <v-bottom-sheet v-model="cartSheet" hide-overlay>
+      <v-bottom-sheet v-model="cartSheet">
         <v-card>
           <v-card-title>
             Cart
