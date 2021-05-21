@@ -1,20 +1,22 @@
 <template>
   <v-container class="fill-height">
     <v-row class="fill-height" align="center" justify="center">
-      <v-col cols="12" sm="8" md="6" lg="4">
-        <v-card outlined>
+      <v-col cols="12" sm="8" md="6" lg="5">
+        <v-card outlined class="my-2">
           <v-card-title>
             Sign Up
           </v-card-title>
           <v-card-text>
             <v-text-field
               v-model="user.name"
+              outlined
               label="Name"
               placeholder="Name"
               single-line
             />
             <v-text-field
               v-model="user.email"
+              outlined
               label="Email"
               placeholder="Email"
               type="email"
@@ -22,6 +24,7 @@
             />
             <v-text-field
               v-model="user.password"
+              outlined
               :type="viewPass ? 'text' : 'password'"
               label="Password"
               placeholder="Password"
@@ -31,6 +34,7 @@
             />
             <v-text-field
               v-model="user.repeatPassword"
+              outlined
               :type="viewPass ? 'text' : 'password'"
               label="Enter Again"
               placeholder="Enter Again"

@@ -40,14 +40,16 @@
           {{ product.name }}
         </h1>
         <h1 v-if="!product.discount" class="mb-3 text-h6 text-sm-h5 text-md-h4">
-          &#2547;{{ product.price }}
+          {{ product.price | groupNum }}
         </h1>
         <h1 v-else class="text-body-1 d-flex">
           <span class="text-h6 text-sm-h5 text-md-h4">
-            &#2547;
-            {{ Math.ceil(product.price - product.price * product.discount) }}
+            {{
+              Math.ceil(product.price - product.price * product.discount)
+                | groupNum
+            }}
             <span class="font-weight-light text-h6">
-              ( <s>&#2547;{{ product.price }}</s>
+              ( <s>{{ product.price | groupNum }}</s>
               {{ Math.ceil(100 * product.discount) }}% off)
             </span>
           </span>
@@ -110,6 +112,15 @@ import "~/assets/ck_style.css";
 
 export default {
   name: "Product",
+  filters: {
+    groupNum(price) {
+      if (!price) {
+        return "";
+      }
+      const formatter = new Intl.NumberFormat("en-US");
+      return "৳ " + formatter.format(price);
+    }
+  },
   data: () => ({
     image: {},
     product: {

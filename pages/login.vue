@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height">
     <v-row class="fill-height" align="center" justify="center">
-      <v-col cols="12" sm="8" md="6" lg="4">
+      <v-col cols="12" sm="8" md="6" lg="5">
         <v-card outlined>
           <v-card-title>
             Log In
@@ -9,12 +9,14 @@
           <v-card-text>
             <v-text-field
               v-model="user.email"
+              outlined
               label="Email"
               placeholder="Email"
               single-line
             />
             <v-text-field
               v-model="user.password"
+              outlined
               :type="viewPass ? 'text' : 'password'"
               :append-icon="viewPass ? 'mdi-eye' : 'mdi-eye-off'"
               label="Password"

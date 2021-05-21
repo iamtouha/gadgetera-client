@@ -26,7 +26,7 @@
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-    <v-list>
+    <v-list shaped>
       <v-list-item nuxt exact to="/">
         <v-list-item-avatar>
           <v-icon>mdi-home-outline</v-icon>
