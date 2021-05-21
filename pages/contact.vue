@@ -111,6 +111,7 @@ export default {
           "SHOW_ALERT",
           "Your message was received. We will mail you soon!"
         );
+        this.$refs.contactForm?.reset();
       } catch (error) {
         this.$store.commit("SHOW_ALERT", "Something went wrong on our end");
       } finally {

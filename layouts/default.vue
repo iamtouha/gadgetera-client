@@ -250,4 +250,7 @@ export default {
   height: 5px;
   margin: 0 auto;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
 </style>
