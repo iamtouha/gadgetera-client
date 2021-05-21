@@ -98,14 +98,15 @@
 
     <!-- bottom filter panel (for mobile devices) -->
     <client-only>
-      <v-bottom-sheet v-model="dialog" scrollable hide-overlay class="rounded">
+      <v-bottom-sheet v-model="dialog" scrollable class="rounded">
         <v-card>
           <v-card-text class="pa-0 pt-2" style="max-height:350px;">
             <filter-panel ref="mobileFilter" v-model="filter" single />
           </v-card-text>
           <v-divider />
           <v-card-actions>
-            <v-btn class="w-full" text @click="dialog = false">
+            <v-spacer />
+            <v-btn text @click="dialog = false">
               close
             </v-btn>
           </v-card-actions>
