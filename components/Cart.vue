@@ -1,18 +1,21 @@
 <template>
-  <v-list max-height="600px" width="100%" class="rounded">
-    <v-list-item v-for="item in cartItems" :key="item.product.id">
+  <v-list max-height="600px" width="100%" class="rounded cart-list">
+    <v-list-item
+      v-for="item in cartItems"
+      :key="item.product.id"
+      class="cart-list-item"
+    >
       <v-list-item-avatar>
         <v-img :src="item.product.image" />
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title> {{ item.product.name }} </v-list-item-title>
         <v-list-item-subtitle>
-          {{
-            Math.ceil(
-              item.product.price - item.product.price * item.product.discount
-            )
-          }}
-          &times; {{ item.quantity }}
+          &#2547; {{ item | calcTotal }}
+          &times;
+          <span class="item-qty">
+            {{ item.quantity }}
+          </span>
         </v-list-item-subtitle>
       </v-list-item-content>
       <v-list-item-action v-if="incrementBtns">
@@ -57,6 +60,15 @@
 import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "Cart",
+  filters: {
+    calcTotal(item) {
+      const total =
+        item.product.price - item.product.price * item.product.discount;
+
+      const formatter = new Intl.NumberFormat("en-US");
+      return formatter.format(total);
+    }
+  },
   props: {
     closebtn: Boolean,
     checkoutBtn: { type: Boolean, default: true },

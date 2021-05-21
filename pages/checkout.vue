@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" md="5">
         <client-only>
-          <v-card outlined>
+          <v-card class="checkout-card" outlined>
             <v-card-title>Cart</v-card-title>
             <cart increment :checkout-btn="false" increment-btns />
 
@@ -287,7 +287,10 @@ export default {
 
         const order = await this.$axios.$post("/orders", obj);
         this.DUMP_CART();
-        this.$router.push({ name: "thank-you", params: { order: order.order_id } });
+        this.$router.push({
+          name: "thank-you",
+          params: { order: order.order_id }
+        });
       } catch (error) {
         //
       } finally {

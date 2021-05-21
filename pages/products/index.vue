@@ -22,9 +22,9 @@
             Filter
           </v-card-title>
           <v-card-text class="px-0">
-            <clinet-only>
+            <client-only>
               <filter-panel ref="desktopFilter" v-model="filter" />
-            </clinet-only>
+            </client-only>
           </v-card-text>
         </v-card>
       </v-col>
@@ -97,7 +97,7 @@
     </v-btn>
 
     <!-- bottom filter panel (for mobile devices) -->
-    <clinet-only>
+    <client-only>
       <v-bottom-sheet v-model="dialog" scrollable hide-overlay class="rounded">
         <v-card>
           <v-card-text class="pa-0 pt-2" style="max-height:350px;">
@@ -111,7 +111,7 @@
           </v-card-actions>
         </v-card>
       </v-bottom-sheet>
-    </clinet-only>
+    </client-only>
   </v-container>
 </template>
 

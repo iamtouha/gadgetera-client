@@ -26,7 +26,7 @@
       <v-spacer />
       <p class="mb-0 text-subtitle-1 text-sm-h6">
         &#2547;
-        {{ product.price }}
+        {{ product.price | groupNum }}
       </p>
     </v-card-actions>
     <v-card-title
@@ -41,6 +41,12 @@
 <script>
 export default {
   name: "ProductCard",
+  filters: {
+    groupNum(num) {
+      const formatter = new Intl.NumberFormat("en-US");
+      return formatter.format(Math.ceil(num));
+    }
+  },
   props: {
     product: { type: Object, default: () => ({}) }
   },

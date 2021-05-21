@@ -17,7 +17,7 @@
         placeholder="Search categories"
       />
     </v-toolbar>
-    <v-divider class="my-1" />
+    <v-divider />
     <div style="height:5px">
       <v-progress-linear v-show="loading" indeterminate />
     </div>

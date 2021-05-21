@@ -8,7 +8,11 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
-    "lint": "yarn lint:js"
+    "lint": "yarn lint:js",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "e2e": "start-server-and-test dev http://localhost:3000 cypress:open",
+    "e2e:slient": "start-server-and-test start http://localhost:3000 cypress:run"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
@@ -30,6 +34,7 @@
     "eslint": "^7.22.0",
     "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-nuxt": "^2.0.0",
-    "eslint-plugin-vue": "^7.7.0"
+    "eslint-plugin-vue": "^7.7.0",
+    "start-server-and-test": "^1.12.2"
   }
 }
