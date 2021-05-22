@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     imgSrc() {
-      const smallSrc = this.product.images[0].formats?.small.url;
+      const smallSrc = this.product.images[0].formats?.small?.url;
       return smallSrc || this.product.images[0].url;
     },
     lazySrc() {
