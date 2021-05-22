@@ -2,6 +2,9 @@
 const axios = require("axios");
 export default {
   target: "static",
+
+  generate: { fallback: "404.html" },
+
   head: {
     titleTemplate: "%s | Gadget Era",
     title: "Gadget Era",
@@ -40,7 +43,7 @@ export default {
   sitemap: {
     hostname: "https://gadgeterabd.com",
     gzip: true,
-    exclude: ["/checkout", "/account", "/orders"],
+    exclude: ["/checkout", "/account", "/orders", "/thank-you"],
     routes: generateRoutes
   },
 
