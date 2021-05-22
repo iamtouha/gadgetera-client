@@ -8,8 +8,8 @@
     <v-img
       aspect-ratio="1"
       content-class="product-card-content-wrapper"
-      :src="product.images[0].url"
-      :lazy-src="product.images[0].formats.thumbnail.url"
+      :src="imgSrc"
+      :lazy-src="lazySrc"
     >
       <v-chip
         v-show="product.discount"
@@ -50,10 +50,14 @@ export default {
   props: {
     product: { type: Object, default: () => ({}) }
   },
-  data() {
-    return {
-      //
-    };
+  computed: {
+    imgSrc() {
+      const smallSrc = this.product.images[0].formats?.small.url;
+      return smallSrc || this.product.images[0].url;
+    },
+    lazySrc() {
+      return this.product.images[0].formats.thumbnail.url;
+    }
   }
 };
 </script>
