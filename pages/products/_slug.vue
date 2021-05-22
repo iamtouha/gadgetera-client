@@ -59,20 +59,23 @@
         </p>
         <v-simple-table dense class="transparent">
           <tbody style="cursor:pointer">
-            <nuxt-link tag="tr" :to="'/categories/' + subcategory.category.key">
+            <nuxt-link
+              tag="tr"
+              :to="`/categories/${subcategory.category.key}/`"
+            >
               <th>Category</th>
               <td>{{ subcategory.category.name }}</td>
             </nuxt-link>
             <nuxt-link
               tag="tr"
               :to="
-                `/categories/${subcategory.category.key}/subs/${subcategory.key}`
+                `/categories/${subcategory.category.key}/subs/${subcategory.key}/`
               "
             >
               <th>Subcategory</th>
               <td>{{ subcategory.name }}</td>
             </nuxt-link>
-            <nuxt-link tag="tr" :to="'/brands/' + product.brand.key">
+            <nuxt-link tag="tr" :to="`/brands/${product.brand.key}/`">
               <th>Brand</th>
               <td>{{ product.brand.name }}</td>
             </nuxt-link>
@@ -182,14 +185,11 @@ export default {
       this.$store.commit("SHOW_ALERT", "added to cart");
     },
     viewCat() {
-      this.$nuxt.$router.push("/categories/" + this.subcategory.category.key);
+      this.$nuxt.$router.push(`/categories/${this.subcategory.category.key}/`);
     },
     viewSubCat() {
       this.$nuxt.$router.push(
-        "/categories/" +
-          this.subcategory.category.key +
-          "/subs/" +
-          this.subcategory.key
+        `/categories/${this.subcategory.category.key}/subs/${this.subcategory.key}/`
       );
     }
   }

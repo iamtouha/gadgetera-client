@@ -5,6 +5,10 @@ export default {
 
   generate: { fallback: "404.html" },
 
+  router: {
+    trailingSlash: true
+  },
+
   head: {
     titleTemplate: "%s | Gadget Era",
     title: "Gadget Era",
@@ -42,6 +46,7 @@ export default {
 
   sitemap: {
     hostname: "https://gadgeterabd.com",
+    trailingSlash: true,
     gzip: true,
     exclude: [
       "/checkout",
