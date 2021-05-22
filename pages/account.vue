@@ -42,7 +42,7 @@
             md="6"
             lg="4"
           >
-            <v-card nuxt :to="'/orders/' + order.order_id" outlined>
+            <v-card nuxt :to="`/orders/${order.order_id}/`" outlined>
               <v-card-title class="text-subtitle-1">
                 #{{ order.order_id }}
               </v-card-title>

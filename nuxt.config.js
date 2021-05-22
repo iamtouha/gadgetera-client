@@ -2,6 +2,9 @@
 const axios = require("axios");
 export default {
   target: "server",
+
+  generate: { fallback: "404.html" },
+
   head: {
     titleTemplate: "%s | Gadget Era",
     title: "Gadget Era",
@@ -39,8 +42,16 @@ export default {
 
   sitemap: {
     hostname: "https://gadgeterabd.com",
+    trailingSlash: true,
     gzip: true,
-    exclude: ["/checkout", "/account", "/orders"],
+    exclude: [
+      "/checkout",
+      "/account",
+      "/account/**",
+      "/orders",
+      "/orders/**",
+      "/thank-you"
+    ],
     routes: generateRoutes
   },
 
@@ -101,25 +112,51 @@ async function generateRoutes() {
     url: "/products/" + prod.slug,
     changefreq: "weekly",
     lastmod: prod.updatedAt,
-    priority: 0.8
+    priority: 0.8,
+    img: prod.images.map(item => ({
+      url: item.url,
+      caption: item.caption || prod.name,
+      title: prod.name
+    }))
   }));
-  const categoryPages = categories.map(prod => ({
-    url: "/categories/" + prod.key,
+  const categoryPages = categories.map(cat => ({
+    url: "/categories/" + cat.key,
     changefreq: "weekly",
-    lastmod: prod.updatedAt,
-    priority: 0.8
+    lastmod: cat.updatedAt,
+    priority: 0.8,
+    img: [
+      {
+        url: cat.cover.url,
+        caption: cat.cover.caption || cat.name,
+        title: cat.name
+      }
+    ]
   }));
-  const brandPages = brands.map(prod => ({
-    url: "/brands/" + prod.key,
+  const brandPages = brands.map(item => ({
+    url: "/brands/" + item.key,
     changefreq: "weekly",
-    lastmod: prod.updatedAt,
-    priority: 0.8
+    lastmod: item.updatedAt,
+    priority: 0.8,
+    img: [
+      {
+        url: item.logo.url,
+        caption: item.logo.caption || item.name,
+        title: item.name
+      }
+    ]
   }));
-  const subcatPages = subcats.map(prod => ({
-    url: "/subcategories/" + prod.key,
+  const subcatPages = subcats.map(item => ({
+    url: "/subcategories/" + item.key,
     changefreq: "weekly",
-    lastmod: prod.updatedAt,
-    priority: 0.8
+    lastmod: item.updatedAt,
+    priority: 0.8,
+    img: [
+      {
+        url: item.cover.url,
+        caption: item.cover.caption || item.name,
+        title: item.name
+      }
+    ]
   }));
   return [
     {

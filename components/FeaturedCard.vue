@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined nuxt :to="'/products/' + product.slug">
+  <v-card outlined nuxt :to="`/products/${product.slug}/`">
     <div class="d-flex flex-no-wrap justify-space-between">
       <div>
         <v-card-title class="text-subtitle-1 text-sm-h6 text-md-h5">

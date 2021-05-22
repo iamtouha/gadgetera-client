@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 before(() => {
-  cy.visit("/checkout");
+  cy.visit("/checkout/");
 });
 
 describe("checkout page", () => {
@@ -13,14 +13,14 @@ describe("checkout page", () => {
       .contains("No products added");
   });
   it("Adds product to cart", () => {
-    cy.visit("/products")
+    cy.visit("/products/")
       .get(".product-card")
       .first()
       .click()
       .get(".add2cart-btn")
       .click()
       .click()
-      .visit("/checkout", { timeout: 10000 })
+      .visit("/checkout/", { timeout: 10000 })
       .get(".cart-list-item")
       .get(".item-qty")
       .contains(2);

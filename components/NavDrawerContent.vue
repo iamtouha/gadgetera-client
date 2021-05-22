@@ -1,6 +1,6 @@
 <template>
   <div style="display:contents;">
-    <v-list-item v-if="isLoggedIn" three-line nuxt to="/account">
+    <v-list-item v-if="isLoggedIn" three-line nuxt to="/account/">
       <v-list-item-content>
         <v-list-item-title>
           {{ user.name }}
@@ -16,7 +16,7 @@
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-    <v-list-item v-else exact nuxt to="/signup">
+    <v-list-item v-else exact nuxt to="/signup/">
       <v-list-item-title>
         Sign Up
       </v-list-item-title>
@@ -33,25 +33,25 @@
         </v-list-item-avatar>
         <v-list-item-title>Home</v-list-item-title>
       </v-list-item>
-      <v-list-item nuxt exact to="/products">
+      <v-list-item nuxt exact to="/products/">
         <v-list-item-avatar>
           <v-icon>mdi-gift-outline</v-icon>
         </v-list-item-avatar>
         <v-list-item-title>Shop</v-list-item-title>
       </v-list-item>
-      <v-list-item nuxt exact to="/categories">
+      <v-list-item nuxt exact to="/categories/">
         <v-list-item-avatar>
           <v-icon>mdi-basket-outline</v-icon>
         </v-list-item-avatar>
         <v-list-item-title>Categories</v-list-item-title>
       </v-list-item>
-      <v-list-item nuxt exact to="/brands">
+      <v-list-item nuxt exact to="/brands/">
         <v-list-item-avatar>
           <v-icon>mdi-shopping-outline</v-icon>
         </v-list-item-avatar>
         <v-list-item-title>Brands</v-list-item-title>
       </v-list-item>
-      <v-list-item nuxt exact to="/contact">
+      <v-list-item nuxt exact to="/contact/">
         <v-list-item-avatar>
           <v-icon>mdi-help-circle-outline</v-icon>
         </v-list-item-avatar>
