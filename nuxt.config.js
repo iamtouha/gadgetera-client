@@ -5,10 +5,6 @@ export default {
 
   generate: { fallback: "404.html" },
 
-  router: {
-    trailingSlash: true
-  },
-
   head: {
     titleTemplate: "%s | Gadget Era",
     title: "Gadget Era",
