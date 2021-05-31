@@ -4,7 +4,12 @@
       <v-col cols="12" sm="6">
         <transition name="fade" mode="out-in">
           <div :key="image.id" class="responsive rounded">
-            <div class="sizer">
+            <div
+              class="sizer"
+              :style="{
+                backgroundImage: `url(${lazyUrl})`
+              }"
+            >
               <div class="wrapper">
                 <img
                   :src="imageUrl"
@@ -121,6 +126,7 @@
 
 <script>
 import "~/assets/ck_style.css";
+import extractor from "keyword-extractor";
 
 export default {
   name: "Product",
@@ -169,40 +175,41 @@ export default {
     }
   },
   head() {
+    const { name, overview, slug } = this.product;
+    const keywords = extractor.extract(`${name}. ${overview}`, {
+      language: "english",
+      remove_digits: true,
+      return_changed_case: true,
+      remove_duplicates: true
+    });
     return {
-      title: this.product.name,
+      title: name,
       meta: [
-        {
-          hid: "description",
-          property: "description",
-          content: this.product.overview
-        },
+        { hid: "description", name: "description", content: overview },
+        { hid: "keywords", property: "keywords", content: keywords },
         {
           hid: "og:url",
           property: "og:url",
           content: `${process.env.BASE_URL ||
-            "https://gadgeterabd.com"}/products/${this.product.slug}`
+            "https://gadgeterabd.com"}/products/${slug}`
         },
-        { hid: "og:title", property: "og:title", content: this.product.name },
-        {
-          hid: "og:description",
-          property: "og:description",
-          content: this.product.overview
-        },
-        { hid: "og:image", property: "og:image", content: this.image.url },
-        {
-          hid: "twitter:card",
-          name: "twitter:card",
-          content: "summary_large_image"
-        }
-      ]
+        { hid: "og:title", property: "og:title", content: name },
+        { hid: "og:desc", property: "og:description", content: overview },
+        { hid: "og:image", property: "og:image", content: this.imageUrl },
+        { hid: "twitter:card", name: "twitter:card", content: "summary" }
+      ],
+      link: [{ rel: "preload", as: "image", href: this.imageUrl }]
     };
   },
   computed: {
     imageUrl() {
       return this.image.formats?.small?.url || this.image.url;
+    },
+    lazyUrl() {
+      return this.image.formats?.thumbnail?.url || this.image.url;
     }
   },
+
   methods: {
     addToCart() {
       if (!this.product.stock) {
@@ -269,6 +276,9 @@ export default {
   }
   .sizer {
     position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     width: 100%;
     padding-bottom: 100%;
   }
