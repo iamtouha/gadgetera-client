@@ -5,20 +5,17 @@
     :to="`/products/${product.slug}/`"
     class="fill-height product-card"
   >
-    <v-img
-      aspect-ratio="1"
-      content-class="product-card-content-wrapper"
-      :src="product.images[0].url"
-      :lazy-src="product.images[0].formats.thumbnail.url"
-    >
-      <v-chip
-        v-show="product.discount"
-        class="offer-chip rounded"
-        style="top:5px; right:5px;"
-      >
+    <div class="responsive">
+      <v-chip v-show="product.discount" class="offer-chip rounded">
         {{ Math.ceil(100 * product.discount) }}% off
       </v-chip>
-    </v-img>
+      <div class="sizer">
+        <div class="wrapper">
+          <img :src="imgSrc" :alt="img.alternativeText" :title="img.caption" />
+        </div>
+      </div>
+    </div>
+
     <v-card-actions class="py-1 px-4">
       <p class="mb-0 text-subtitle-2">
         {{ product.brand.name }}
@@ -48,20 +45,45 @@ export default {
     }
   },
   props: {
-    product: { type: Object, default: () => ({}) }
+    product: { type: Object, default: () => ({ images: [] }) }
   },
-  data() {
-    return {
-      //
-    };
+  computed: {
+    img() {
+      return this.product.images[0] || {};
+    },
+    imgSrc() {
+      const smallSrc = this.img.formats?.small?.url;
+      return smallSrc || this.img.url;
+    }
   }
 };
 </script>
-<style>
-.product-card-content-wrapper {
-  position: relative;
-}
-.product-card-content-wrapper .offer-chip {
-  position: absolute;
+<style lang="scss" scoped>
+.responsive {
+  overflow: hidden;
+  .offer-chip {
+    position: absolute;
+    z-index: 4;
+    top: 5px;
+    right: 5px;
+  }
+  .sizer {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+  }
+  .wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 }
 </style>
