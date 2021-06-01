@@ -12,16 +12,16 @@
         <v-btn to="/" exact nuxt text>
           Home
         </v-btn>
-        <v-btn to="/products/" exact nuxt text>
+        <v-btn to="/products" exact nuxt text>
           shop
         </v-btn>
-        <v-btn to="/categories/" exact nuxt text>
+        <v-btn to="/categories" exact nuxt text>
           Categories
         </v-btn>
-        <v-btn to="/brands/" exact nuxt text>
+        <v-btn to="/brands" exact nuxt text>
           Brands
         </v-btn>
-        <v-btn to="/contact/" exact nuxt text>
+        <v-btn to="/contact" exact nuxt text>
           Contact us
         </v-btn>
       </v-toolbar-items>
@@ -32,7 +32,7 @@
             v-if="isLoggedIn"
             text
             class="text-none d-none d-md-inline-flex"
-            to="/account/"
+            to="/account"
             nuxt
             exact
           >
@@ -41,7 +41,7 @@
           <v-btn
             v-else
             class="d-none d-md-inline-flex"
-            to="/signup/"
+            to="/signup"
             nuxt
             text
             exact
@@ -167,10 +167,10 @@
           </v-list-item>
         </v-col>
         <v-col cols="12" sm="6">
-          <v-list-item dense nuxt to="/terms-and-conditions/">
+          <v-list-item dense nuxt to="/terms-and-conditions">
             Terms and conditions
           </v-list-item>
-          <v-list-item dense nuxt to="/privacy-policy/">
+          <v-list-item dense nuxt to="/privacy-policy">
             Privacy policy
           </v-list-item>
         </v-col>

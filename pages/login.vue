@@ -27,7 +27,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn nuxt to="/signup/" text>
+            <v-btn nuxt to="/signup" text>
               sign up
             </v-btn>
             <v-btn class="primary" :loading="loading" text @click="login">

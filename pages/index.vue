@@ -92,7 +92,7 @@
     </h2>
     <v-row class="mb-6">
       <v-col v-for="brand in brands" :key="brand.id" cols="4" sm="3" md="2">
-        <v-card nuxt :to="`/brands/${brand.key}/`" outlined>
+        <v-card nuxt :to="`/brands/${brand.key}`" outlined>
           <v-img :aspect-ratio="1" contain :src="brand.logo.url" />
         </v-card>
       </v-col>

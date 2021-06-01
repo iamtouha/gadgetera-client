@@ -82,7 +82,7 @@ export default {
     ...mapMutations("cart", ["REMOVE_FROM_CART", "INCREMENT", "DECREMENT"]),
     toCheckout() {
       this.$emit("close");
-      this.$nuxt.$router.push("/checkout/");
+      this.$nuxt.$router.push("/checkout");
     }
   }
 };

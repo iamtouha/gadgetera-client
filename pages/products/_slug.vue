@@ -31,7 +31,7 @@
             cols="2"
             class="pa-1"
           >
-            <div class="responsive rounded">
+            <div class="responsive rounded cursor-pointer">
               <v-overlay :opacity="0.6" absolute :value="image.id === img.id" />
               <div class="sizer">
                 <div class="wrapper">
@@ -70,23 +70,20 @@
         </p>
         <v-simple-table dense class="transparent">
           <tbody style="cursor:pointer">
-            <nuxt-link
-              tag="tr"
-              :to="`/categories/${subcategory.category.key}/`"
-            >
+            <nuxt-link tag="tr" :to="`/categories/${subcategory.category.key}`">
               <th>Category</th>
               <td>{{ subcategory.category.name }}</td>
             </nuxt-link>
             <nuxt-link
               tag="tr"
               :to="
-                `/categories/${subcategory.category.key}/subs/${subcategory.key}/`
+                `/categories/${subcategory.category.key}/subs/${subcategory.key}`
               "
             >
               <th>Subcategory</th>
               <td>{{ subcategory.name }}</td>
             </nuxt-link>
-            <nuxt-link tag="tr" :to="`/brands/${product.brand.key}/`">
+            <nuxt-link tag="tr" :to="`/brands/${product.brand.key}`">
               <th>Brand</th>
               <td>{{ product.brand.name }}</td>
             </nuxt-link>
@@ -175,6 +172,11 @@ export default {
     }
   },
   head() {
+    if (!this.product.id) {
+      return {
+        title: "Loading..."
+      };
+    }
     const { name, overview, slug } = this.product;
     const keywords = extractor.extract(`${name}. ${overview}`, {
       language: "english",
@@ -198,7 +200,7 @@ export default {
         { hid: "og:image", property: "og:image", content: this.imageUrl },
         { hid: "twitter:card", name: "twitter:card", content: "summary" }
       ],
-      link: [{ rel: "preload", as: "image", href: this.imageUrl }]
+      link: [{ rel: "preload", as: "image", href: this.lazyUrl }]
     };
   },
   computed: {
@@ -222,11 +224,11 @@ export default {
       this.$store.commit("SHOW_ALERT", "added to cart");
     },
     viewCat() {
-      this.$nuxt.$router.push(`/categories/${this.subcategory.category.key}/`);
+      this.$nuxt.$router.push(`/categories/${this.subcategory.category.key}`);
     },
     viewSubCat() {
       this.$nuxt.$router.push(
-        `/categories/${this.subcategory.category.key}/subs/${this.subcategory.key}/`
+        `/categories/${this.subcategory.category.key}/subs/${this.subcategory.key}`
       );
     }
   }
