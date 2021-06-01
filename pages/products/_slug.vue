@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <v-breadcrumbs class="pl-0" large :items="bredcrumbItems" />
+
     <v-row>
       <v-col cols="12" sm="6">
         <transition name="fade" mode="out-in">
@@ -21,9 +23,9 @@
           </div>
         </transition>
         <v-row
-          class="mt-2 mx-auto controller"
-          style="max-width:400px"
+          class="mt-2 mb-4 mx-auto controller"
           justify="center"
+          justify-md="start"
         >
           <v-col
             v-for="img in product.images"
@@ -32,7 +34,12 @@
             class="pa-1"
           >
             <div class="responsive rounded cursor-pointer">
-              <v-overlay :opacity="0.6" absolute :value="image.id === img.id" />
+              <v-overlay
+                :opacity="0.6"
+                z-index="1"
+                absolute
+                :value="image.id === img.id"
+              />
               <div class="sizer">
                 <div class="wrapper">
                   <img
@@ -68,25 +75,41 @@
         <p class="mt-4">
           {{ product.overview }}
         </p>
+        <p class="text-subtitle font-weight-bold">
+          Options
+        </p>
+        <v-row class="mb-3">
+          <v-col v-for="option in options" :key="option.id" cols="3" lg="2">
+            <v-card
+              elevation="0"
+              :to="'/products/' + option.slug"
+              active-class="option-active"
+            >
+              <v-img
+                :src="option.thumb"
+                aspect-ratio="1"
+                :title="option.name"
+                :alt="option.name"
+              >
+                <v-overlay absolute class="option-overlay">
+                  <v-icon>
+                    mdi-check-circle
+                  </v-icon>
+                </v-overlay>
+              </v-img>
+            </v-card>
+          </v-col>
+        </v-row>
         <v-simple-table dense class="transparent">
           <tbody style="cursor:pointer">
-            <nuxt-link tag="tr" :to="`/categories/${subcategory.category.key}`">
-              <th>Category</th>
-              <td>{{ subcategory.category.name }}</td>
-            </nuxt-link>
-            <nuxt-link
-              tag="tr"
-              :to="
-                `/categories/${subcategory.category.key}/subs/${subcategory.key}`
-              "
-            >
-              <th>Subcategory</th>
-              <td>{{ subcategory.name }}</td>
-            </nuxt-link>
-            <nuxt-link tag="tr" :to="`/brands/${product.brand.key}`">
-              <th>Brand</th>
-              <td>{{ product.brand.name }}</td>
-            </nuxt-link>
+            <tr v-show="product.model">
+              <th>Model</th>
+              <td>{{ product.model }}</td>
+            </tr>
+            <tr>
+              <th>SKU</th>
+              <td>{{ product.sku }}</td>
+            </tr>
             <tr>
               <th>Status</th>
               <td>
@@ -114,10 +137,10 @@
     <v-btn fab bottom right fixed class="d-sm-none" @click="addToCart">
       <v-icon>mdi-cart-plus</v-icon>
     </v-btn>
-    <v-row class="mt-8">
+    <div class="description-box">
       <!-- eslint-disable-next-line vue/no-v-html -->
-      <v-col cols="12" class="ck-content" v-html="product.description" />
-    </v-row>
+      <section class="ck-content" v-html="product.description" />
+    </div>
   </v-container>
 </template>
 
@@ -144,6 +167,7 @@ export default {
   },
   data: () => ({
     image: {},
+    options: [],
     product: {
       images: [],
       brand: {},
@@ -162,9 +186,21 @@ export default {
         return this.$nuxt.error({ statusCode: 404, message: "not found" });
       }
       this.product = product;
-      const subcat = await this.$axios.$get(
-        "/subcategories/" + product.subcategory.id
-      );
+      // eslint-disable-next-line prefer-const
+      let [options, subcat] = await Promise.all([
+        this.$axios.$get("/products?model=" + product.model),
+        this.$axios.$get("/subcategories/" + product.subcategory.id)
+      ]);
+      if (!product.model) {
+        options = [product];
+      }
+      this.options = options.map(option => ({
+        id: option.id,
+        thumb: option.images[0].formats?.thumbnail.url || option.images[0].url,
+        name: option.name,
+        slug: option.slug
+      }));
+
       this.subcategory = subcat;
       this.image = this.product.images[0];
     } catch (error) {
@@ -209,6 +245,24 @@ export default {
     },
     lazyUrl() {
       return this.image.formats?.thumbnail?.url || this.image.url;
+    },
+    bredcrumbItems() {
+      const subcategory = this.subcategory;
+      const category = this.subcategory.category;
+      const brand = this.product.brand;
+      return [
+        { to: `/categories/${category.key}`, text: category.name },
+        {
+          to: `/categories/${category.key}/subs/${subcategory.key}`,
+          text: subcategory.name
+        },
+        { to: `/brands/${brand.key}`, text: brand.name },
+        {
+          disabled: true,
+          to: `/categories/${category.key}/subs/${subcategory.key}/${this.product.slug}`,
+          text: this.product.name
+        }
+      ];
     }
   },
 
@@ -222,14 +276,6 @@ export default {
         quantity: 1
       });
       this.$store.commit("SHOW_ALERT", "added to cart");
-    },
-    viewCat() {
-      this.$nuxt.$router.push(`/categories/${this.subcategory.category.key}`);
-    },
-    viewSubCat() {
-      this.$nuxt.$router.push(
-        `/categories/${this.subcategory.category.key}/subs/${this.subcategory.key}`
-      );
     }
   }
 };
@@ -243,6 +289,15 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
+.option-overlay {
+  display: none;
+}
+.option-active {
+  cursor: default !important;
+}
+.option-active .option-overlay {
+  display: flex;
+}
 .controller .active {
   position: relative;
 }
@@ -255,6 +310,12 @@ export default {
   border-bottom: 10px solid #555;
   position: absolute;
   bottom: 0;
+}
+.option-active {
+  outline: 10px;
+}
+.description-box {
+  all: unset;
 }
 @media (max-width: 600px) {
   .add2cart-btn {
