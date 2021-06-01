@@ -23,8 +23,7 @@ export default {
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
-
-  css: [],
+  css: ["~/assets/main.css"],
 
   plugins: ["~/plugins/axios"],
   loading: false,

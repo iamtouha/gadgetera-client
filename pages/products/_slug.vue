@@ -56,6 +56,7 @@
             <v-card
               elevation="0"
               :to="'/products/' + option.slug"
+              nuxt
               active-class="option-active"
             >
               <v-img
