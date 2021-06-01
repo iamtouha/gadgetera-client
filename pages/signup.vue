@@ -43,7 +43,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn nuxt to="/login/" text>
+            <v-btn nuxt to="/login" text>
               log in
             </v-btn>
             <v-btn class="primary" :loading="loading" text @click="signup">
@@ -99,7 +99,7 @@ export default {
 
         this.$store
           .dispatch("signUp", { username: name, email, password })
-          .then(() => this.$nuxt.$router.push("/account/"))
+          .then(() => this.$nuxt.$router.push("/account"))
           .catch(err => err)
           .finally(() => {
             this.loading = false;

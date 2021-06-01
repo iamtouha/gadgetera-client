@@ -32,7 +32,7 @@
           <v-card
             outlined
             nuxt
-            :to="`/categories/${category.key}/subs/${subcat.key}/`"
+            :to="`/categories/${category.key}/subs/${subcat.key}`"
           >
             <v-img
               aspect-ratio="1.77"

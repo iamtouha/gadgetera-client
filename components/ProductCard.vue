@@ -2,7 +2,7 @@
   <v-card
     outlined
     nuxt
-    :to="`/products/${product.slug}/`"
+    :to="`/products/${product.slug}`"
     class="fill-height product-card"
   >
     <div class="responsive">

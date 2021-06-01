@@ -30,7 +30,7 @@
         md="3"
         lg="2"
       >
-        <v-card outlined nuxt :to="`/brands/${brand.key}/`">
+        <v-card outlined nuxt :to="`/brands/${brand.key}`">
           <v-img :aspect-ratio="1" contain :src="brand.logo.url" />
         </v-card>
       </v-col>
