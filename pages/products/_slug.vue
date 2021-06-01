@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-breadcrumbs class="pl-0" large :items="bredcrumbItems" />
+    <v-breadcrumbs class="pl-0" :items="bredcrumbItems" />
 
     <v-row>
       <v-col cols="12" sm="6">
