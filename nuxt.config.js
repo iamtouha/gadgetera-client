@@ -41,7 +41,6 @@ export default {
 
   sitemap: {
     hostname: "https://gadgeterabd.com",
-    trailingSlash: true,
     gzip: true,
     exclude: [
       "/checkout",
