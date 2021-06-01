@@ -4,54 +4,27 @@
 
     <v-row>
       <v-col cols="12" sm="6">
-        <transition name="fade" mode="out-in">
-          <div :key="image.id" class="responsive rounded">
-            <div
-              class="sizer"
-              :style="{
-                backgroundImage: `url(${lazyUrl})`
-              }"
-            >
-              <div class="wrapper">
-                <img
-                  :src="imageUrl"
-                  :alt="image.alternativeText"
-                  :title="image.caption"
-                />
-              </div>
-            </div>
-          </div>
-        </transition>
-        <v-row
-          class="mt-2 mb-4 mx-auto controller"
-          justify="center"
-          justify-md="start"
+        <v-carousel
+          height="auto"
+          hide-delimiter-background
+          cycle
+          :show-arrows="false"
+          :interval="10000"
         >
-          <v-col
-            v-for="img in product.images"
-            :key="img.url"
-            cols="2"
-            class="pa-1"
-          >
-            <div class="responsive rounded cursor-pointer">
-              <v-overlay
-                :opacity="0.6"
-                z-index="1"
-                absolute
-                :value="image.id === img.id"
-              />
+          <v-carousel-item v-for="img in product.images" :key="img.id">
+            <div class="responsive rounded">
               <div class="sizer">
                 <div class="wrapper">
                   <img
-                    :src="img | thumb"
+                    :src="img | small"
                     :alt="img.alternativeText"
-                    @click="image = img"
+                    :title="img.caption"
                   />
                 </div>
               </div>
             </div>
-          </v-col>
-        </v-row>
+          </v-carousel-item>
+        </v-carousel>
       </v-col>
       <v-col cols="12" sm="6">
         <h1 class="text-md-h4 text-sm-h5 text-h6 mb-3">
@@ -159,10 +132,10 @@ export default {
       return "৳ " + formatter.format(price);
     },
     thumb(img) {
-      if (!img.formats) {
-        return img.url;
-      }
-      return img.formats.thumbnail.url;
+      return img.formats?.thumbnail.url || img.url;
+    },
+    small(img) {
+      return img.formats?.small?.url || img.url;
     }
   },
   data: () => ({
@@ -235,17 +208,10 @@ export default {
         { hid: "og:desc", property: "og:description", content: overview },
         { hid: "og:image", property: "og:image", content: this.imageUrl },
         { hid: "twitter:card", name: "twitter:card", content: "summary" }
-      ],
-      link: [{ rel: "preload", as: "image", href: this.lazyUrl }]
+      ]
     };
   },
   computed: {
-    imageUrl() {
-      return this.image.formats?.small?.url || this.image.url;
-    },
-    lazyUrl() {
-      return this.image.formats?.thumbnail?.url || this.image.url;
-    },
     bredcrumbItems() {
       const subcategory = this.subcategory;
       const category = this.subcategory.category;
@@ -259,7 +225,6 @@ export default {
         { to: `/brands/${brand.key}`, text: brand.name },
         {
           disabled: true,
-          to: `/categories/${category.key}/subs/${subcategory.key}/${this.product.slug}`,
           text: this.product.name
         }
       ];
@@ -289,6 +254,12 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
+.main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 .option-overlay {
   display: none;
 }
@@ -316,6 +287,9 @@ export default {
 }
 .description-box {
   all: unset;
+}
+.description-box > .ck-content {
+  margin-top: 100px;
 }
 @media (max-width: 600px) {
   .add2cart-btn {
