@@ -45,7 +45,14 @@
             </span>
           </span>
         </h2>
-        <p class="mt-4">
+        <v-btn
+          v-show="reviews.length"
+          text
+          class="my-2 px-0 text-lowercase font-weight-bold"
+        >
+          view reviews ({{ rating }} <v-icon>mdi-star</v-icon>)
+        </v-btn>
+        <p>
           {{ product.overview }}
         </p>
         <p class="text-subtitle font-weight-bold">
@@ -94,10 +101,11 @@
         </v-simple-table>
         <v-row class="px-2 mt-6 mx-auto add2cart-row">
           <v-spacer class="d-sm-block d-none" />
+
           <v-btn
             class="d-sm-block d-none primary add2cart-btn mt-3"
             text
-            large
+            height="44px"
             @click="addToCart"
           >
             <v-icon left>
@@ -115,6 +123,28 @@
       <!-- eslint-disable-next-line vue/no-v-html -->
       <section class="ck-content" v-html="product.description" />
     </div>
+    <p class="mt-6 mb-0 title font-weight-bold">
+      Product Reviews
+    </p>
+    <v-row>
+      <v-col v-show="!reviews.length">
+        no reviews found
+      </v-col>
+      <v-col v-for="review in reviews" :key="review.id" cols="12">
+        <v-card color="transparent" max-width="600px">
+          <v-card-title class="text-subtitle-1  font-weight-bold">
+            {{ review.user_name }} ({{ review.rating
+            }}<v-icon>mdi-star</v-icon>)
+          </v-card-title>
+          <v-card-subtitle class="pb-2">
+            {{ review.createdAt | formatDate }}
+          </v-card-subtitle>
+          <v-card-text class="black--text body-1">
+            {{ review.message }}
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -132,6 +162,9 @@ export default {
       const formatter = new Intl.NumberFormat("en-US");
       return "৳ " + formatter.format(price);
     },
+    formatDate(val) {
+      return new Date(val).toLocaleString();
+    },
     thumb(img) {
       return img.formats?.thumbnail.url || img.url;
     },
@@ -142,6 +175,8 @@ export default {
   data: () => ({
     image: {},
     options: [],
+    reviews: [],
+    loadingReviews: false,
     product: {
       images: [],
       brand: {},
@@ -213,6 +248,16 @@ export default {
     };
   },
   computed: {
+    rating() {
+      if (!this.reviews.length) {
+        return "N/A";
+      }
+      const total = this.reviews.reduce((acc, cur) => {
+        acc += cur.rating;
+        return acc;
+      }, 0);
+      return (Math.round((total / this.reviews.length) * 10) / 10).toFixed(1);
+    },
     bredcrumbItems() {
       const subcategory = this.subcategory;
       const category = this.subcategory.category;
@@ -231,7 +276,9 @@ export default {
       ];
     }
   },
-
+  mounted() {
+    this.fetchReviews();
+  },
   methods: {
     addToCart() {
       if (!this.product.stock) {
@@ -242,6 +289,19 @@ export default {
         quantity: 1
       });
       this.$store.commit("SHOW_ALERT", "added to cart");
+    },
+    async fetchReviews() {
+      try {
+        this.loadingReviews = true;
+        const reviews = await this.$axios.$get(
+          "/reviews?product.slug=" + this.$route.params.slug
+        );
+        this.reviews = reviews;
+      } catch (error) {
+        //
+      } finally {
+        this.loadingReviews = false;
+      }
     }
   }
 };
@@ -290,9 +350,12 @@ export default {
   all: unset;
 }
 .description-box > .ck-content {
-  margin-top: 100px;
+  margin-top: 70px;
 }
 @media (max-width: 600px) {
+  .description-box > .ck-content {
+    margin-top: 20px;
+  }
   .add2cart-btn {
     width: 100%;
     max-width: 350px;
