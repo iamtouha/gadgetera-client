@@ -106,7 +106,7 @@
                   {{ item.product.name }} &times; {{ item.quantity }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  &#2547;{{ Math.ceil(item.subtotal) }}
+                  {{ Math.ceil(item.subtotal) | groupNum }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -115,28 +115,27 @@
             <tbody>
               <tr>
                 <td>Cart total</td>
-                <td>&#2547; {{ cartTotal }}</td>
+                <td>{{ cartTotal | groupNum }}</td>
               </tr>
 
               <tr v-if="order.coupon">
                 <td>Discount ({{ order.coupon.code }})</td>
-                <td>- &#2547; {{ order.coupon.discount }}</td>
+                <td>- {{ order.coupon.discount | groupNum }}</td>
               </tr>
               <tr v-if="order.coupon">
                 <td>Discounted Total</td>
-                <td>&#2547; {{ cartTotal - order.coupon.discount }}</td>
+                <td>{{ (cartTotal - order.coupon.discount) | groupNum }}</td>
               </tr>
               <tr>
                 <td>Shipping charge</td>
-                <td>&#2547; {{ order.shipping_charge }}</td>
+                <td>{{ order.shipping_charge | groupNum }}</td>
               </tr>
               <tr>
                 <td class="text-subtitle-2">
                   Subtotal
                 </td>
                 <td class="text-subtitle-2">
-                  &#2547;
-                  {{ Math.ceil(order.total) }}
+                  {{ Math.ceil(order.total) | groupNum }}
                 </td>
               </tr>
             </tbody>
@@ -210,6 +209,13 @@ export default {
   filters: {
     formatDate(val) {
       return new Date(val).toLocaleString();
+    },
+    groupNum(price) {
+      if (!price) {
+        return "";
+      }
+      const formatter = new Intl.NumberFormat("en-US");
+      return "৳ " + formatter.format(price);
     }
   },
   data: () => ({
