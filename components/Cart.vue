@@ -1,10 +1,5 @@
 <template>
-  <v-list
-    max-height="600px"
-    width="100%"
-    color="info"
-    class="rounded cart-list"
-  >
+  <v-list max-height="600px" width="100%" class="rounded cart-list">
     <v-list-item
       v-for="item in cartItems"
       :key="item.product.id"

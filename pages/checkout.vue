@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" md="5">
         <client-only>
-          <v-card class="checkout-card" color="info" outlined>
+          <v-card class="checkout-card" outlined>
             <v-card-title>Cart</v-card-title>
             <cart increment :checkout-btn="false" increment-btns />
 

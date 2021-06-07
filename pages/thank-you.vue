@@ -20,7 +20,7 @@
             elevation="0"
             large
             color="accent"
-            class="font-weight-bold info--text"
+            class="font-weight-bold "
           >
             view order
           </v-btn>

@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" md="4" lg="3">
-        <v-card outlined color="info">
+        <v-card outlined>
           <v-card-title class="font-weight-bold">
             {{ user.name }}
           </v-card-title>
@@ -53,12 +53,7 @@
               md="6"
               lg="4"
             >
-              <v-card
-                nuxt
-                :to="`/orders/${order.order_id}`"
-                color="info"
-                outlined
-              >
+              <v-card nuxt :to="`/orders/${order.order_id}`" outlined>
                 <v-card-title class="text-body-1 font-weight-bold">
                   #{{ order.order_id }}
                 </v-card-title>

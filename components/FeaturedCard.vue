@@ -1,11 +1,5 @@
 <template>
-  <v-card
-    outlined
-    nuxt
-    :to="`/products/${product.slug}`"
-    class="fill-height"
-    color="info"
-  >
+  <v-card outlined nuxt :to="`/products/${product.slug}`" class="fill-height">
     <div class="d-flex flex-no-wrap fill-height">
       <div class="d-flex flex-column">
         <v-card-title class="text-subtitle-1 text-sm-h6 font-weight-bold">

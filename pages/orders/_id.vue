@@ -28,7 +28,7 @@
           Did you like our products? Please let others know.
         </v-card-subtitle>
         <v-card-text class="px-0">
-          <v-sheet rounded outlined color="info">
+          <v-sheet rounded outlined>
             <v-stepper
               v-model="reviewStep"
               non-linear
@@ -97,7 +97,7 @@
           Cart
         </v-card-title>
         <v-card-text class="px-0">
-          <v-list class="rounded" subheader outlined color="info">
+          <v-list class="rounded" subheader outlined>
             <v-list-item v-for="item in order.cart" :key="item.id">
               <v-list-item-avatar size="50">
                 <v-img :src="item.product.images[0].formats.thumbnail.url" />
