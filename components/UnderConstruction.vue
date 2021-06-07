@@ -13,7 +13,13 @@
         <p class="headline text-center mt-4">
           Page Under Construction.
         </p>
-        <v-btn nuxt to="/" text outlined>
+        <v-btn
+          nuxt
+          to="/"
+          elevation="0"
+          color="accent"
+          class="font-weight-bold info--text"
+        >
           <v-icon>mdi-arrow-left</v-icon>
           go back
         </v-btn>

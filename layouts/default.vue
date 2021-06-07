@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar elevate-on-scroll color="secondary" class="main-app-bar" app>
+    <v-app-bar elevate-on-scroll color="primary" dark class="main-app-bar" app>
       <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer" />
       <v-toolbar-title class=" mr-auto ml-0">
         Gadget
@@ -9,20 +9,17 @@
         </span>
       </v-toolbar-title>
       <v-toolbar-items class="d-none d-md-block ml-3">
-        <v-btn to="/" exact nuxt text>
-          Home
-        </v-btn>
-        <v-btn to="/products" exact nuxt text>
-          shop
-        </v-btn>
-        <v-btn to="/categories" exact nuxt text>
-          Categories
-        </v-btn>
-        <v-btn to="/brands" exact nuxt text>
-          Brands
-        </v-btn>
-        <v-btn to="/contact" exact nuxt text>
-          Contact us
+        <v-btn
+          v-for="route in navRoutes"
+          :key="route.name"
+          :to="route.path"
+          color="info"
+          class="font-weight-bold"
+          exact
+          nuxt
+          text
+        >
+          {{ route.name }}
         </v-btn>
       </v-toolbar-items>
       <v-spacer />
@@ -31,6 +28,7 @@
           <v-btn
             v-if="isLoggedIn"
             text
+            color="info"
             class="text-none d-none d-md-inline-flex"
             to="/account"
             nuxt
@@ -41,13 +39,14 @@
           <v-btn
             v-else
             class="d-none d-md-inline-flex"
+            color="info"
             to="/signup"
             nuxt
             text
             exact
           >
             Sign Up
-            <v-icon right>
+            <v-icon right color="info">
               mdi-login
             </v-icon>
           </v-btn>
@@ -57,7 +56,9 @@
             class="d-sm-none mobile-cart-btn"
             @click="cartSheet = true"
           >
-            <v-icon>mdi-cart</v-icon>
+            <v-icon color="info">
+              mdi-cart
+            </v-icon>
             <v-chip style="padding:5px;" x-small>
               {{ cartItems.length }}
             </v-chip>
@@ -65,6 +66,7 @@
 
           <v-menu
             v-model="cartMenu"
+            color="info"
             :close-on-content-click="false"
             max-width="400px"
             min-width="400px"
@@ -73,6 +75,7 @@
             <template #activator="{ on, attrs }">
               <v-btn
                 class="d-none d-sm-block cart-btn"
+                color="info"
                 v-bind="attrs"
                 text
                 icon
@@ -92,6 +95,8 @@
     <client-only>
       <v-navigation-drawer
         v-model="drawer"
+        color="primary"
+        dark
         width="220px"
         class="d-md-none"
         :app="isMobile"
@@ -103,34 +108,46 @@
     <v-main class="secondary">
       <Nuxt />
       <v-bottom-sheet v-model="cartSheet">
-        <v-card>
+        <v-card color="info">
           <v-card-title>
             Cart
           </v-card-title>
           <client-only>
-            <cart closebtn @close="cartSheet = false" />
+            <cart closebtn color="info" @close="cartSheet = false" />
           </client-only>
         </v-card>
       </v-bottom-sheet>
     </v-main>
-    <v-snackbar v-model="snackbar">
+    <v-snackbar v-model="snackbar" class="info--text">
       {{ alertMessage }}
       <template #action="{ attrs }">
-        <v-btn color="white" text icon v-bind="attrs" @click="snackbar = false">
+        <v-btn
+          color="accent"
+          text
+          icon
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </template>
     </v-snackbar>
-    <v-footer class="py-3">
+    <v-footer class="py-3" dark color="primary">
       <v-row>
         <v-col cols="12" sm="6">
-          <v-list-item style="max-width:220px;" dense @click="openDialer">
+          <v-list-item
+            color="info"
+            style="max-width:220px;"
+            dense
+            @click="openDialer"
+          >
             <v-icon left>
               mdi-phone
             </v-icon>
             {{ contact.phone }}
           </v-list-item>
           <v-list-item
+            color="info"
             style="max-width:250px;"
             dense
             :href="'mailto:' + contact.email"
@@ -142,11 +159,9 @@
           </v-list-item>
         </v-col>
         <v-col cols="12" sm="6">
-          <v-list-item two-line>
+          <v-list-item color="info" two-line>
             <v-list-item-content>
-              <v-list-item-subtitle
-                class="text-subtitle-1 primary--text text-sm-right"
-              >
+              <v-list-item-subtitle class="text-subtitle-1 text-sm-right">
                 Social Networks
               </v-list-item-subtitle>
               <v-list-item-title class="text-sm-right">
@@ -155,7 +170,7 @@
                   :key="network.name"
                   icon
                   text
-                  color="primary"
+                  color="info"
                   large
                   target="_blank"
                   :href="network.link"
@@ -167,10 +182,10 @@
           </v-list-item>
         </v-col>
         <v-col cols="12" sm="6">
-          <v-list-item dense nuxt to="/terms-and-conditions">
+          <v-list-item color="info" dense nuxt to="/terms-and-conditions">
             Terms and conditions
           </v-list-item>
-          <v-list-item dense nuxt to="/privacy-policy">
+          <v-list-item color="info" dense nuxt to="/privacy-policy">
             Privacy policy
           </v-list-item>
         </v-col>
@@ -188,6 +203,13 @@ export default {
     cartSheet: false,
     cartMenu: false,
     drawer: false,
+    navRoutes: [
+      { name: "Home", path: "/" },
+      { name: "Store", path: "/products" },
+      { name: "Categories", path: "/categories" },
+      { name: "brands", path: "/brands" },
+      { name: "Contact us", path: "/contact" }
+    ],
     networks: [
       {
         name: "Facebook",

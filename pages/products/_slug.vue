@@ -27,22 +27,24 @@
         </v-carousel>
       </v-col>
       <v-col cols="12" sm="6">
-        <h1 class="text-md-h4 text-sm-h5 text-h6 mb-3">
+        <h1 class="text-md-h4 text-h6 mb-3 font-weight-bold">
           {{ product.name }}
         </h1>
-        <h2 v-if="!product.discount" class="mb-3 text-h6 font-weight-bold">
+        <h2
+          v-if="!product.discount"
+          class="mb-3 text-h6 accent--text font-weight-bold"
+        >
           {{ product.price | groupNum }}
         </h2>
-        <h2 v-else class="text-body-1 d-flex">
-          <span class="text-h6 font-weight-bold">
+        <h2 v-else class="text-body-1">
+          <span class="text-h6 accent--text font-weight-bold">
             {{
               Math.ceil(product.price - product.price * product.discount)
                 | groupNum
             }}
-            <span class="font-weight-light text-h6">
-              ( <s>{{ product.price | groupNum }}</s>
-              {{ Math.ceil(100 * product.discount) }}% off)
-            </span>
+          </span>
+          <span class="font-weight-bold ml-1 text-body-1">
+            ( {{ Math.ceil(100 * product.discount) }}% off)
           </span>
         </h2>
         <v-btn
@@ -103,9 +105,10 @@
           <v-spacer class="d-sm-block d-none" />
 
           <v-btn
-            class="d-sm-block d-none primary add2cart-btn mt-3"
-            text
+            class="d-sm-block d-none add2cart-btn mt-3 info--text"
+            elevation="0"
             height="44px"
+            color="accent"
             @click="addToCart"
           >
             <v-icon left>
@@ -116,7 +119,15 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-btn fab bottom right fixed class="d-sm-none" @click="addToCart">
+    <v-btn
+      fab
+      bottom
+      right
+      fixed
+      color="accent"
+      class="d-sm-none info--text"
+      @click="addToCart"
+    >
       <v-icon>mdi-cart-plus</v-icon>
     </v-btn>
     <div class="description-box">
@@ -270,7 +281,6 @@ export default {
         },
         { to: `/brands/${brand.key}`, text: brand.name },
         {
-          disabled: true,
           text: this.product.name
         }
       ];

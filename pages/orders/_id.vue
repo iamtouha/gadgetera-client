@@ -11,7 +11,7 @@
           <!-- eslint-disable-next-line -->
           <h1 class="title">Order #{{ order.order_id }}</h1>
 
-          <v-btn outlined large>
+          <v-btn outlined color="accent" class="font-weight-bold" large>
             {{ order.status }}
           </v-btn>
         </v-card-title>
@@ -28,7 +28,7 @@
           Did you like our products? Please let others know.
         </v-card-subtitle>
         <v-card-text class="px-0">
-          <v-sheet rounded outlined>
+          <v-sheet rounded outlined color="info">
             <v-stepper
               v-model="reviewStep"
               non-linear
@@ -52,6 +52,7 @@
                     <v-card-text class="py-1 px-0">
                       <v-rating
                         v-model="reviews[i].rating"
+                        color="accent"
                         :readonly="reviews[i].reviewed"
                         class="mb-2"
                       />
@@ -96,7 +97,7 @@
           Cart
         </v-card-title>
         <v-card-text class="px-0">
-          <v-list class="rounded" subheader outlined>
+          <v-list class="rounded" subheader outlined color="info">
             <v-list-item v-for="item in order.cart" :key="item.id">
               <v-list-item-avatar size="50">
                 <v-img :src="item.product.images[0].formats.thumbnail.url" />

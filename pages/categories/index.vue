@@ -29,7 +29,7 @@
         sm="6"
         md="4"
       >
-        <v-card outlined nuxt :to="`/categories/${category.key}`">
+        <v-card outlined nuxt :to="`/categories/${category.key}`" color="info">
           <v-img
             aspect-ratio="1.77"
             :src="category.cover.url"
@@ -90,5 +90,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

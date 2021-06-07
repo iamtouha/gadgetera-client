@@ -2,8 +2,8 @@
   <v-container>
     <v-row>
       <v-col cols="12" md="4" lg="3">
-        <v-card outlined>
-          <v-card-title>
+        <v-card outlined color="info">
+          <v-card-title class="font-weight-bold">
             {{ user.name }}
           </v-card-title>
           <v-card-subtitle>
@@ -18,7 +18,7 @@
           </client-only>
 
           <v-card-actions>
-            <v-btn text @click="logOut">
+            <v-btn text color="primary" @click="logOut">
               log out
               <v-icon right>
                 mdi-logout
@@ -42,6 +42,9 @@
             </v-row>
           </template>
           <v-row class="mt-3">
+            <v-col v-if="!orders.length">
+              No order found.
+            </v-col>
             <v-col
               v-for="order in orders"
               :key="order.id"
@@ -50,14 +53,24 @@
               md="6"
               lg="4"
             >
-              <v-card nuxt :to="`/orders/${order.order_id}`" outlined>
-                <v-card-title class="text-subtitle-1">
+              <v-card
+                nuxt
+                :to="`/orders/${order.order_id}`"
+                color="info"
+                outlined
+              >
+                <v-card-title class="text-body-1 font-weight-bold">
                   #{{ order.order_id }}
                 </v-card-title>
                 <v-card-subtitle>
                   {{ order.createdAt | formatDate }}
                 </v-card-subtitle>
-                <v-card-subtitle> status: {{ order.status }} </v-card-subtitle>
+                <v-card-subtitle>
+                  status:
+                  <span class="text-uppercase font-weight-bold accent--text">{{
+                    order.status
+                  }}</span>
+                </v-card-subtitle>
               </v-card>
             </v-col>
           </v-row>

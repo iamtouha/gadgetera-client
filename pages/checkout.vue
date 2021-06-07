@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" md="5">
         <client-only>
-          <v-card class="checkout-card" outlined>
+          <v-card class="checkout-card" color="info" outlined>
             <v-card-title>Cart</v-card-title>
             <cart increment :checkout-btn="false" increment-btns />
 
@@ -32,7 +32,7 @@
                 </v-btn>
               </div>
 
-              <v-simple-table class="text-body-2 doc-table">
+              <v-simple-table class="text-body-2 transparent doc-table">
                 <tbody>
                   <tr>
                     <td>Cart total</td>
@@ -61,7 +61,7 @@
                   </tr>
                 </tbody>
               </v-simple-table>
-              <v-list subheader class="mt-3">
+              <v-list color="transparent" subheader class="mt-3">
                 <v-subheader>Payment Options</v-subheader>
                 <v-list-item v-for="option in payment.options" :key="option.id">
                   <v-list-item-content class="py-0">

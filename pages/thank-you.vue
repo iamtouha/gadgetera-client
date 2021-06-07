@@ -5,17 +5,36 @@
         <v-img
           width="100%"
           max-width="650px"
+          aspect-ratio="1.5"
           class="mx-auto"
           contain
           src="/thank-you.svg"
         />
-        <p class="headline text-center mt-4">
+        <p class="title text-center mt-4">
           Thank you for staying with us! we are processing the order for you.
         </p>
-        <v-btn nuxt :to="`/orders/${$route.params.order}`" text>
-          <v-icon>mdi-arrow-left</v-icon>
-          view order
-        </v-btn>
+        <div class="d-flex justify-center my-8">
+          <v-btn
+            nuxt
+            :to="`/orders/${$route.params.order}`"
+            elevation="0"
+            large
+            color="accent"
+            class="font-weight-bold info--text"
+          >
+            view order
+          </v-btn>
+          <v-btn
+            nuxt
+            to="/products"
+            large
+            text
+            color="primary"
+            class="font-weight-bold"
+          >
+            more products
+          </v-btn>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -24,8 +43,7 @@
 <script>
 export default {
   name: "ThankYou",
+  layout: "basic",
   middleware: "hasOrdered"
 };
 </script>
-
-<style></style>

@@ -218,7 +218,13 @@
         <p class="headline text-center mt-4">
           {{ note }}
         </p>
-        <v-btn nuxt to="/" text outlined>
+        <v-btn
+          nuxt
+          to="/"
+          elevation="0"
+          color="accent"
+          class="font-weight-bold info--text"
+        >
           <v-icon>mdi-arrow-left</v-icon>
           Home Page
         </v-btn>

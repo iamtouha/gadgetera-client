@@ -2,10 +2,10 @@
   <v-expansion-panels
     :value.sync="panel"
     accordion
-    class="filter-expansion"
+    class="filter-expansion transparent"
     :multiple="!single"
   >
-    <v-expansion-panel>
+    <v-expansion-panel class="transparent">
       <v-expansion-panel-header>
         <span class="pt-1" style="height:24px;">
           Categories
@@ -56,7 +56,7 @@
       </v-expansion-panel-content>
     </v-expansion-panel>
 
-    <v-expansion-panel>
+    <v-expansion-panel class="transparent">
       <v-expansion-panel-header>
         <span class="pt-1" style="height:24px;">
           Brands
@@ -87,7 +87,7 @@
         </v-chip-group>
       </v-expansion-panel-content>
     </v-expansion-panel>
-    <v-expansion-panel>
+    <v-expansion-panel class="transparent">
       <v-expansion-panel-header>
         <span class="pt-1" style="height:24px;">
           Price Range

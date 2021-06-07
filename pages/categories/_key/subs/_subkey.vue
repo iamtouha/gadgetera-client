@@ -3,7 +3,7 @@
     <v-container style="max-width:1920px;" class="pa-0">
       <v-img :src="cover" :lazy-src="thumbnail" class="subcategory-cover">
         <v-overlay class="align-end justify-start" absolute>
-          <v-card dark width="100%" color="transparent">
+          <v-card dark width="100%" color="transparent" class="info--text">
             <v-card-title class="text-h5 text-md-h4 text-lg-h3">
               {{ subcategory.name }}
             </v-card-title>
