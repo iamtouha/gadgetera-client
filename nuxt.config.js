@@ -2,7 +2,7 @@
 const generateRoutes = require("./sitemapRoutesGenerator");
 
 export default {
-  target: "server",
+  target: "static",
 
   generate: { fallback: "404.html" },
 
