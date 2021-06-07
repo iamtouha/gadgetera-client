@@ -300,6 +300,9 @@ export default {
     };
   },
   computed: {
+    imageUrl() {
+      return this.image.formats?.small?.url || this.image.url;
+    },
     rating() {
       if (!this.reviews.length) {
         return "N/A";
