@@ -75,7 +75,7 @@
                 :alt="option.name"
               >
                 <v-overlay absolute class="option-overlay">
-                  <v-icon>
+                  <v-icon color="info">
                     mdi-check-circle
                   </v-icon>
                 </v-overlay>
