@@ -90,7 +90,15 @@
     </v-row>
 
     <!-- floating fab icon -->
-    <v-btn fab bottom fixed right class="d-md-none" @click="dialog = true">
+    <v-btn
+      fab
+      bottom
+      fixed
+      right
+      color="accent"
+      class="d-md-none"
+      @click="dialog = true"
+    >
       <v-icon>
         mdi-filter
       </v-icon>

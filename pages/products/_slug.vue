@@ -1,124 +1,135 @@
 <template>
-  <v-container>
-    <v-breadcrumbs class="pl-0" :items="bredcrumbItems" />
-
-    <v-row>
-      <v-col cols="12" sm="6">
-        <v-carousel
-          height="auto"
-          hide-delimiter-background
-          cycle
-          :show-arrows="false"
-          :interval="10000"
-        >
-          <v-carousel-item v-for="img in product.images" :key="img.id">
-            <div class="responsive rounded">
-              <div class="sizer">
-                <div class="wrapper">
-                  <img
-                    :src="img | small"
-                    :alt="img.alternativeText"
-                    :title="img.caption"
-                  />
+  <v-container class="px-0 px-sm-3" fluid>
+    <v-container>
+      <v-breadcrumbs class="pl-0" :items="bredcrumbItems" />
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-carousel
+            height="auto"
+            hide-delimiter-background
+            cycle
+            :show-arrows="false"
+            :interval="10000"
+          >
+            <v-carousel-item v-for="img in product.images" :key="img.id">
+              <div class="responsive rounded">
+                <div class="sizer">
+                  <div class="wrapper">
+                    <img
+                      :src="img | small"
+                      :alt="img.alternativeText"
+                      :title="img.caption"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </v-carousel-item>
-        </v-carousel>
-      </v-col>
-      <v-col cols="12" sm="6">
-        <h1 class="text-md-h4 text-h6 mb-3 font-weight-bold">
-          {{ product.name }}
-        </h1>
-        <h2
-          v-if="!product.discount"
-          class="mb-3 text-h6 accent--text font-weight-bold"
-        >
-          {{ product.price | groupNum }}
-        </h2>
-        <h2 v-else class="text-body-1">
-          <span class="text-h6 accent--text font-weight-bold">
-            {{
-              Math.ceil(product.price - product.price * product.discount)
-                | groupNum
-            }}
-          </span>
-          <span class="font-weight-bold ml-1 text-body-1">
-            ( {{ Math.ceil(100 * product.discount) }}% off)
-          </span>
-        </h2>
-        <v-btn
-          v-show="reviews.length"
-          text
-          class="my-2 px-0 text-lowercase font-weight-bold"
-        >
-          view reviews ({{ rating }} <v-icon>mdi-star</v-icon>)
-        </v-btn>
-        <p>
-          {{ product.overview }}
-        </p>
-        <p class="text-subtitle font-weight-bold">
-          Options
-        </p>
-        <v-row class="mb-3">
-          <v-col v-for="option in options" :key="option.id" cols="3" lg="2">
-            <v-card
-              elevation="0"
-              :to="'/products/' + option.slug"
-              nuxt
-              active-class="option-active"
-            >
-              <v-img
-                :src="option.thumb"
-                aspect-ratio="1"
-                :title="option.name"
-                :alt="option.name"
-              >
-                <v-overlay absolute class="option-overlay">
-                  <v-icon>
-                    mdi-check-circle
-                  </v-icon>
-                </v-overlay>
-              </v-img>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-simple-table dense class="transparent">
-          <tbody style="cursor:pointer">
-            <tr v-show="product.model">
-              <th>Model</th>
-              <td>{{ product.model }}</td>
-            </tr>
-            <tr>
-              <th>SKU</th>
-              <td>{{ product.sku }}</td>
-            </tr>
-            <tr>
-              <th>Status</th>
-              <td>
-                {{ product.stock ? "Available in stock" : "Out of Stock" }}
-              </td>
-            </tr>
-          </tbody>
-        </v-simple-table>
-        <v-row class="px-2 mt-6 mx-auto add2cart-row">
-          <v-spacer class="d-sm-block d-none" />
-
-          <v-btn
-            class="d-sm-block d-none add2cart-btn mt-3 "
-            elevation="0"
-            height="44px"
-            color="accent"
-            @click="addToCart"
+            </v-carousel-item>
+          </v-carousel>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <h1 class="text-md-h4 text-h6 mb-3 font-weight-bold">
+            {{ product.name }}
+          </h1>
+          <h2
+            v-if="!product.discount"
+            class="mb-3 text-h6 primary--text font-weight-bold"
           >
-            <v-icon left>
-              mdi-cart-plus
+            {{ product.price | groupNum }}
+          </h2>
+          <h2 v-else class="text-body-1">
+            <span class="text-h6 primary--text font-weight-bold">
+              {{
+                Math.ceil(product.price - product.price * product.discount)
+                  | groupNum
+              }}
+            </span>
+            <span class="font-weight-bold ml-1 text-body-1">
+              ( {{ Math.ceil(100 * product.discount) }}% off)
+            </span>
+          </h2>
+          <v-btn
+            v-show="reviews.length"
+            text
+            color="primary"
+            class="my-2 px-0 text-lowercase font-weight-bold"
+            @click="scrollToReviews"
+          >
+            view reviews (
+            <span class="accent--text">
+              {{ rating }}
+            </span>
+            <v-icon color="accent">
+              mdi-star
             </v-icon>
-            add to cart
+            )
           </v-btn>
-        </v-row>
-      </v-col>
-    </v-row>
+          <p>
+            {{ product.overview }}
+          </p>
+          <p class="text-subtitle font-weight-bold">
+            Options
+          </p>
+          <v-row class="mb-3">
+            <v-col v-for="option in options" :key="option.id" cols="3" lg="2">
+              <v-card
+                elevation="0"
+                :to="'/products/' + option.slug"
+                nuxt
+                active-class="option-active"
+              >
+                <v-img
+                  :src="option.thumb"
+                  aspect-ratio="1"
+                  :title="option.name"
+                  :alt="option.name"
+                >
+                  <v-overlay absolute class="option-overlay">
+                    <v-icon>
+                      mdi-check-circle
+                    </v-icon>
+                  </v-overlay>
+                </v-img>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-simple-table dense class="transparent">
+            <tbody style="cursor:pointer">
+              <tr v-show="product.model">
+                <th>Model</th>
+                <td>{{ product.model }}</td>
+              </tr>
+              <tr>
+                <th>SKU</th>
+                <td>{{ product.sku }}</td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td>
+                  {{ product.stock ? "Available in stock" : "Out of Stock" }}
+                </td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+          <v-row class="px-2 mt-6 mx-auto add2cart-row">
+            <v-spacer class="d-sm-block d-none" />
+
+            <v-btn
+              class="d-sm-block d-none add2cart-btn mt-3 "
+              elevation="0"
+              height="44px"
+              color="accent"
+              @click="addToCart"
+            >
+              <v-icon left>
+                mdi-cart-plus
+              </v-icon>
+              add to cart
+            </v-btn>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+
     <v-btn
       fab
       bottom
@@ -130,32 +141,61 @@
     >
       <v-icon>mdi-cart-plus</v-icon>
     </v-btn>
-    <div class="description-box">
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <section class="ck-content" v-html="product.description" />
-    </div>
-    <p class="mt-6 mb-0 title font-weight-bold">
-      Product Reviews
-    </p>
-    <v-row>
-      <v-col v-show="!reviews.length">
-        no reviews found
-      </v-col>
-      <v-col v-for="review in reviews" :key="review.id" cols="12">
-        <v-card color="transparent" max-width="600px">
-          <v-card-title class="text-subtitle-1  font-weight-bold">
-            {{ review.user_name }} ({{ review.rating
-            }}<v-icon>mdi-star</v-icon>)
-          </v-card-title>
-          <v-card-subtitle class="pb-2">
-            {{ review.createdAt | formatDate }}
-          </v-card-subtitle>
-          <v-card-text class="black--text body-1">
-            {{ review.message }}
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+
+    <v-container class="px-0 px-sm-3">
+      <v-card class="my-10 description-wrapper">
+        <v-card-title class="title font-weight-bold">
+          Product Description
+        </v-card-title>
+        <v-card-text>
+          <div class="description-box">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <section class="ck-content" v-html="product.description" />
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-container>
+
+    <v-container>
+      <v-card id="reviews">
+        <v-card-title class="title font-weight-bold">
+          Product Reviews
+        </v-card-title>
+        <v-card-text>
+          <v-list
+            max-width="540px"
+            max-height="800px"
+            style="overflow-y:auto;"
+            color="transparent"
+          >
+            <v-list-item v-show="!reviews.length">
+              no reviews found
+            </v-list-item>
+            <v-list-item v-for="review in reviews" :key="review.id" three-line>
+              <v-list-item-content>
+                <v-list-item-title class="title font-weight-bold">
+                  {{ review.user_name }}
+                </v-list-item-title>
+                <v-list-item-subtitle class="body-2 primary--text">
+                  {{ review.createdAt | formatDate }}
+                </v-list-item-subtitle>
+                <v-list-item-subtitle class="subtitle-1 mt-2 font-weight-bold">
+                  {{ review.message }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <span class="font-weight-bold text-subtitle-1 accent--text">
+                  {{ review.rating }}
+                  <v-icon color="accent">
+                    mdi-star
+                  </v-icon>
+                </span>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-container>
   </v-container>
 </template>
 
@@ -312,6 +352,11 @@ export default {
       } finally {
         this.loadingReviews = false;
       }
+    },
+    scrollToReviews() {
+      const review = document.getElementById("reviews");
+      const top = review.offsetTop;
+      window.scrollTo({ top, behavior: "smooth" });
     }
   }
 };
@@ -359,12 +404,9 @@ export default {
 .description-box {
   all: unset;
 }
-.description-box > .ck-content {
-  margin-top: 70px;
-}
 @media (max-width: 600px) {
-  .description-box > .ck-content {
-    margin-top: 20px;
+  .description-wrapper {
+    border-radius: 0 !important;
   }
   .add2cart-btn {
     width: 100%;

@@ -2,12 +2,14 @@
   <v-app>
     <v-app-bar elevate-on-scroll color="primary" dark class="main-app-bar" app>
       <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer" />
-      <v-toolbar-title class=" mr-auto ml-0">
-        Gadget
-        <span class="font-weight-bold">
-          Era
-        </span>
-      </v-toolbar-title>
+
+      <img
+        id="logo"
+        class="fill-heght my-1"
+        src="/logo.svg"
+        alt="Gadget Era logo"
+      />
+
       <v-toolbar-items class="d-none d-md-block ml-3">
         <v-btn
           v-for="route in navRoutes"
@@ -262,5 +264,10 @@ export default {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+#logo {
+  object-fit: contain;
+  object-position: center;
+  width: 200px;
 }
 </style>
