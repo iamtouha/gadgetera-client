@@ -284,16 +284,17 @@ export default {
       title: name,
       meta: [
         { hid: "description", name: "description", content: overview },
-        { hid: "keywords", property: "keywords", content: keywords },
+        { hid: "keywords", name: "keywords", content: keywords },
         {
           hid: "og:url",
-          property: "og:url",
+          name: "og:url",
           content: `${process.env.BASE_URL ||
             "https://gadgeterabd.com"}/products/${slug}`
         },
-        { hid: "og:title", property: "og:title", content: name },
-        { hid: "og:desc", property: "og:description", content: overview },
-        { hid: "og:image", property: "og:image", content: this.imageUrl },
+        { hid: "og:title", name: "og:title", content: name },
+        { hid: "og:desc", name: "og:description", content: overview },
+        { hid: "og:image", name: "og:image", content: this.imageUrl },
+        { hid: "image", name: "image", content: this.imageUrl },
         { hid: "twitter:card", name: "twitter:card", content: "summary" }
       ]
     };
