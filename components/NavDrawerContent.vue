@@ -1,6 +1,12 @@
 <template>
   <div style="display:contents;">
-    <v-list-item v-if="isLoggedIn" three-line nuxt to="/account">
+    <v-list-item
+      v-if="isLoggedIn"
+      class="info--text"
+      three-line
+      nuxt
+      to="/account"
+    >
       <v-list-item-content>
         <v-list-item-title>
           {{ user.name }}
@@ -11,22 +17,22 @@
       </v-list-item-content>
 
       <v-list-item-action>
-        <v-btn text icon>
+        <v-btn text icon color="info">
           <v-icon>mdi-arrow-right</v-icon>
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-    <v-list-item v-else exact nuxt to="/signup">
+    <v-list-item v-else exact nuxt class="info--text" to="/signup">
       <v-list-item-title>
         Sign Up
       </v-list-item-title>
       <v-list-item-action>
-        <v-btn text icon>
+        <v-btn text icon color="info">
           <v-icon>mdi-login</v-icon>
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-    <v-list shaped>
+    <v-list class="info--text" shaped>
       <v-list-item nuxt exact to="/">
         <v-list-item-avatar>
           <v-icon>mdi-home-outline</v-icon>

@@ -1,20 +1,28 @@
 <template>
-  <v-card outlined nuxt :to="`/products/${product.slug}`">
-    <div class="d-flex flex-no-wrap justify-space-between">
-      <div>
-        <v-card-title class="text-subtitle-1 text-sm-h6 text-md-h5">
+  <v-card
+    outlined
+    nuxt
+    :to="`/products/${product.slug}`"
+    class="fill-height"
+    color="info"
+  >
+    <div class="d-flex flex-no-wrap fill-height">
+      <div class="d-flex flex-column">
+        <v-card-title class="text-subtitle-1 text-sm-h6 font-weight-bold">
           {{ product.name }}
         </v-card-title>
 
-        <v-card-subtitle class="body-1">
+        <v-card-subtitle
+          class="primary--text font-weight-bold text-body-1 pt-2"
+        >
           &#2547; {{ product.price }}
           <span v-if="product.discount" class="ml-2">
             ({{ Math.ceil(100 * product.discount) }}% off)
           </span>
         </v-card-subtitle>
 
-        <v-card-actions>
-          <v-btn class="ml-2 mt-3" text large>
+        <v-card-actions class="mt-auto mb-0">
+          <v-btn class="ml-2 mt-3" color="accent" text large>
             shop now
             <v-icon right>
               mdi-arrow-right

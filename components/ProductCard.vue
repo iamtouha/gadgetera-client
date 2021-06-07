@@ -2,11 +2,17 @@
   <v-card
     outlined
     nuxt
+    color="info"
     :to="`/products/${product.slug}`"
     class="fill-height product-card"
   >
     <div class="responsive">
-      <v-chip v-show="product.discount" class="offer-chip rounded">
+      <v-chip
+        v-show="product.discount"
+        color="primary"
+        light
+        class="offer-chip font-weight-bold"
+      >
         {{ Math.ceil(100 * product.discount) }}% off
       </v-chip>
       <div class="sizer">
@@ -28,7 +34,7 @@
     </v-card-actions>
     <v-card-title
       style="line-height:1.5rem"
-      class="text-subtitle-1 text-md-h6 font-weight-regular pt-1"
+      class="text-subtitle-1 text-md-h6 font-weight-bold pt-1"
     >
       {{ product.name }}
     </v-card-title>

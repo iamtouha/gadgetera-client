@@ -2,7 +2,7 @@
   <v-container class="fill-height">
     <v-row class="fill-height" align="center" justify="center">
       <v-col cols="12" sm="8" md="6" lg="5">
-        <v-card outlined class="my-2">
+        <v-card outlined class="mt-2 mb-6">
           <v-card-title>
             Sign Up
           </v-card-title>
@@ -46,7 +46,12 @@
             <v-btn nuxt to="/login" text>
               log in
             </v-btn>
-            <v-btn class="primary" :loading="loading" text @click="signup">
+            <v-btn
+              elevation="0"
+              :loading="loading"
+              color="accent"
+              @click="signup"
+            >
               Sign up
             </v-btn>
           </v-card-actions>

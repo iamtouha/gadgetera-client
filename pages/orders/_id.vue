@@ -1,122 +1,5 @@
 <template>
-  <v-container>
-    <v-card color="transparent">
-      <v-card-title class="justify-space-between">
-        <!-- eslint-disable-next-line -->
-        <h1 class="title">Order #{{ order.order_id }}</h1>
-
-        <v-btn outlined large>
-          {{ order.status }}
-        </v-btn>
-      </v-card-title>
-      <v-card-subtitle>
-        {{ order.createdAt | formatDate }}
-      </v-card-subtitle>
-      <v-card-text>
-        <v-list class="rounded" subheader outlined>
-          <v-list-item v-for="item in order.cart" :key="item.id">
-            <v-list-item-avatar size="50">
-              <v-img :src="item.product.images[0].formats.thumbnail.url" />
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ item.product.name }} &times; {{ item.quantity }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                &#2547;{{ Math.ceil(item.subtotal) }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-        <v-simple-table class="transparent order-table text-subtitle-1">
-          <tbody>
-            <tr>
-              <td>Cart total</td>
-              <td>&#2547; {{ cartTotal }}</td>
-            </tr>
-
-            <tr v-if="order.coupon">
-              <td>Discount ({{ order.coupon.code }})</td>
-              <td>- &#2547; {{ order.coupon.discount }}</td>
-            </tr>
-            <tr v-if="order.coupon">
-              <td>Discounted Total</td>
-              <td>&#2547; {{ cartTotal - order.coupon.discount }}</td>
-            </tr>
-            <tr>
-              <td>Shipping charge</td>
-              <td>&#2547; {{ order.shipping_charge }}</td>
-            </tr>
-            <tr>
-              <td class="text-subtitle-2">
-                Subtotal
-              </td>
-              <td class="text-subtitle-2">
-                &#2547;
-                {{ Math.ceil(order.total) }}
-              </td>
-            </tr>
-          </tbody>
-        </v-simple-table>
-      </v-card-text>
-    </v-card>
-    <v-card color="transparent">
-      <v-card-title>
-        Payment
-      </v-card-title>
-      <v-card-text>
-        <v-simple-table class="transparent payment-table text-subtitle-1">
-          <tbody>
-            <tr v-if="order.cash_on_delivery">
-              <td colspan="2">
-                Cash On Delivery
-              </td>
-            </tr>
-            <template v-else>
-              <tr>
-                <td>Payment Method</td>
-                <td>{{ order.payment_method }}</td>
-              </tr>
-              <tr>
-                <td>Transaction ID</td>
-                <td>{{ order.trx_id }}</td>
-              </tr>
-            </template>
-          </tbody>
-        </v-simple-table>
-      </v-card-text>
-    </v-card>
-    <v-card color="transparent">
-      <v-card-title>
-        Shipping Address
-      </v-card-title>
-      <v-card-text>
-        <v-simple-table class="transparent payment-table text-subtitle-1">
-          <tbody>
-            <tr>
-              <td>Receiver Name</td>
-              <td>{{ order.address.receiver }}</td>
-            </tr>
-            <tr>
-              <td>Phone</td>
-              <td>{{ order.address.phone }}</td>
-            </tr>
-            <tr>
-              <td>Email</td>
-              <td>{{ order.address.email }}</td>
-            </tr>
-            <tr>
-              <td>Address</td>
-              <td>
-                {{ order.address.street_address }},
-                {{ order.address.sub_district }}, {{ order.address.district }}
-              </td>
-            </tr>
-          </tbody>
-        </v-simple-table>
-      </v-card-text>
-    </v-card>
-  </v-container>
+  <v-container>placeholder </v-container>
 </template>
 
 <script>
@@ -125,20 +8,44 @@ export default {
   filters: {
     formatDate(val) {
       return new Date(val).toLocaleString();
+    },
+    groupNum(price) {
+      if (!price) {
+        return "";
+      }
+      const formatter = new Intl.NumberFormat("en-US");
+      return "৳ " + formatter.format(price);
     }
   },
   data: () => ({
-    order: { cart: [], address: {} }
+    order: { cart: [], address: {} },
+    reviews: [],
+    reviewStep: 1,
+    reviewLoading: false
   }),
   async fetch() {
     try {
-      const [order] = await this.$axios.$get(
-        "/orders?order_id=" + this.$route.params.id
-      );
-      if (!order) {
+      const [orders, reviews] = await Promise.all([
+        this.$axios.$get("/orders?order_id=" + this.$route.params.id),
+        this.$axios.$get("/reviews?order.order_id=" + this.$route.params.id)
+      ]);
+      if (!orders[0]) {
         return this.$nuxt.error({ statusCode: 404, message: "not found" });
       }
-      this.order = order;
+      this.order = orders[0];
+      this.reviews = this.order.cart.map(cartItem => {
+        const review = reviews.find(
+          item => item.product.id === cartItem.product.id
+        );
+        return {
+          order: this.order.id,
+          product: cartItem.product.id,
+          rating: review?.rating || null,
+          message: review?.message || "",
+          reviewed: !!review,
+          user: this.order.address.receiver
+        };
+      });
     } catch (error) {
       this.$nuxt.error(error);
     }
@@ -155,6 +62,34 @@ export default {
         0
       );
       return Math.ceil(total);
+    }
+  },
+  mounted() {},
+  methods: {
+    async submitReview(index) {
+      const review = this.reviews[index];
+      try {
+        this.reviewLoading = true;
+        const { rating, message, order, product } = review;
+        if (!rating) {
+          this.$store.commit("SHOW_ALERT", "Please rate the product");
+          return;
+        }
+        await this.$axios.$post("/reviews", {
+          rating: +rating,
+          message,
+          order,
+          product
+        });
+        this.reviewStep++;
+        review.reviewed = true;
+        this.$store.commit("SHOW_ALERT", "Thanks for your feedback");
+      } catch (error) {
+        // eslint-disable-next-line
+        console.log(error.message);
+      } finally {
+        this.reviewLoading = false;
+      }
     }
   }
 };

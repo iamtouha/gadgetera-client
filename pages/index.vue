@@ -38,7 +38,7 @@
             <!-- banner overlay -->
             <v-overlay :opacity="0.6" absolute>
               <v-row justify="center" align="center" class="fill-height">
-                <v-col cols="12" class="text-center">
+                <v-col cols="12" class="text-center info--text">
                   <h1
                     class="text-h6 text-sm-h5 text-md-h4 font-weight-bold text-center mb-3"
                   >
@@ -52,8 +52,8 @@
                   <v-btn
                     large
                     class="hero-button"
-                    color="secondary"
-                    outlined
+                    color="accent"
+                    elevation="0"
                     :href="banner.href"
                     target="_blank"
                   >
@@ -92,7 +92,7 @@
     </h2>
     <v-row class="mb-6">
       <v-col v-for="brand in brands" :key="brand.id" cols="4" sm="3" md="2">
-        <v-card nuxt :to="`/brands/${brand.key}`" outlined>
+        <v-card nuxt :to="`/brands/${brand.key}`" outlined color="secondary">
           <v-img :aspect-ratio="1" contain :src="brand.logo.url" />
         </v-card>
       </v-col>

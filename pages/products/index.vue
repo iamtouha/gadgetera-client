@@ -17,7 +17,7 @@
     <v-row>
       <!-- filter panel (desktop) -->
       <v-col cols="4" lg="3" class="d-none d-md-block">
-        <v-card outlined>
+        <v-card outlined color="info">
           <v-card-title>
             Filter
           </v-card-title>

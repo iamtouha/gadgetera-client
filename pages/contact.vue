@@ -49,7 +49,7 @@
             label="Message body"
             outlined
           />
-          <v-btn :loading="loading" text class="primary" type="submit" large>
+          <v-btn :loading="loading" text class="accent" type="submit" large>
             Submit
           </v-btn>
         </v-form>
@@ -121,5 +121,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

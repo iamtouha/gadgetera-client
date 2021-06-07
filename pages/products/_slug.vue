@@ -27,25 +27,34 @@
         </v-carousel>
       </v-col>
       <v-col cols="12" sm="6">
-        <h1 class="text-md-h4 text-sm-h5 text-h6 mb-3">
+        <h1 class="text-md-h4 text-h6 mb-3 font-weight-bold">
           {{ product.name }}
         </h1>
-        <h2 v-if="!product.discount" class="mb-3 text-h6 font-weight-bold">
+        <h2
+          v-if="!product.discount"
+          class="mb-3 text-h6 accent--text font-weight-bold"
+        >
           {{ product.price | groupNum }}
         </h2>
-        <h2 v-else class="text-body-1 d-flex">
-          <span class="text-h6 font-weight-bold">
+        <h2 v-else class="text-body-1">
+          <span class="text-h6 accent--text font-weight-bold">
             {{
               Math.ceil(product.price - product.price * product.discount)
                 | groupNum
             }}
-            <span class="font-weight-light text-h6">
-              ( <s>{{ product.price | groupNum }}</s>
-              {{ Math.ceil(100 * product.discount) }}% off)
-            </span>
+          </span>
+          <span class="font-weight-bold ml-1 text-body-1">
+            ( {{ Math.ceil(100 * product.discount) }}% off)
           </span>
         </h2>
-        <p class="mt-4">
+        <v-btn
+          v-show="reviews.length"
+          text
+          class="my-2 px-0 text-lowercase font-weight-bold"
+        >
+          view reviews ({{ rating }} <v-icon>mdi-star</v-icon>)
+        </v-btn>
+        <p>
           {{ product.overview }}
         </p>
         <p class="text-subtitle font-weight-bold">
@@ -66,7 +75,7 @@
                 :alt="option.name"
               >
                 <v-overlay absolute class="option-overlay">
-                  <v-icon>
+                  <v-icon color="info">
                     mdi-check-circle
                   </v-icon>
                 </v-overlay>
@@ -94,10 +103,12 @@
         </v-simple-table>
         <v-row class="px-2 mt-6 mx-auto add2cart-row">
           <v-spacer class="d-sm-block d-none" />
+
           <v-btn
-            class="d-sm-block d-none primary add2cart-btn mt-3"
-            text
-            large
+            class="d-sm-block d-none add2cart-btn mt-3 info--text"
+            elevation="0"
+            height="44px"
+            color="accent"
             @click="addToCart"
           >
             <v-icon left>
@@ -108,13 +119,43 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-btn fab bottom right fixed class="d-sm-none" @click="addToCart">
+    <v-btn
+      fab
+      bottom
+      right
+      fixed
+      color="accent"
+      class="d-sm-none info--text"
+      @click="addToCart"
+    >
       <v-icon>mdi-cart-plus</v-icon>
     </v-btn>
     <div class="description-box">
       <!-- eslint-disable-next-line vue/no-v-html -->
       <section class="ck-content" v-html="product.description" />
     </div>
+    <p class="mt-6 mb-0 title font-weight-bold">
+      Product Reviews
+    </p>
+    <v-row>
+      <v-col v-show="!reviews.length">
+        no reviews found
+      </v-col>
+      <v-col v-for="review in reviews" :key="review.id" cols="12">
+        <v-card color="transparent" max-width="600px">
+          <v-card-title class="text-subtitle-1  font-weight-bold">
+            {{ review.user_name }} ({{ review.rating
+            }}<v-icon>mdi-star</v-icon>)
+          </v-card-title>
+          <v-card-subtitle class="pb-2">
+            {{ review.createdAt | formatDate }}
+          </v-card-subtitle>
+          <v-card-text class="black--text body-1">
+            {{ review.message }}
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -132,6 +173,9 @@ export default {
       const formatter = new Intl.NumberFormat("en-US");
       return "৳ " + formatter.format(price);
     },
+    formatDate(val) {
+      return new Date(val).toLocaleString();
+    },
     thumb(img) {
       return img.formats?.thumbnail.url || img.url;
     },
@@ -142,6 +186,8 @@ export default {
   data: () => ({
     image: {},
     options: [],
+    reviews: [],
+    loadingReviews: false,
     product: {
       images: [],
       brand: {},
@@ -213,6 +259,16 @@ export default {
     };
   },
   computed: {
+    rating() {
+      if (!this.reviews.length) {
+        return "N/A";
+      }
+      const total = this.reviews.reduce((acc, cur) => {
+        acc += cur.rating;
+        return acc;
+      }, 0);
+      return (Math.round((total / this.reviews.length) * 10) / 10).toFixed(1);
+    },
     bredcrumbItems() {
       const subcategory = this.subcategory;
       const category = this.subcategory.category;
@@ -225,13 +281,14 @@ export default {
         },
         { to: `/brands/${brand.key}`, text: brand.name },
         {
-          disabled: true,
           text: this.product.name
         }
       ];
     }
   },
-
+  mounted() {
+    this.fetchReviews();
+  },
   methods: {
     addToCart() {
       if (!this.product.stock) {
@@ -242,6 +299,19 @@ export default {
         quantity: 1
       });
       this.$store.commit("SHOW_ALERT", "added to cart");
+    },
+    async fetchReviews() {
+      try {
+        this.loadingReviews = true;
+        const reviews = await this.$axios.$get(
+          "/reviews?product.slug=" + this.$route.params.slug
+        );
+        this.reviews = reviews;
+      } catch (error) {
+        //
+      } finally {
+        this.loadingReviews = false;
+      }
     }
   }
 };
@@ -290,9 +360,12 @@ export default {
   all: unset;
 }
 .description-box > .ck-content {
-  margin-top: 100px;
+  margin-top: 70px;
 }
 @media (max-width: 600px) {
+  .description-box > .ck-content {
+    margin-top: 20px;
+  }
   .add2cart-btn {
     width: 100%;
     max-width: 350px;
