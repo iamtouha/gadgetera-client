@@ -18,7 +18,7 @@
           to="/"
           elevation="0"
           color="accent"
-          class="font-weight-bold info--text"
+          class="font-weight-bold "
         >
           <v-icon>mdi-arrow-left</v-icon>
           go back

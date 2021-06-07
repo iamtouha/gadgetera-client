@@ -75,7 +75,7 @@
                 :alt="option.name"
               >
                 <v-overlay absolute class="option-overlay">
-                  <v-icon color="info">
+                  <v-icon>
                     mdi-check-circle
                   </v-icon>
                 </v-overlay>
@@ -105,7 +105,7 @@
           <v-spacer class="d-sm-block d-none" />
 
           <v-btn
-            class="d-sm-block d-none add2cart-btn mt-3 info--text"
+            class="d-sm-block d-none add2cart-btn mt-3 "
             elevation="0"
             height="44px"
             color="accent"
@@ -125,7 +125,7 @@
       right
       fixed
       color="accent"
-      class="d-sm-none info--text"
+      class="d-sm-none "
       @click="addToCart"
     >
       <v-icon>mdi-cart-plus</v-icon>

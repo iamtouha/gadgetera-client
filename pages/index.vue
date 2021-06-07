@@ -38,7 +38,7 @@
             <!-- banner overlay -->
             <v-overlay :opacity="0.6" absolute>
               <v-row justify="center" align="center" class="fill-height">
-                <v-col cols="12" class="text-center info--text">
+                <v-col cols="12" class="text-center ">
                   <h1
                     class="text-h6 text-sm-h5 text-md-h4 font-weight-bold text-center mb-3"
                   >

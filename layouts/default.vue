@@ -13,7 +13,6 @@
           v-for="route in navRoutes"
           :key="route.name"
           :to="route.path"
-          color="info"
           class="font-weight-bold"
           exact
           nuxt
@@ -28,7 +27,6 @@
           <v-btn
             v-if="isLoggedIn"
             text
-            color="info"
             class="text-none d-none d-md-inline-flex"
             to="/account"
             nuxt
@@ -39,14 +37,13 @@
           <v-btn
             v-else
             class="d-none d-md-inline-flex"
-            color="info"
             to="/signup"
             nuxt
             text
             exact
           >
             Sign Up
-            <v-icon right color="info">
+            <v-icon right>
               mdi-login
             </v-icon>
           </v-btn>
@@ -56,7 +53,7 @@
             class="d-sm-none mobile-cart-btn"
             @click="cartSheet = true"
           >
-            <v-icon color="info">
+            <v-icon>
               mdi-cart
             </v-icon>
             <v-chip style="padding:5px;" x-small>
@@ -66,7 +63,6 @@
 
           <v-menu
             v-model="cartMenu"
-            color="info"
             :close-on-content-click="false"
             max-width="400px"
             min-width="400px"
@@ -75,7 +71,6 @@
             <template #activator="{ on, attrs }">
               <v-btn
                 class="d-none d-sm-block cart-btn"
-                color="info"
                 v-bind="attrs"
                 text
                 icon
@@ -108,17 +103,17 @@
     <v-main class="secondary">
       <Nuxt />
       <v-bottom-sheet v-model="cartSheet">
-        <v-card color="info">
+        <v-card>
           <v-card-title>
             Cart
           </v-card-title>
           <client-only>
-            <cart closebtn color="info" @close="cartSheet = false" />
+            <cart closebtn @close="cartSheet = false" />
           </client-only>
         </v-card>
       </v-bottom-sheet>
     </v-main>
-    <v-snackbar v-model="snackbar" class="info--text">
+    <v-snackbar v-model="snackbar">
       {{ alertMessage }}
       <template #action="{ attrs }">
         <v-btn
@@ -135,19 +130,13 @@
     <v-footer class="py-3" dark color="primary">
       <v-row>
         <v-col cols="12" sm="6">
-          <v-list-item
-            color="info"
-            style="max-width:220px;"
-            dense
-            @click="openDialer"
-          >
+          <v-list-item style="max-width:220px;" dense @click="openDialer">
             <v-icon left>
               mdi-phone
             </v-icon>
             {{ contact.phone }}
           </v-list-item>
           <v-list-item
-            color="info"
             style="max-width:250px;"
             dense
             :href="'mailto:' + contact.email"
@@ -159,7 +148,7 @@
           </v-list-item>
         </v-col>
         <v-col cols="12" sm="6">
-          <v-list-item color="info" two-line>
+          <v-list-item two-line>
             <v-list-item-content>
               <v-list-item-subtitle class="text-subtitle-1 text-sm-right">
                 Social Networks
@@ -170,7 +159,6 @@
                   :key="network.name"
                   icon
                   text
-                  color="info"
                   large
                   target="_blank"
                   :href="network.link"
@@ -182,10 +170,10 @@
           </v-list-item>
         </v-col>
         <v-col cols="12" sm="6">
-          <v-list-item color="info" dense nuxt to="/terms-and-conditions">
+          <v-list-item dense nuxt to="/terms-and-conditions">
             Terms and conditions
           </v-list-item>
-          <v-list-item color="info" dense nuxt to="/privacy-policy">
+          <v-list-item dense nuxt to="/privacy-policy">
             Privacy policy
           </v-list-item>
         </v-col>

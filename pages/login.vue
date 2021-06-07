@@ -2,7 +2,7 @@
   <v-container class="fill-height">
     <v-row class="fill-height" align="center" justify="center">
       <v-col cols="12" sm="8" md="6" lg="5">
-        <v-card outlined color="info">
+        <v-card outlined>
           <v-card-title>
             Log In
           </v-card-title>

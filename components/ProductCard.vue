@@ -2,7 +2,6 @@
   <v-card
     outlined
     nuxt
-    color="info"
     :to="`/products/${product.slug}`"
     class="fill-height product-card"
   >
