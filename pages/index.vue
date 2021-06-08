@@ -21,7 +21,6 @@
           :alt="banner.title"
           :src="banner.content.url"
           :lazy-src="banner.content.formats.thumbnail.url"
-          :aspect-ratio="isMobile ? 1.77 : 3"
         >
           <!-- banner overlay -->
           <v-overlay :opacity="0.6" absolute>
@@ -164,7 +163,24 @@ export default {
   methods: {}
 };
 </script>
-<style>
-@media (max-width: 600px) {
+<style lang="scss">
+@import "~vuetify/src/styles/styles.sass";
+
+.main-banner-img {
+  height: 380px;
+}
+.banner-skeleton .v-skeleton-loader__image {
+  height: 380px;
+}
+@media #{map-get(
+    $display-breakpoints,
+    "sm-and-down"
+  )} {
+  .main-banner-img {
+    height: 280px;
+  }
+  .banner-skeleton .v-skeleton-loader__image {
+    height: 280px;
+  }
 }
 </style>
