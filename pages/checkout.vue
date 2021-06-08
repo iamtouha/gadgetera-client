@@ -133,8 +133,9 @@
         <v-text-field v-model="order.trx_id" outlined label="Transaction Id" />
         <v-btn
           :loading="placing_order"
-          class="primary mt-2 orderbtn"
-          text
+          class="mt-2 mb-6 orderbtn"
+          elevation="0"
+          color="accent"
           large
           @click="placeOrder"
         >

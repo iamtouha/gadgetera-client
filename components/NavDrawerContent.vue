@@ -11,7 +11,7 @@
       </v-list-item-content>
 
       <v-list-item-action>
-        <v-btn text icon>
+        <v-btn text color="accent" icon>
           <v-icon>mdi-arrow-right</v-icon>
         </v-btn>
       </v-list-item-action>
@@ -21,41 +21,23 @@
         Sign Up
       </v-list-item-title>
       <v-list-item-action>
-        <v-btn text icon>
+        <v-btn text color="accent" icon>
           <v-icon>mdi-login</v-icon>
         </v-btn>
       </v-list-item-action>
     </v-list-item>
     <v-list shaped>
-      <v-list-item nuxt exact to="/">
+      <v-list-item
+        v-for="route in routes"
+        :key="route.name"
+        nuxt
+        exact
+        :to="route.path"
+      >
         <v-list-item-avatar>
-          <v-icon>mdi-home-outline</v-icon>
+          <v-icon>{{ route.icon }}</v-icon>
         </v-list-item-avatar>
-        <v-list-item-title>Home</v-list-item-title>
-      </v-list-item>
-      <v-list-item nuxt exact to="/products">
-        <v-list-item-avatar>
-          <v-icon>mdi-gift-outline</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-title>Shop</v-list-item-title>
-      </v-list-item>
-      <v-list-item nuxt exact to="/categories">
-        <v-list-item-avatar>
-          <v-icon>mdi-basket-outline</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-title>Categories</v-list-item-title>
-      </v-list-item>
-      <v-list-item nuxt exact to="/brands">
-        <v-list-item-avatar>
-          <v-icon>mdi-shopping-outline</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-title>Brands</v-list-item-title>
-      </v-list-item>
-      <v-list-item nuxt exact to="/contact">
-        <v-list-item-avatar>
-          <v-icon>mdi-help-circle-outline</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-title>Contact Us</v-list-item-title>
+        <v-list-item-title>{{ route.name }}</v-list-item-title>
       </v-list-item>
     </v-list>
   </div>
@@ -65,10 +47,39 @@
 import { mapGetters } from "vuex";
 export default {
   name: "NavDrawer",
+  data() {
+    return {
+      routes: [
+        {
+          name: "Home",
+          path: "/",
+          icon: "mdi-home-outline"
+        },
+        {
+          name: "Store",
+          path: "/products",
+          icon: "mdi-store-outline"
+        },
+        {
+          name: "Categories",
+          path: "/categories",
+          icon: "mdi-basket-outline"
+        },
+        {
+          name: "Brands",
+          path: "/brands",
+          icon: "mdi-shopping-outline"
+        },
+        {
+          name: "Contact us",
+          path: "/contact",
+          icon: "mdi-help-circle-outline"
+        }
+      ]
+    };
+  },
   computed: {
     ...mapGetters(["user", "isLoggedIn"])
   }
 };
 </script>
-
-<style></style>

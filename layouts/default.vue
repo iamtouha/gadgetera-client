@@ -92,8 +92,6 @@
     <client-only>
       <v-navigation-drawer
         v-model="drawer"
-        color="primary"
-        dark
         width="220px"
         class="d-md-none"
         :app="isMobile"
