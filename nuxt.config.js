@@ -84,9 +84,6 @@ export default {
   },
 
   build: {
-    extractCSS: {
-      ignoreOrder: true
-    },
     babel: {
       plugins: [["@babel/plugin-proposal-private-methods", { loose: true }]]
     }

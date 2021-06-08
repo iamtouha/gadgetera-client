@@ -21,7 +21,10 @@
     <div style="height:5px">
       <v-progress-linear v-show="loading" indeterminate />
     </div>
-    <v-row class="mt-5">
+    <v-row class="my-6">
+      <v-col v-show="!filtered.length && loading" cols="12" sm="6" md="4">
+        <v-skeleton-loader type="card" />
+      </v-col>
       <v-col
         v-for="category in filtered"
         :key="category.id"
@@ -43,7 +46,7 @@
           </v-card-subtitle>
         </v-card>
       </v-col>
-      <v-col v-if="!filtered.length" class="text-center">
+      <v-col v-show="!(filtered.length || loading)" class="text-center">
         No categories found
       </v-col>
     </v-row>

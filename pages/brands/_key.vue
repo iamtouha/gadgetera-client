@@ -2,14 +2,33 @@
   <v-container>
     <v-card color="transparent">
       <div class="d-flex flex-no-wrap">
-        <v-avatar class="ma-3 rounded" size="100" tile>
-          <v-img contain :aspect-ratio="1" :src="logo" />
-        </v-avatar>
+        <div v-show="!logo" class="responsive rounded ma-1" style="width:95px;">
+          <div class="sizer">
+            <div class="wrapper">
+              <v-skeleton-loader type="image" />
+            </div>
+          </div>
+        </div>
+        <v-img
+          v-show="logo"
+          contain
+          max-width="95px"
+          class="rounded ma-1"
+          :aspect-ratio="1"
+          :src="logo"
+        />
         <div class="d-flex flex-column justify-end">
           <v-card-title class="text-h4">
+            <v-skeleton-loader
+              v-show="!brand.id"
+              min-width="250px"
+              class="mb-2"
+              type="heading"
+            />
             {{ brand.name }}
           </v-card-title>
           <v-card-subtitle>
+            <v-skeleton-loader v-show="!brand.id" type="text" />
             {{ brand.description }}
           </v-card-subtitle>
         </div>
@@ -21,6 +40,16 @@
     </div>
     <v-row class="mt-3">
       <v-col
+        v-show="!products.length && loading"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+      >
+        <v-skeleton-loader type="card" />
+      </v-col>
+
+      <v-col
         v-for="product in products"
         :key="product.id"
         cols="12"
@@ -29,8 +58,8 @@
       >
         <product-card :product="product" />
       </v-col>
-      <v-col v-if="!products.length" class="text-center" cols="12">
-        No products available
+      <v-col v-show="!(products.length || loading)" class="text-center">
+        No products found
       </v-col>
       <v-col class="text-center" cols="12">
         <v-btn :disabled="!products.length" outlined large @click="fetchMore">

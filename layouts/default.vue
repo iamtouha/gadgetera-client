@@ -268,4 +268,35 @@ export default {
   object-position: center;
   width: 200px;
 }
+.responsive {
+  position: relative;
+  overflow: hidden;
+  .offer-chip {
+    position: absolute;
+    z-index: 4;
+    top: 5px;
+    right: 5px;
+  }
+  .sizer {
+    position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    padding-bottom: 100%;
+  }
+  .wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
 </style>

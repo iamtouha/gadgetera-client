@@ -63,32 +63,3 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-.responsive {
-  overflow: hidden;
-  .offer-chip {
-    position: absolute;
-    z-index: 4;
-    top: 5px;
-    right: 5px;
-  }
-  .sizer {
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%;
-  }
-  .wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-}
-</style>

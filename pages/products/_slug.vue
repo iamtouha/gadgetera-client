@@ -1,9 +1,22 @@
 <template>
   <v-container class="px-0 px-sm-3" fluid>
     <v-container>
+      <v-skeleton-loader v-if="!bredcrumbItems.length" type="heading" />
       <v-breadcrumbs class="pl-0" :items="bredcrumbItems" />
       <v-row>
         <v-col cols="12" sm="6">
+          <div v-show="!product.images.length" class="responsive rounded">
+            <div class="sizer">
+              <div class="wrapper">
+                <v-skeleton-loader
+                  class="product-image-skeleton"
+                  min-height="400px"
+                  type="image"
+                />
+              </div>
+            </div>
+          </div>
+
           <v-carousel
             height="auto"
             hide-delimiter-background
@@ -27,6 +40,14 @@
           </v-carousel>
         </v-col>
         <v-col cols="12" sm="6">
+          <div v-show="!product.id" class="d-contents info-placeholder">
+            <v-skeleton-loader type="chip" />
+            <v-skeleton-loader type="heading" max-width="300px" class="my-7" />
+            <v-skeleton-loader type="text" />
+            <v-skeleton-loader max-width="350px" type="text" />
+            <v-skeleton-loader type="text" />
+            <v-skeleton-loader max-width="100px" type="text" />
+          </div>
           <h1 class="text-md-h4 text-h6 mb-3 font-weight-bold">
             {{ product.name }}
           </h1>
@@ -70,6 +91,15 @@
             Options
           </p>
           <v-row class="mb-3">
+            <v-col v-show="!options.length" cols="3" lg="2">
+              <div class="responsive rounded">
+                <div class="sizer">
+                  <div class="wrapper">
+                    <v-skeleton-loader type="image" />
+                  </div>
+                </div>
+              </div>
+            </v-col>
             <v-col v-for="option in options" :key="option.id" cols="3" lg="2">
               <v-card
                 elevation="0"
@@ -94,18 +124,27 @@
           </v-row>
           <v-simple-table dense class="transparent">
             <tbody style="cursor:pointer">
-              <tr v-show="product.model">
+              <tr>
                 <th>Model</th>
-                <td>{{ product.model }}</td>
+                <td>
+                  <v-skeleton-loader v-show="!product.id" type="text" />
+                  {{ product.model }}
+                </td>
               </tr>
               <tr>
                 <th>SKU</th>
-                <td>{{ product.sku }}</td>
+                <td>
+                  <v-skeleton-loader v-show="!product.id" type="text" />
+                  {{ product.sku }}
+                </td>
               </tr>
               <tr>
                 <th>Status</th>
                 <td>
-                  {{ product.stock ? "Available in stock" : "Out of Stock" }}
+                  <v-skeleton-loader v-show="!product.id" type="text" />
+                  <span v-show="product.id">
+                    {{ product.stock ? "Available in stock" : "Out of Stock" }}
+                  </span>
                 </td>
               </tr>
             </tbody>
@@ -317,6 +356,9 @@ export default {
       const subcategory = this.subcategory;
       const category = this.subcategory.category;
       const brand = this.product.brand;
+      if (!subcategory.id) {
+        return [];
+      }
       return [
         { to: `/categories/${category.key}`, text: category.name },
         {
@@ -374,11 +416,11 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
-.main-image {
+.product-image-skeleton .v-skeleton-loader__image {
+  height: 500px;
+}
+.info-placeholder .v-skeleton-loader__chip {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
 }
 .option-overlay {
   display: none;
@@ -389,26 +431,23 @@ export default {
 .option-active .option-overlay {
   display: flex;
 }
-.controller .active {
-  position: relative;
-}
-.controller .active::before {
-  content: " ";
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 10px solid #555;
-  position: absolute;
-  bottom: 0;
-}
+
 .option-active {
   outline: 10px;
 }
 .description-box {
   all: unset;
 }
-@media (max-width: 600px) {
+</style>
+<style lang="scss">
+@import "~vuetify/src/styles/styles.sass";
+@media #{map-get(
+    $display-breakpoints,
+    "sm-and-down"
+  )} {
+  .product-image-skeleton .v-skeleton-loader__image {
+    height: 450px;
+  }
   .description-wrapper {
     border-radius: 0 !important;
   }
@@ -418,39 +457,6 @@ export default {
   }
   .add2cart-row {
     justify-content: center;
-  }
-}
-</style>
-<style lang="scss" scoped>
-.responsive {
-  position: relative;
-  overflow: hidden;
-  .offer-chip {
-    position: absolute;
-    z-index: 4;
-    top: 5px;
-    right: 5px;
-  }
-  .sizer {
-    position: relative;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 100%;
-    padding-bottom: 100%;
-  }
-  .wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
   }
 }
 </style>

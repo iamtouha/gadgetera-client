@@ -6,3 +6,7 @@
 .page-leave-to {
   opacity: 0;
 }
+
+.d-contents {
+  display: contents;
+}

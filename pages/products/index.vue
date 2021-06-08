@@ -56,6 +56,15 @@
         <!-- Products grid -->
         <v-row align="stretch" class="mt-3">
           <v-col
+            v-show="!products.length && loading"
+            cols="12"
+            sm="4"
+            md="6"
+            lg="3"
+          >
+            <v-skeleton-loader type="card" />
+          </v-col>
+          <v-col
             v-for="prod in products"
             :key="prod.id"
             cols="12"
@@ -65,7 +74,11 @@
           >
             <product-card :product="prod" />
           </v-col>
-          <v-col v-show="!products.length" cols="12" class="text-center">
+          <v-col
+            v-show="!(products.length || loading)"
+            cols="12"
+            class="text-center"
+          >
             No products available
           </v-col>
         </v-row>

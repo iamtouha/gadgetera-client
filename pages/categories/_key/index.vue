@@ -21,7 +21,16 @@
     </div>
 
     <v-container>
-      <v-row class="mt-3">
+      <v-row class="my-6">
+        <v-col
+          v-show="!subcategories.length && loading"
+          cols="12"
+          sm="6"
+          md="4"
+        >
+          <v-skeleton-loader type="card" />
+        </v-col>
+
         <v-col
           v-for="subcat in subcategories"
           :key="subcat.id"
@@ -49,6 +58,10 @@
               Products
             </v-card-subtitle>
           </v-card>
+        </v-col>
+        <v-col v-show="!(subcategories.length || loading)" class="text-center">
+          {{ subcategories.length }}
+          No subcategories found
         </v-col>
       </v-row>
     </v-container>

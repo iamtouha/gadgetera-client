@@ -22,6 +22,9 @@
       <v-progress-linear v-show="loading" indeterminate />
     </div>
     <v-row class="mt-5">
+      <v-col v-show="!filtered.length && loading" cols="6" sm="4" md="3" lg="2">
+        <v-skeleton-loader type="image" />
+      </v-col>
       <v-col
         v-for="brand in filtered"
         :key="brand.id"
@@ -34,7 +37,7 @@
           <v-img :aspect-ratio="1" contain :src="brand.logo.url" />
         </v-card>
       </v-col>
-      <v-col v-if="!filtered.length" class="text-center">
+      <v-col v-show="!(filtered.length || loading)" class="text-center">
         No brands found
       </v-col>
     </v-row>
