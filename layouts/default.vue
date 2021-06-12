@@ -24,6 +24,8 @@
         </v-btn>
       </v-toolbar-items>
       <v-spacer />
+      <search-menu />
+
       <client-only>
         <v-toolbar-items>
           <v-btn
@@ -297,6 +299,11 @@ export default {
     height: 100%;
     object-fit: cover;
     object-position: center;
+  }
+}
+.search-input {
+  .v-input__append-inner .v-icon {
+    color: var(--v-accent);
   }
 }
 </style>
