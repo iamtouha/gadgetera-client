@@ -11,17 +11,18 @@
           Categories
         </span>
         <v-chip
-          v-show="categoryActive"
+          v-show="category"
           class="mx-1 px-2"
           small
           style="max-width:75px;"
           close
-          @click:close="removeQuery('category')"
+          @click:close="category = null"
         >
           applied
         </v-chip>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
+        <v-skeleton-loader v-show="catLoading" type="text" max-width="150px" />
         <v-chip-group v-model="category" column>
           <v-chip
             v-for="grp in categories"
@@ -35,11 +36,8 @@
           </v-chip>
         </v-chip-group>
 
-        <p
-          :class="[subcategories.length ? '' : 'grey--text']"
-          class="mt-2 mb-0 body-2 disabled"
-        >
-          Subcategories
+        <p class="mt-2 mb-0 body-2 disabled">
+          {{ subcategories.length ? "Subcategories" : "" }}
         </p>
         <v-chip-group v-model="subcategory" column>
           <v-chip
@@ -62,17 +60,23 @@
           Brands
         </span>
         <v-chip
-          v-show="brandActive"
+          v-show="brand"
           class="mx-1 px-2"
           small
           style="max-width:75px;"
           close
-          @click:close="removeQuery('brand')"
+          @click:close="brand = null"
         >
           applied
         </v-chip>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
+        <v-skeleton-loader
+          v-show="brandLoading"
+          type="text"
+          max-width="150px"
+        />
+
         <v-chip-group v-model="brand" column>
           <v-chip
             v-for="grp in brands"
@@ -98,7 +102,7 @@
           small
           style="max-width:75px;"
           close
-          @click:close="removeQuery('range')"
+          @click:close="range = [0, 0]"
         >
           applied
         </v-chip>
@@ -107,8 +111,8 @@
         <v-row>
           <v-col cols="6">
             <v-text-field
-              v-model="range[0]"
-              type="number"
+              :value="range[0]"
+              readonly
               hide-details
               outlined
               dense
@@ -122,7 +126,8 @@
           </v-col>
           <v-col cols="6">
             <v-text-field
-              v-model="range[1]"
+              :value="range[1]"
+              readonly
               type="number"
               hide-details
               outlined
@@ -138,9 +143,9 @@
         </v-row>
         <v-range-slider
           v-model="range"
+          :step="500"
           :min="0"
           :max="50000"
-          :step="50"
           class="mt-2"
         />
       </v-expansion-panel-content>
@@ -150,132 +155,85 @@
 
 <script>
 /* eslint-disable camelcase, curly */
-
+import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   name: "FilterPanel",
   props: {
-    single: Boolean,
-    value: { type: Object, default: () => ({}) }
+    single: Boolean
   },
   data() {
     return {
-      panel: this.single ? 0 : [0],
-      category: null,
-      subcategory: null,
-      brand: null,
-      range: [0, 0],
-      categories: [],
-      subcategories: [],
-      brands: [],
-      priceRange: false
+      panel: this.single ? 0 : [0]
     };
   },
   async fetch() {
-    await this.fetchCategories();
-    await this.fetchBrands();
+    await this.fetchAllCats();
+    await this.fetchAllBrands();
   },
   computed: {
+    ...mapGetters({
+      filter: "products/filter",
+      categories: "categories/categories",
+      catLoading: "categories/loading",
+      brands: "brands/brands",
+      brandLoading: "brands/loading"
+    }),
+    subcategories() {
+      if (!this.category) return [];
+      const items = this.categories.find(item => item.id === this.category)
+        .subcategories;
+      return items || [];
+    },
     rangeActive() {
-      return this.value?.price_gte || this.value?.price_lte;
+      return this.filter.maxPrice || this.filter.minPrice;
     },
-    brandActive() {
-      return this.value?.brand;
-    },
-    categoryActive() {
-      return this.value?.subcategory || this.value?.["subcategory.category"];
-    },
-    query() {
-      const query = {};
-      let [price_gte, price_lte] = this.range;
-      price_gte = parseInt(price_gte);
-      price_lte = parseInt(price_lte);
-      if (price_gte > 0) {
-        query.price_gte = price_gte;
-      }
-      if (price_lte > 0) {
-        query.price_lte = price_lte;
-      }
-      if (this.subcategory) {
-        query.subcategory = this.subcategory;
-      } else if (this.category) {
-        query["subcategory.category"] = this.category;
-      }
-      if (this.brand) query.brand = this.brand;
-      return query;
-    }
-  },
-  watch: {
-    category(val) {
-      this.subcategory = null;
-      if (val) {
-        this.fetchSubCats();
-      } else {
-        this.subcategories = [];
+
+    category: {
+      get() {
+        return this.filter.category;
+      },
+      set(id) {
+        this.SET_CATEGORY(id);
       }
     },
-    query: {
-      deep: true,
-      handler(val) {
-        this.$emit("input", val);
+    subcategory: {
+      get() {
+        return this.filter.subcategory;
+      },
+      set(val) {
+        this.SET_SUBCATEGORY(val);
+      }
+    },
+    brand: {
+      get() {
+        return this.filter.brand;
+      },
+      set(val) {
+        this.SET_BRAND(val);
+      }
+    },
+    range: {
+      get() {
+        const { minPrice, maxPrice } = this.filter;
+        return [minPrice, maxPrice];
+      },
+      set(val) {
+        this.SET_RANGE(val);
       }
     }
   },
+
   methods: {
-    async fetchCategories() {
-      try {
-        const categories = await this.$axios.$get("/categories");
-        this.categories = categories;
-      } catch (error) {
-        this.$nuxt.error(error);
-      }
-    },
-    async fetchBrands() {
-      try {
-        const brands = await this.$axios.$get("/brands");
-        this.brands = brands;
-      } catch (error) {
-        this.$nuxt.error(error);
-      }
-    },
-    async fetchSubCats() {
-      try {
-        const subcats = await this.$axios.$get(
-          "/subcategories?category=" + this.category
-        );
-        this.subcategories = subcats;
-      } catch (error) {
-        this.$nuxt.error(error);
-      }
-    },
-    clear() {
-      this.category = null;
-      this.subcategory = null;
-      this.brand = null;
-      this.range = [100, 15000];
-    },
-    removeQuery(name) {
-      switch (name) {
-        case "category":
-          this.category = null;
-          this.subcategory = null;
-          break;
-
-        case "range":
-          this.range = [0, 0];
-          break;
-
-        case "brand":
-          this.brand = null;
-          break;
-
-        default:
-          this.clear();
-          break;
-      }
-    },
-    resetRange() {
-      this.range = [0, 0];
-    }
+    ...mapActions({
+      fetchAllCats: "categories/fetchAll",
+      fetchAllBrands: "brands/fetchAll"
+    }),
+    ...mapMutations("products", [
+      "SET_BRAND",
+      "SET_CATEGORY",
+      "SET_SUBCATEGORY",
+      "SET_RANGE"
+    ])
   }
 };
 </script>

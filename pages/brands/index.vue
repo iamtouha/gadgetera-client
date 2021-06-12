@@ -45,22 +45,17 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   name: "Brands",
   data: () => ({
-    loading: false,
-    brands: [],
     search: ""
   }),
   async fetch() {
-    try {
-      this.loading = true;
-      const brands = await this.$axios.$get("/brands");
-      this.brands = brands;
-    } catch (error) {
+    const error = await this.fetchAll();
+    if (error) {
       this.$nuxt.error(error);
-    } finally {
-      this.loading = false;
     }
   },
   head() {
@@ -69,6 +64,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("brands", ["brands", "loading"]),
     filtered() {
       return this.brands.filter(cat => {
         const text = this.search.toLowerCase();
@@ -76,6 +72,9 @@ export default {
         return catName.includes(text);
       });
     }
+  },
+  methods: {
+    ...mapActions("brands", ["fetchAll"])
   }
 };
 </script>

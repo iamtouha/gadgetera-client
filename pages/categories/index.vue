@@ -17,7 +17,7 @@
         placeholder="Search categories"
       />
     </v-toolbar>
-    <v-divider />
+    <v-divider class="d-none d-sm-block" />
     <div style="height:5px">
       <v-progress-linear v-show="loading" indeterminate />
     </div>
@@ -54,22 +54,17 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   name: "Categories",
   data: () => ({
-    loading: false,
-    categories: [],
     search: ""
   }),
   async fetch() {
-    try {
-      this.loading = true;
-      const categories = await this.$axios.$get("/categories");
-      this.categories = categories;
-    } catch (error) {
+    const error = await this.fetchAll();
+    if (error) {
       this.$nuxt.error(error);
-    } finally {
-      this.loading = false;
     }
   },
   head() {
@@ -78,6 +73,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("categories", ["categories", "loading"]),
     filtered() {
       return this.categories.filter(cat => {
         const text = this.search.toLowerCase();
@@ -90,6 +86,9 @@ export default {
         );
       });
     }
+  },
+  methods: {
+    ...mapActions("categories", ["fetchAll"])
   }
 };
 </script>

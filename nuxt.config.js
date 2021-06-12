@@ -26,7 +26,7 @@ export default {
   },
   css: ["~/assets/main.css"],
 
-  plugins: ["~/plugins/axios"],
+  plugins: ["~/plugins/axios", "~/plugins/repositories.js"],
   loading: false,
   components: true,
 
@@ -65,6 +65,7 @@ export default {
   },
 
   vuetify: {
+    customProperties: true,
     customVariables: ["~/assets/variables.scss"],
     treeShake: true,
     theme: {

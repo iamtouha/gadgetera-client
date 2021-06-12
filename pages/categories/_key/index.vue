@@ -81,15 +81,17 @@ export default {
   async fetch() {
     try {
       this.loading = true;
-      const [category] = await this.$axios.$get(
-        "/categories?key=" + this.$route.params.key
-      );
-      if (!category) {
+      const key = this.$route.params.key;
+      const resources = this.$repositories;
+      const [categories, subcats] = await Promise.all([
+        resources.category.get(key),
+        resources.subcategory.getByCategory({ catKey: key })
+      ]);
+
+      if (!categories?.[0]) {
         return this.$nuxt.error({ statusCode: 404, message: "not found" });
       }
-      const subcats = await this.$axios.$get(
-        "/subcategories?category.key=" + this.$route.params.key
-      );
+      const category = categories[0];
       this.subcategories = subcats;
       this.cover = category.cover.url;
       this.thumbnail = category.cover.formats.thumbnail.url;

@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import qs from "qs";
 export default {
   name: "SubCategory",
   data: () => ({
@@ -82,24 +81,22 @@ export default {
       products: []
     },
     products: [],
-    query: {
-      _sort: "published_at:DESC",
-      _start: 0,
-      _limit: 12
+    filterParams: {
+      sortField: "published_at",
+      sortOrder: "desc",
+      subcatKey: null
     }
   }),
   async fetch() {
     try {
       this.loading = true;
-      const p1 = this.$axios.$get(
-        "/subcategories?key=" + this.$route.params.subkey
-      );
-      this.query["subcategory.key"] = this.$route.params.subkey;
-      const p2 = this.$axios.$get("/products?" + qs.stringify(this.query));
-      const [subcats, products] = await Promise.all([p1, p2]);
-
+      const key = this.$route.params.subkey;
+      this.filterParams.subcatKey = key;
+      const [subcats, products] = await Promise.all([
+        this.$repositories.subcategory.get({ key }),
+        this.$repositories.product.get(this.filterParams)
+      ]);
       const [subcategory] = subcats;
-
       if (!subcategory) {
         return this.$nuxt.error({ statusCode: 404, message: "not found" });
       }
@@ -108,8 +105,6 @@ export default {
       this.cover = subcategory.cover.url;
       this.thumbnail = subcategory.cover.formats.thumbnail.url;
       this.subcategory = subcategory;
-
-      this.query._start += this.query._limit;
     } catch (error) {
       this.$nuxt.error(error);
     } finally {
@@ -136,14 +131,14 @@ export default {
   methods: {
     async fetchMore() {
       try {
-        const products = await this.$axios.$get(
-          "/products?" + qs.stringify(this.query)
+        const products = await this.$repositories.product.get(
+          this.filterParams,
+          { start: this.products.length }
         );
         if (!products.length) {
           return this.$store.commit("SHOW_ALERT", "No more products to show");
         }
         this.products = [...this.products, ...products];
-        this.query._start += this.query._limit;
       } catch (error) {
         this.$store.commit("SHOW_ALERT", error.message);
       }

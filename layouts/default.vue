@@ -24,6 +24,10 @@
         </v-btn>
       </v-toolbar-items>
       <v-spacer />
+      <v-toolbar-items v-show="$route.name !== 'products'">
+        <search-menu />
+      </v-toolbar-items>
+
       <client-only>
         <v-toolbar-items>
           <v-btn
@@ -266,7 +270,7 @@ export default {
 #logo {
   object-fit: contain;
   object-position: center;
-  width: 200px;
+  width: 160px;
 }
 .responsive {
   position: relative;
@@ -297,6 +301,11 @@ export default {
     height: 100%;
     object-fit: cover;
     object-position: center;
+  }
+}
+.search-input {
+  .v-input__append-inner .v-icon {
+    color: var(--v-accent);
   }
 }
 </style>
