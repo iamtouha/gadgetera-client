@@ -54,7 +54,7 @@ export default {
   },
   computed: {
     img() {
-      return this.product.images[0] || {};
+      return this.product.photo || this.product.images[0] || {};
     },
     imgSrc() {
       const smallSrc = this.img.formats?.small?.url;

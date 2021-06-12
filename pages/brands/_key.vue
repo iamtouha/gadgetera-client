@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import qs from "qs";
 export default {
   name: "Brand",
   data: () => ({
@@ -79,19 +78,21 @@ export default {
     logo: "",
     brand: {},
     products: [],
-    query: {
-      _sort: "published_at:DESC",
-      _start: 0,
-      _limit: 12
+    filterParams: {
+      sortField: "published_at",
+      sortOrder: "desc",
+      brandKey: null
     }
   }),
   async fetch() {
     try {
       this.loading = true;
-      const p1 = this.$axios.$get("/brands?key=" + this.$route.params.key);
-      this.query["brand.key"] = this.$route.params.key;
-      const p2 = this.$axios.$get("/products?" + qs.stringify(this.query));
-      const [brands, products] = await Promise.all([p1, p2]);
+      const key = this.$route.params.key;
+      this.filterParams.brandKey = key;
+      const [brands, products] = await Promise.all([
+        this.$repositories.brand.get({ key }),
+        this.$repositories.product.get(this.filterParams)
+      ]);
       const [brand] = brands;
       if (!brand) {
         return this.$nuxt.error({ statusCode: 404, message: "not found" });
@@ -99,8 +100,6 @@ export default {
       this.products = products;
       this.logo = brand.logo.url;
       this.brand = brand;
-
-      this.query._start += this.query._limit;
     } catch (error) {
       this.$nuxt.error(error);
     } finally {
@@ -127,14 +126,15 @@ export default {
   methods: {
     async fetchMore() {
       try {
-        const products = await this.$axios.$get(
-          "/products?" + qs.stringify(this.query)
+        const products = await this.$repositories.product.get(
+          this.filterParams,
+          { start: this.products.length }
         );
+
         if (!products.length) {
           return this.$store.commit("SHOW_ALERT", "No more products to show");
         }
         this.products = [...this.products, ...products];
-        this.query._start += this.query._limit;
       } catch (error) {
         this.$store.commit("SHOW_ALERT", error.message);
       }

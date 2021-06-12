@@ -24,7 +24,9 @@
         </v-btn>
       </v-toolbar-items>
       <v-spacer />
-      <search-menu />
+      <v-toolbar-items v-show="$route.name !== 'products'">
+        <search-menu />
+      </v-toolbar-items>
 
       <client-only>
         <v-toolbar-items>
@@ -268,7 +270,7 @@ export default {
 #logo {
   object-fit: contain;
   object-position: center;
-  width: 200px;
+  width: 160px;
 }
 .responsive {
   position: relative;

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-text-field
-      v-model="searchText"
+      v-model="search"
       outlined
       style="max-width:350px"
       clearable
@@ -10,8 +10,6 @@
       single-line
       placeholder="Search products"
       append-icon="mdi-magnify"
-      @keyup.enter="fetchProducts"
-      @click:append="fetchProducts"
     />
 
     <v-row>
@@ -23,7 +21,7 @@
           </v-card-title>
           <v-card-text class="px-0">
             <client-only>
-              <filter-panel ref="desktopFilter" v-model="filter" />
+              <filter-panel />
             </client-only>
           </v-card-text>
         </v-card>
@@ -85,14 +83,13 @@
         <v-row>
           <v-col class="text-center">
             <v-btn
-              v-show="query"
               :disabled="!products.length"
-              :loading="loadingMore"
+              :loading="reloading"
               color="primary"
               outlined
               large
               class="mx-auto"
-              @click="loadMore"
+              @click="reFetch"
             >
               load more
             </v-btn>
@@ -122,7 +119,7 @@
       <v-bottom-sheet v-model="dialog" scrollable class="rounded">
         <v-card>
           <v-card-text class="pa-0 pt-2" style="max-height:350px;">
-            <filter-panel ref="mobileFilter" v-model="filter" single />
+            <filter-panel single />
           </v-card-text>
           <v-divider />
           <v-card-actions>
@@ -138,40 +135,22 @@
 </template>
 
 <script>
-import qs from "qs";
-import axios from "axios";
 import debounce from "lodash.debounce";
-
-const CancelToken = axios.CancelToken;
-let cancel;
+import { mapGetters, mapMutations, mapActions } from "vuex";
 
 export default {
   name: "Products",
   data: () => ({
-    products: [],
     dialog: false,
-    loading: true,
-    loadingMore: false,
-    sort: "createdAt:DESC",
-    start: 0,
-    limit: 12,
-    searchText: "",
-    query: null,
-    filter: null,
     sorting: [
-      { key: "createdAt:DESC", label: "Date" },
-      { key: "price:ASC", label: "Price Ascending" },
-      { key: "price:DESC", label: "Price Descending" }
+      { key: "published_at:desc", label: "Publish Date" },
+      { key: "price:asc", label: "Price Ascending" },
+      { key: "price:desc", label: "Price Descending" }
     ]
   }),
   async fetch() {
-    try {
-      this.query = this.getQuery();
-      const products = await this.performFetch();
-      if (products && products !== "cancelled") {
-        this.products = products;
-      }
-    } catch (error) {
+    const error = await this.fetchAll();
+    if (error) {
       this.$nuxt.error(error);
     }
   },
@@ -181,84 +160,45 @@ export default {
     };
   },
   computed: {
-    filterRef() {
-      return this.$vuetify.breakpoint.smAndDown
-        ? "mobileFilter"
-        : "desktopFilter";
+    ...mapGetters("products", ["filter", "loading", "reloading", "products"]),
+    sort: {
+      get() {
+        const { sortField, sortOrder } = this.filter;
+        return `${sortField}:${sortOrder}`;
+      },
+      set(val) {
+        const [sortField, sortOrder] = val.split(":");
+        this.SORT({ field: sortField, order: sortOrder });
+      }
+    },
+    search: {
+      get() {
+        return this.filter.search;
+      },
+      set(val) {
+        this.SET_SEARCH(val);
+      }
     }
   },
   watch: {
-    sort: "fetchProducts",
-    filter: "fetchProducts",
-    searchText: "fetchProducts"
+    filter: {
+      deep: true,
+      handler: debounce(function() {
+        this.fetchAll({ forced: true });
+      }, 500)
+    }
   },
 
   methods: {
-    removeField(name) {
-      this.$refs[this.filterRef]?.removeQuery(name);
-    },
-    fetchProducts: debounce(async function() {
-      this.query = this.getQuery();
-      const products = await this.performFetch();
-      if (products !== "cancelled") {
-        this.products = products;
-      }
-    }, 100),
-    getQuery() {
-      let query = {
-        _limit: this.limit,
-        _sort: this.sort,
-        _start: 0
-      };
-      if (this.filter) {
-        query = { ...query, ...this.filter };
-      }
-      if (this.searchText) {
-        query.name_contains = this.searchText;
-      }
-      return query;
-    },
-
-    async loadMore() {
-      this.loadingMore = true;
-      this.query._start += this.limit;
-      const products = await this.performFetch();
-
-      this.loadingMore = false;
-      if (products === "cancelled") {
-        return;
-      }
-      if (!products?.length) {
-        return this.$store.commit("SHOW_ALERT", "No more product to show");
-      }
-      this.products = [...this.products, ...products];
-    },
-    async performFetch() {
-      this.loading = true;
-
-      try {
-        if (cancel !== undefined) {
-          cancel();
-        }
-        const products = await this.$axios.$get(
-          "/products?" + qs.stringify(this.query),
-          {
-            cancelToken: new CancelToken(function(c) {
-              cancel = c;
-            })
-          }
-        );
-        this.loading = false;
-        return products;
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          return "cancelled";
-        } else {
-          this.loading = false;
-          this.$nuxt.error(error);
-        }
-      }
-    }
+    ...mapMutations("products", [
+      "SET_BRAND",
+      "SET_CATEGORY",
+      "SET_SUBCATEGORY",
+      "SET_RANGE",
+      "SET_SEARCH",
+      "SORT"
+    ]),
+    ...mapActions("products", ["fetchAll", "reFetch"])
   }
 };
 </script>

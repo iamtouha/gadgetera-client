@@ -280,15 +280,16 @@ export default {
   async fetch() {
     try {
       const slug = this.$route.params.slug;
-      const [product] = await this.$axios.$get("/products?slug=" + slug);
+      const resources = this.$repositories;
+      const [product] = await resources.product.get({ slug });
       if (!product) {
         return this.$nuxt.error({ statusCode: 404, message: "not found" });
       }
       this.product = product;
       // eslint-disable-next-line prefer-const
       let [options, subcat] = await Promise.all([
-        this.$axios.$get("/products?model=" + product.model),
-        this.$axios.$get("/subcategories/" + product.subcategory.id)
+        resources.product.get({ model: product.model }),
+        resources.subcategory.getOne(product.subcategory.id)
       ]);
       if (!product.model) {
         options = [product];
