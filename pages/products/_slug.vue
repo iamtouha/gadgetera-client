@@ -1,8 +1,17 @@
 <template>
   <v-container class="px-0 px-sm-3" fluid>
     <v-container>
-      <v-skeleton-loader v-if="!bredcrumbItems.length" type="heading" />
-      <v-breadcrumbs class="pl-0" :items="bredcrumbItems" />
+      <v-skeleton-loader
+        v-show="!bredcrumbItems.length"
+        class="mt-6 mb-3"
+        max-width="700px"
+        type="text"
+      />
+      <v-breadcrumbs
+        v-show="bredcrumbItems.length"
+        class="pl-0"
+        :items="bredcrumbItems"
+      />
       <v-row>
         <v-col cols="12" sm="6">
           <div v-show="!product.images.length" class="responsive rounded">
