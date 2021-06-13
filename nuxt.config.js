@@ -26,7 +26,11 @@ export default {
   },
   css: ["~/assets/main.css"],
 
-  plugins: ["~/plugins/axios", "~/plugins/repositories.js"],
+  plugins: [
+    "~/plugins/axios.js",
+    "~/plugins/repositories.js",
+    { src: "~/plugins/pwa-update.js", mode: "client" }
+  ],
   loading: false,
   components: true,
 
@@ -61,6 +65,28 @@ export default {
   webfontloader: {
     google: {
       families: ["Raleway:200,300,400,500,600,700"]
+    }
+  },
+
+  pwa: {
+    meta: {
+      theme_color: "#6b818c",
+      background_color: "#eee5e9"
+    },
+    manifest: {
+      name: "Gadget Era - Online Gadgets Collection",
+      short_name: "Gadget Era",
+      description:
+        "Gadget Era is an online retail shop for top quality electronic gadgets, watches and mobile accessories in Bangladesh."
+    },
+    workbox: {
+      runtimeCaching: [
+        {
+          urlPattern: "https://res.cloudinary.com/.*",
+          handler: "CacheFirst",
+          method: "GET"
+        }
+      ]
     }
   },
 

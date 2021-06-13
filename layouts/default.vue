@@ -24,6 +24,13 @@
         </v-btn>
       </v-toolbar-items>
       <v-spacer />
+      <v-toolbar-items v-show="$route.name === 'products'">
+        <v-btn text icon elevation="0" @click="focusOnSearch">
+          <v-icon>
+            mdi-magnify
+          </v-icon>
+        </v-btn>
+      </v-toolbar-items>
       <v-toolbar-items v-show="$route.name !== 'products'">
         <search-menu />
       </v-toolbar-items>
@@ -174,10 +181,10 @@
           </v-list-item>
         </v-col>
         <v-col cols="12" sm="6">
-          <v-list-item dense nuxt to="/terms-and-conditions">
+          <v-list-item dense nuxt active-class to="/terms-and-conditions">
             Terms and conditions
           </v-list-item>
-          <v-list-item dense nuxt to="/privacy-policy">
+          <v-list-item dense nuxt active-class to="/privacy-policy">
             Privacy policy
           </v-list-item>
         </v-col>
@@ -248,9 +255,13 @@ export default {
       }
     }
   },
+
   methods: {
     openDialer() {
       window.open("tel:" + this.contact.phone);
+    },
+    focusOnSearch() {
+      this.$nuxt.$emit("search-field-focus");
     }
   }
 };
