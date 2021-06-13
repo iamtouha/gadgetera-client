@@ -1,5 +1,10 @@
 <template>
-  <v-menu v-model="menu" offset-y :close-on-content-click="false">
+  <v-menu
+    v-model="menu"
+    content-class="search-menu"
+    :close-on-content-click="false"
+    :close-on-click="isMobile"
+  >
     <template #activator="{on,attrs}">
       <v-btn icon elevation="0" v-bind="attrs" v-on="on">
         <v-icon aria-label="search">
@@ -7,10 +12,23 @@
         </v-icon>
       </v-btn>
     </template>
-    <v-card width="350px">
+
+    <v-card elevation="4" class="search-card" width="340px">
+      <v-btn
+        x-small
+        absolute
+        elevation="2"
+        class="secondary primary--text close-menu-btn"
+        icon
+        @click.stop="menu = false"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
       <v-card-text class="pb-0">
         <v-text-field
+          ref="searchInput"
           v-model="search"
+          placeholder="Search Product"
           name="search"
           outlined
           filled
@@ -82,12 +100,25 @@ export default {
       loading: false
     };
   },
+  computed: {
+    isMobile() {
+      return this.$vuetify.breakpoint.smAndDown;
+    }
+  },
   watch: {
     search: "searchItems",
     "$route.name"() {
       this.menu = false;
+    },
+    menu(val) {
+      if (val) {
+        setTimeout(() => {
+          this.$refs.searchInput?.focus();
+        }, 100);
+      }
     }
   },
+
   methods: {
     ...mapMutations("products", ["RESET_FILTER", "SET_SEARCH"]),
     searchItems: debounce(async function() {
@@ -128,3 +159,16 @@ export default {
   }
 };
 </script>
+<style>
+.search-menu {
+  box-shadow: none !important;
+  padding: 8px;
+}
+.search-card {
+  position: relative;
+}
+.close-menu-btn {
+  top: -5px;
+  right: -5px;
+}
+</style>
