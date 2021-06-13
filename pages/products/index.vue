@@ -1,6 +1,7 @@
 <template>
-  <v-container fluid>
+  <v-container class="pt-6" fluid>
     <v-text-field
+      ref="searchInput"
       v-model="search"
       outlined
       style="max-width:350px"
@@ -148,6 +149,7 @@ export default {
       { key: "price:desc", label: "Price Descending" }
     ]
   }),
+  fetchOnServer: false,
   async fetch() {
     const error = await this.fetchAll();
     if (error) {
@@ -180,6 +182,7 @@ export default {
       }
     }
   },
+
   watch: {
     filter: {
       deep: true,
@@ -188,17 +191,18 @@ export default {
       }, 500)
     }
   },
-
+  mounted() {
+    this.$nuxt.$on("search-field-focus", this.searchFocus);
+  },
+  beforeDestroy() {
+    this.$nuxt.$off("search-field-focus", this.searchFocus);
+  },
   methods: {
-    ...mapMutations("products", [
-      "SET_BRAND",
-      "SET_CATEGORY",
-      "SET_SUBCATEGORY",
-      "SET_RANGE",
-      "SET_SEARCH",
-      "SORT"
-    ]),
-    ...mapActions("products", ["fetchAll", "reFetch"])
+    ...mapMutations("products", ["SORT"]),
+    ...mapActions("products", ["fetchAll", "reFetch"]),
+    searchFocus() {
+      this.$refs.searchInput?.focus();
+    }
   }
 };
 </script>
