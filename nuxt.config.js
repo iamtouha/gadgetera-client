@@ -30,7 +30,7 @@ export default {
   loading: false,
   components: true,
 
-  buildModules: ["@nuxtjs/eslint-module", "@nuxtjs/vuetify"],
+  buildModules: ["@nuxtjs/eslint-module", "@nuxtjs/vuetify", "@nuxtjs/pwa"],
 
   modules: [
     "nuxt-client-init-module",
