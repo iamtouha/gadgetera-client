@@ -64,17 +64,17 @@ export default {
   },
   webfontloader: {
     google: {
-      families: ["Raleway:200,300,400,500,600,700"]
+      families: ["Poppins:300,400,500,600,700", "Open Sans:300,400,500,600,700"]
     }
   },
 
   pwa: {
     meta: {
-      theme_color: "#6b818c",
-      background_color: "#eee5e9"
+      theme_color: "#03A9F4",
+      background_color: "#fffcf2"
     },
     manifest: {
-      name: "Gadget Era - Online Gadgets Collection",
+      name: "Gadget Era - Online Shop",
       short_name: "Gadget Era",
       description:
         "Gadget Era is an online retail shop for top quality electronic gadgets, watches and mobile accessories in Bangladesh."
@@ -98,8 +98,8 @@ export default {
       dark: false,
       themes: {
         light: {
-          primary: "#6b818c",
-          secondary: "#eee5e9",
+          primary: "#489fb5",
+          secondary: "#fffcf2",
           accent: "#fe5f55",
           info: "#fdfce2",
           warning: "#FFC107",

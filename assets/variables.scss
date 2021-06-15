@@ -1,11 +1,16 @@
 // $body-font-family: "Open Sans", sans-serif;
-$body-font-family: "Raleway", sans-serif;
+$heading-font-family: "Poppins", sans-serif;
+$body-font-family: "Open Sans", sans-serif;
 
 $treeview-node-margin: 0px;
 $treeview-node-padding: 4px;
 
-$border-radius-root: 6px;
+$border-radius-root: 15px;
 
 // card
 $card-elevation: 0;
 $card-title-word-break: break-word;
+
+// tabs
+$tabs-item-padding: 0 8px;
+$tabs-item-min-width: 70px;

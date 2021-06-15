@@ -18,22 +18,6 @@
       <v-progress-linear v-show="loading" indeterminate />
     </div>
     <v-container>
-      <v-skeleton-loader v-show="loading" type="heading" class="mt-6 mb-4" />
-      <p v-show="!loading" class="title mt-6">
-        showing
-        <span class="primary--text font-weight-bold">
-          {{ products.length }}
-        </span>
-        out of
-        <span class="primary--text font-weight-bold">
-          {{ subcategory.products.length }}
-        </span>
-        Products in
-        <span class="primary--text font-weight-bold">
-          {{ subcategory.name }}
-        </span>
-      </p>
-
       <v-row>
         <v-col
           v-show="!products.length && loading"
@@ -50,10 +34,9 @@
         <v-col
           v-for="product in products"
           :key="product.id"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
+          cols="6"
+          sm="4"
+          md="3"
         >
           <product-card :product="product" />
         </v-col>

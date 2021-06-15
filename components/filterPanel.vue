@@ -10,16 +10,18 @@
         <span class="pt-1" style="height:24px;">
           Categories
         </span>
-        <v-chip
-          v-show="category"
-          class="mx-1 px-2"
-          small
-          style="max-width:75px;"
-          close
-          @click:close="category = null"
-        >
-          applied
-        </v-chip>
+        <client-only>
+          <v-chip
+            v-show="category"
+            class="mx-1 px-2"
+            small
+            style="flex:0 1 auto;"
+            close
+            @click:close="category = null"
+          >
+            {{ subcatName || catName }}
+          </v-chip>
+        </client-only>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
         <v-skeleton-loader v-show="catLoading" type="text" max-width="150px" />
@@ -59,16 +61,18 @@
         <span class="pt-1" style="height:24px;">
           Brands
         </span>
-        <v-chip
-          v-show="brand"
-          class="mx-1 px-2"
-          small
-          style="max-width:75px;"
-          close
-          @click:close="brand = null"
-        >
-          applied
-        </v-chip>
+        <client-only>
+          <v-chip
+            v-show="brand"
+            class="mx-1 px-2"
+            small
+            style="flex: 0 1 auto;"
+            close
+            @click:close="brand = null"
+          >
+            {{ brandName }}
+          </v-chip>
+        </client-only>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
         <v-skeleton-loader
@@ -96,51 +100,55 @@
         <span class="pt-1" style="height:24px;">
           Price Range
         </span>
-        <v-chip
-          v-show="rangeActive"
-          class="mx-1 px-2"
-          small
-          style="max-width:75px;"
-          close
-          @click:close="range = [0, 0]"
-        >
-          applied
-        </v-chip>
+        <client-only>
+          <v-chip
+            v-show="rangeActive"
+            class="mx-1 px-2"
+            small
+            style="flex: 0 1 auto;"
+            close
+            @click:close="range = [0, 0]"
+          >
+            {{ range[0] || "" }}
+            <span class="mx-1">-</span>
+            {{ range[1] || "" }}
+          </v-chip>
+        </client-only>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
-        <v-row>
-          <v-col cols="6">
-            <v-text-field
-              :value="range[0]"
-              readonly
-              hide-details
-              outlined
-              dense
-            >
-              <template #prepend>
-                <span class="pt-1">
-                  Min
-                </span>
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              :value="range[1]"
-              readonly
-              type="number"
-              hide-details
-              outlined
-              dense
-            >
-              <template #prepend>
-                <span class="pt-1">
-                  Max
-                </span>
-              </template>
-            </v-text-field>
-          </v-col>
-        </v-row>
+        <div class="d-flex">
+          <v-text-field
+            :value="range[0]"
+            readonly
+            hide-details
+            outlined
+            dense
+            class="mr-4"
+            style="max-width:120px;"
+          >
+            <template #prepend>
+              <span class="pt-1">
+                Min
+              </span>
+            </template>
+          </v-text-field>
+          <v-text-field
+            :value="range[1]"
+            readonly
+            type="number"
+            hide-details
+            outlined
+            dense
+            style="max-width:120px;"
+          >
+            <template #prepend>
+              <span class="pt-1">
+                Max
+              </span>
+            </template>
+          </v-text-field>
+        </div>
+
         <v-range-slider
           v-model="range"
           :step="500"
@@ -158,6 +166,7 @@
 import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   name: "FilterPanel",
+
   props: {
     single: Boolean
   },
@@ -178,6 +187,15 @@ export default {
       brands: "brands/brands",
       brandLoading: "brands/loading"
     }),
+    catName() {
+      return this.categories.find(cat => cat.id === this.category)?.name;
+    },
+    brandName() {
+      return this.brands.find(brand => brand.id === this.brand)?.name;
+    },
+    subcatName() {
+      return this.subcategories.find(cat => cat.id === this.subcategory)?.name;
+    },
     subcategories() {
       if (!this.category) return [];
       const items = this.categories.find(item => item.id === this.category)

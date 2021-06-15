@@ -1,8 +1,10 @@
 <template>
-  <v-list max-height="600px" width="100%" class="rounded cart-list">
+  <v-list max-height="600px" class="rounded cart-list">
     <v-list-item
       v-for="item in cartItems"
       :key="item.product.id"
+      :to="'/products/' + item.product.slug"
+      nuxt
       class="cart-list-item"
     >
       <v-list-item-avatar>
@@ -18,7 +20,7 @@
           </span>
         </v-list-item-subtitle>
       </v-list-item-content>
-      <v-list-item-action v-if="incrementBtns">
+      <v-list-item-action v-show="incrementBtns">
         <v-text-field
           class="quantity-field"
           dense
@@ -31,21 +33,21 @@
           @click:prepend-inner="DECREMENT(item.product.id)"
         />
       </v-list-item-action>
-      <v-list-item-action v-else>
+      <v-list-item-action v-show="!incrementBtns">
         <v-btn small icon @click="REMOVE_FROM_CART(item.product.id)">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-    <v-list-item v-if="!cartItems.length">
+    <v-list-item v-show="!cartItems.length">
       <v-list-item-title>
         No products added
       </v-list-item-title>
     </v-list-item>
-    <v-list-item v-if="checkoutBtn" class="action-item">
+    <v-list-item v-show="checkoutBtn" class="action-item">
       <v-list-item-content>
         <v-spacer />
-        <v-btn v-if="closebtn" class="close-btn" text @click="$emit('close')">
+        <v-btn v-show="closebtn" class="close-btn" text @click="$emit('close')">
           Close
         </v-btn>
         <v-btn text class="primary" @click="toCheckout">
@@ -89,6 +91,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "~vuetify/src/styles/styles.sass";
+
 .quantity-field {
   max-width: 80px !important;
   .v-text-field__slot {
@@ -108,6 +112,15 @@ export default {
   }
   .v-icon {
     font-size: 22px;
+  }
+}
+
+@media #{map-get(
+    $display-breakpoints,
+    "sm-and-up"
+  )} {
+  .cart-list {
+    max-width: 400px;
   }
 }
 </style>

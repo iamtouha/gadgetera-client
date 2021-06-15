@@ -22,42 +22,24 @@
 
     <v-container>
       <v-row class="my-6">
-        <v-col
-          v-show="!subcategories.length && loading"
-          cols="12"
-          sm="6"
-          md="4"
-        >
+        <v-col v-show="!subcategories.length && loading" cols="6" sm="4" md="3">
           <v-skeleton-loader type="card" />
         </v-col>
 
         <v-col
           v-for="subcat in subcategories"
           :key="subcat.id"
-          cols="12"
-          sm="6"
-          md="4"
+          class="pa-2 pa-sm-3"
+          cols="6"
+          sm="4"
+          md="3"
         >
-          <v-card
-            outlined
-            nuxt
-            :to="`/categories/${category.key}/subs/${subcat.key}`"
-          >
-            <v-img
-              aspect-ratio="1.77"
-              :src="subcat.cover.url"
-              :lazy-src="subcat.cover.formats.thumbnail.url"
-            />
-            <v-card-title>
-              {{ subcat.name }}
-            </v-card-title>
-            <v-card-subtitle>
-              {{
-                subcat.products.length >= 100 ? "100+ " : subcat.products.length
-              }}
-              Products
-            </v-card-subtitle>
-          </v-card>
+          <item-card
+            :title="subcat.name"
+            :subtitle="subcat.products.length + ' products'"
+            :image="subcat.cover"
+            :path="`/categories/${category.key}/subs/${subcat.key}`"
+          />
         </v-col>
         <v-col v-show="!(subcategories.length || loading)" class="text-center">
           {{ subcategories.length }}
@@ -84,7 +66,7 @@ export default {
       const key = this.$route.params.key;
       const resources = this.$repositories;
       const [categories, subcats] = await Promise.all([
-        resources.category.get(key),
+        resources.category.get({ key }),
         resources.subcategory.getByCategory({ catKey: key })
       ]);
 
