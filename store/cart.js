@@ -21,11 +21,20 @@ export const mutations = {
       item => item.product.id === payload.product.id
     );
     if (!similarItem) {
-      const { id, images, name, price, discount, slug } = payload.product;
+      const {
+        id,
+        images,
+        name,
+        price,
+        discount,
+        slug,
+        photo
+      } = payload.product;
+      const img = images?.[0] || photo;
       return state.items.push({
         product: {
           id,
-          image: images[0].formats.thumbnail.url,
+          image: img.formats?.thumbnail?.url || img.url,
           name,
           price,
           discount,

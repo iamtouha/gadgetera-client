@@ -1,0 +1,131 @@
+<template>
+  <v-app>
+    <v-app-bar
+      app
+      :absolute="darkMode"
+      :elevate-on-scroll="!isMobile"
+      :flat="isMobile"
+      color="secondary"
+      class="showcase-app-bar"
+    >
+      <v-btn
+        to="/products"
+        nuxt
+        exact
+        class="font-weight-bold pl-0"
+        text
+        color="primary"
+      >
+        <v-icon class="mr-2">
+          mdi-arrow-left
+        </v-icon>
+        Products
+      </v-btn>
+
+      <v-spacer />
+      <navigation-tabs height="56px" class="d-none d-md-block" />
+      <v-spacer />
+      <v-btn
+        v-show="$route.name === 'products'"
+        text
+        icon
+        elevation="0"
+        @click="focusOnSearch"
+      >
+        <v-icon>
+          mdi-magnify
+        </v-icon>
+      </v-btn>
+      <search-menu />
+      <v-btn
+        text
+        icon
+        class="text-none d-md-inline-flex"
+        to="/account"
+        nuxt
+        exact
+      >
+        <v-icon>mdi-account</v-icon>
+      </v-btn>
+      <v-menu v-model="cartMenu" :close-on-content-click="false">
+        <template #activator="{ on, attrs }">
+          <v-btn v-bind="attrs" text icon v-on="on">
+            <v-icon>mdi-cart</v-icon>
+          </v-btn>
+        </template>
+        <cart @close="cartMenu = false" />
+      </v-menu>
+    </v-app-bar>
+    <v-main class="secondary">
+      <Nuxt />
+      <v-snackbar v-model="snackbar">
+        {{ alertMessage }}
+        <template #action="{ attrs }">
+          <v-btn
+            color="accent"
+            text
+            icon
+            v-bind="attrs"
+            @click="snackbar = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </v-main>
+    <footer-section />
+  </v-app>
+</template>
+
+<script>
+import { mapGetters } from "vuex";
+
+export default {
+  name: "ShowCase",
+
+  data: () => ({
+    cartMenu: false
+  }),
+  computed: {
+    ...mapGetters(["alertMessage", "isLoggedIn", "user"]),
+    ...mapGetters("cart", ["cartItems"]),
+    isMobile() {
+      return this.$vuetify.breakpoint.smAndDown;
+    },
+    darkMode() {
+      const name = this.$route.name;
+      return name !== "products-slug";
+    },
+    snackbar: {
+      get() {
+        return this.$store.getters.snackbar;
+      },
+      set(val) {
+        // eslint-disable-next-line curly
+        if (!val) this.$store.commit("HIDE_ALERT");
+      }
+    }
+  },
+  prevRoute() {
+    const route = { path: "", name: "" };
+    switch (this.$route.name) {
+      case "products-slug":
+        route.path = "/products";
+    }
+  },
+
+  methods: {
+    focusOnSearch() {
+      this.$nuxt.$emit("search-field-focus");
+    }
+  }
+};
+</script>
+<style lang="scss">
+@import "~vuetify/src/styles/styles.sass";
+@media #{map-get(
+    $display-breakpoints,
+    "md-and-up"
+  )} {
+}
+</style>

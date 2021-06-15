@@ -6,9 +6,7 @@
           {{ product.name }}
         </v-card-title>
 
-        <v-card-subtitle
-          class="primary--text font-weight-bold text-body-1 pt-2"
-        >
+        <v-card-subtitle class="primary--text text-body-1 pt-2">
           &#2547; {{ product.price }}
           <span v-if="product.discount" class="ml-2">
             ({{ Math.ceil(100 * product.discount) }}% off)

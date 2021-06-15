@@ -6,7 +6,13 @@
     :close-on-click="isMobile"
   >
     <template #activator="{on,attrs}">
-      <v-btn icon elevation="0" v-bind="attrs" v-on="on">
+      <v-btn
+        v-show="$route.name !== 'products'"
+        icon
+        elevation="0"
+        v-bind="attrs"
+        v-on="on"
+      >
         <v-icon aria-label="search">
           mdi-magnify
         </v-icon>

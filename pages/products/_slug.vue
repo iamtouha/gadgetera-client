@@ -1,20 +1,20 @@
 <template>
-  <v-container class="px-0 px-sm-3" fluid>
+  <v-container class="pa-0" fluid>
     <v-container>
       <v-skeleton-loader
         v-show="!bredcrumbItems.length"
-        class="mt-6 mb-3"
+        class="mt-6 mb-3 bredcrumb"
         max-width="700px"
         type="text"
       />
       <v-breadcrumbs
         v-show="bredcrumbItems.length"
-        class="pl-0"
+        class="pl-0 bredcrumb"
         :items="bredcrumbItems"
       />
       <v-row>
-        <v-col cols="12" sm="6">
-          <div v-show="!product.images.length" class="responsive rounded">
+        <v-col cols="12" sm="6" class="pa-0 pa-sm-3">
+          <div v-show="!product.images.length" class="responsive">
             <div class="sizer">
               <div class="wrapper">
                 <v-skeleton-loader
@@ -28,9 +28,11 @@
 
           <v-carousel
             height="auto"
-            hide-delimiter-background
+            hide-delimiters
+            show-arrows-on-hover
             cycle
-            :show-arrows="false"
+            dark
+            show-arrows
             :interval="10000"
           >
             <v-carousel-item v-for="img in product.images" :key="img.id">
@@ -57,23 +59,23 @@
             <v-skeleton-loader type="text" />
             <v-skeleton-loader max-width="100px" type="text" />
           </div>
-          <h1 class="text-md-h4 text-h6 mb-3 font-weight-bold">
+          <h1 class="text-md-h4 text-h6 mb-3 font-weight-medium">
             {{ product.name }}
           </h1>
           <h2
             v-if="!product.discount"
-            class="mb-3 text-h6 primary--text font-weight-bold"
+            class="mb-3 text-h6 primary--text font-weight-medium"
           >
             {{ product.price | groupNum }}
           </h2>
           <h2 v-else class="text-body-1">
-            <span class="text-h6 primary--text font-weight-bold">
+            <span class="text-h6 primary--text font-weight-medium">
               {{
                 Math.ceil(product.price - product.price * product.discount)
                   | groupNum
               }}
             </span>
-            <span class="font-weight-bold ml-1 text-body-1">
+            <span class="font-weight-medium ml-1 text-body-1">
               ( {{ Math.ceil(100 * product.discount) }}% off)
             </span>
           </h2>
@@ -81,7 +83,7 @@
             v-show="reviews.length"
             text
             color="primary"
-            class="my-2 px-0 text-lowercase font-weight-bold"
+            class="my-2 px-0 text-lowercase font-weight-medium"
             @click="scrollToReviews"
           >
             view reviews (
@@ -96,7 +98,7 @@
           <p>
             {{ product.overview }}
           </p>
-          <p class="text-subtitle font-weight-bold">
+          <p class="text-subtitle font-weight-medium">
             Options
           </p>
           <v-row class="mb-3">
@@ -161,38 +163,15 @@
           <v-row class="px-2 mt-6 mx-auto add2cart-row">
             <v-spacer class="d-sm-block d-none" />
 
-            <v-btn
-              class="d-sm-block d-none add2cart-btn mt-3 "
-              elevation="0"
-              height="44px"
-              color="accent"
-              @click="addToCart"
-            >
-              <v-icon left>
-                mdi-cart-plus
-              </v-icon>
-              add to cart
-            </v-btn>
+            <cart-buttons :product="product" />
           </v-row>
         </v-col>
       </v-row>
     </v-container>
 
-    <v-btn
-      fab
-      bottom
-      right
-      fixed
-      color="accent"
-      class="d-sm-none "
-      @click="addToCart"
-    >
-      <v-icon>mdi-cart-plus</v-icon>
-    </v-btn>
-
     <v-container class="px-0 px-sm-3">
       <v-card class="my-10 description-wrapper">
-        <v-card-title class="title font-weight-bold">
+        <v-card-title class="title font-weight-medium">
           Product Description
         </v-card-title>
         <v-card-text>
@@ -206,7 +185,7 @@
 
     <v-container>
       <v-card id="reviews">
-        <v-card-title class="title font-weight-bold">
+        <v-card-title class="title font-weight-medium">
           Product Reviews
         </v-card-title>
         <v-card-text>
@@ -221,18 +200,20 @@
             </v-list-item>
             <v-list-item v-for="review in reviews" :key="review.id" three-line>
               <v-list-item-content>
-                <v-list-item-title class="title font-weight-bold">
+                <v-list-item-title class="title font-weight-medium">
                   {{ review.user_name }}
                 </v-list-item-title>
                 <v-list-item-subtitle class="body-2 primary--text">
                   {{ review.createdAt | formatDate }}
                 </v-list-item-subtitle>
-                <v-list-item-subtitle class="subtitle-1 mt-2 font-weight-bold">
+                <v-list-item-subtitle
+                  class="subtitle-1 mt-2 font-weight-medium"
+                >
                   {{ review.message }}
                 </v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
-                <span class="font-weight-bold text-subtitle-1 accent--text">
+                <span class="font-weight-medium text-subtitle-1 accent--text">
                   {{ review.rating }}
                   <v-icon color="accent">
                     mdi-star
@@ -271,6 +252,7 @@ export default {
       return img.formats?.small?.url || img.url;
     }
   },
+  layout: "product",
   data: () => ({
     image: {},
     options: [],
@@ -386,16 +368,6 @@ export default {
     this.fetchReviews();
   },
   methods: {
-    addToCart() {
-      if (!this.product.stock) {
-        return this.$store.commit("SHOW_ALERT", "Out of Stock!");
-      }
-      this.$store.commit("cart/ADD_TO_CART", {
-        product: this.product,
-        quantity: 1
-      });
-      this.$store.commit("SHOW_ALERT", "added to cart");
-    },
     async fetchReviews() {
       try {
         this.loadingReviews = true;
@@ -467,6 +439,14 @@ export default {
   }
   .add2cart-row {
     justify-content: center;
+  }
+}
+@media #{map-get(
+    $display-breakpoints,
+    "xs-only"
+  )} {
+  .bredcrumb {
+    display: none !important;
   }
 }
 </style>
