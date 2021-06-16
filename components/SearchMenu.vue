@@ -1,10 +1,5 @@
 <template>
-  <v-menu
-    v-model="menu"
-    content-class="search-menu"
-    offset-y
-    :close-on-content-click="false"
-  >
+  <v-menu v-model="menu" offset-y :close-on-content-click="false">
     <template #activator="{on,attrs}">
       <v-btn
         v-show="$route.name !== 'products'"
@@ -75,7 +70,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 import debounce from "lodash.debounce";
 export default {
   name: "SearchMenu",
@@ -90,24 +85,15 @@ export default {
   },
   data() {
     return {
+      menu: false,
       search: "",
       products: [],
       loading: false
     };
   },
   computed: {
-    ...mapGetters("app", ["searchMenu"]),
-
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown;
-    },
-    menu: {
-      get() {
-        return this.searchMenu;
-      },
-      set(val) {
-        this.SEARCH_MENU_OPEN(val);
-      }
     }
   },
   watch: {
@@ -126,7 +112,6 @@ export default {
 
   methods: {
     ...mapMutations("products", ["RESET_FILTER", "SET_SEARCH"]),
-    ...mapMutations("app", ["SEARCH_MENU_OPEN"]),
 
     searchItems: debounce(async function() {
       try {
