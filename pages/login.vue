@@ -2,13 +2,14 @@
   <v-container class="fill-height">
     <v-row class="fill-height" align="center" justify="center">
       <v-col cols="12" sm="8" md="6" lg="5">
-        <v-card outlined>
+        <v-card class="my-10" outlined>
           <v-card-title>
             Log In
           </v-card-title>
           <v-card-text>
             <v-text-field
               v-model="user.email"
+              type="email"
               flat
               label="Email"
               placeholder="Email"
