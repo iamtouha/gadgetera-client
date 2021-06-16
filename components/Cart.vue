@@ -34,7 +34,7 @@
         />
       </v-list-item-action>
       <v-list-item-action v-show="!incrementBtns">
-        <v-btn small icon @click="REMOVE_FROM_CART(item.product.id)">
+        <v-btn small icon @click.prevent="REMOVE_FROM_CART(item.product.id)">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-list-item-action>
