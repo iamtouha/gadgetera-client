@@ -7,8 +7,8 @@
     </v-toolbar>
     <v-divider />
 
-    <v-row class="mt-5">
-      <v-col cols="12">
+    <v-row justify="center" class="mt-5 pb-10">
+      <v-col cols="12" sm="10" md="8" lg="7">
         <p>
           <v-icon left>
             mdi-bullhorn-outline
@@ -19,21 +19,17 @@
           <v-text-field
             v-model="message.email"
             name="email"
-            class="mt-3"
             :rules="[v => !!v || 'Email is required']"
             validate-on-blur
             type="email"
             label="Email"
-            outlined
           />
           <v-select
             v-model="message.topic"
             name="topic"
-            class="mt-3"
             :rules="[v => !!v || 'Field is required']"
             validate-on-blur
             :items="topics"
-            outlined
             label="Select topic"
           />
           <v-textarea
