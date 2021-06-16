@@ -75,7 +75,7 @@
 import { mapGetters } from "vuex";
 
 export default {
-  name: "ShowCase",
+  name: "NoExtension",
 
   data: () => ({
     cartMenu: false
