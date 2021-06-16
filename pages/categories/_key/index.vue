@@ -22,14 +22,20 @@
 
     <v-container>
       <v-row class="my-6">
-        <v-col v-show="!subcategories.length && loading" cols="6" sm="4" md="3">
+        <v-col
+          v-show="!subcategories.length && loading"
+          class="pa-1 pa-sm-3"
+          cols="6"
+          sm="4"
+          md="3"
+        >
           <v-skeleton-loader type="card" />
         </v-col>
 
         <v-col
           v-for="subcat in subcategories"
           :key="subcat.id"
-          class="pa-2 pa-sm-3"
+          class="pa-1 pa-sm-3"
           cols="6"
           sm="4"
           md="3"

@@ -29,12 +29,12 @@
           hide-details
           append-icon="mdi-plus-circle"
           prepend-inner-icon="mdi-minus-circle"
-          @click:append="INCREMENT(item.product.id)"
-          @click:prepend-inner="DECREMENT(item.product.id)"
+          @click:append.prevent="INCREMENT(item.product.id)"
+          @click:prepend-inner.prevent="DECREMENT(item.product.id)"
         />
       </v-list-item-action>
       <v-list-item-action v-show="!incrementBtns">
-        <v-btn small icon @click="REMOVE_FROM_CART(item.product.id)">
+        <v-btn small icon @click.prevent="REMOVE_FROM_CART(item.product.id)">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-list-item-action>

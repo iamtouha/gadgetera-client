@@ -432,6 +432,8 @@ export default {
   }
   .description-wrapper {
     border-radius: 0 !important;
+    max-width: 100%;
+    overflow-x: auto;
   }
   .add2cart-btn {
     width: 100%;

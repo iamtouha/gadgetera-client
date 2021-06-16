@@ -1,18 +1,14 @@
 <template>
   <v-footer class="py-3" dark color="primary">
     <v-row>
-      <v-col cols="12" sm="6">
-        <v-list-item style="max-width:220px;" dense @click="openDialer">
+      <v-col class="secondary-routes" cols="12" sm="6">
+        <v-list-item dense @click="openDialer">
           <v-icon left>
             mdi-phone
           </v-icon>
           {{ contact.phone }}
         </v-list-item>
-        <v-list-item
-          style="max-width:250px;"
-          dense
-          :href="'mailto:' + contact.email"
-        >
+        <v-list-item dense :href="'mailto:' + contact.email">
           <v-icon left>
             mdi-email-outline
           </v-icon>
@@ -100,7 +96,8 @@ export default {
 };
 </script>
 <style>
-.secondary-routes a {
+.secondary-routes > a,
+.secondary-routes > div {
   max-width: fit-content;
 }
 </style>
