@@ -3,14 +3,14 @@
     <v-text-field
       ref="searchInput"
       v-model="search"
-      outlined
+      flat
+      prepend-inner-icon="mdi-magnify"
       style="max-width:400px"
       clearable
-      class="mx-auto"
+      class="mx-auto product-search-main"
       hide-details
       single-line
       placeholder="Search products"
-      append-icon="mdi-magnify"
     />
 
     <v-row>
@@ -44,27 +44,28 @@
           <v-select
             v-model="sort"
             prepend-inner-icon="mdi-sort"
-            hide-details
             style="max-width:230px"
-            class="ml-sm-4 sort-input"
+            class="ml-sm-4 toolbar-input"
             solo
             flat
             dense
+            hide-details
             :items="sorting"
             item-text="label"
             item-value="key"
           />
         </div>
         <v-divider />
-        <div style="height:5px">
-          <v-progress-linear v-show="loading" indeterminate />
-        </div>
+
         <v-slide-y-transition>
           <v-card v-show="mobileFilter" outlined class="d-md-none my-2">
             <filter-panel single />
           </v-card>
         </v-slide-y-transition>
 
+        <div style="height:5px">
+          <v-progress-linear v-show="loading" indeterminate />
+        </div>
         <!-- Products grid -->
         <v-row align="stretch" class="mt-3">
           <v-col v-show="!products.length && loading" cols="6" sm="4" lg="3">
@@ -172,7 +173,7 @@ export default {
     this.$nuxt.$off("search-field-focus", this.searchFocus);
   },
   methods: {
-    ...mapMutations("products", ["SORT"]),
+    ...mapMutations("products", ["SORT", "SET_SEARCH"]),
     ...mapActions("products", ["fetchAll", "reFetch"]),
     searchFocus() {
       this.$refs.searchInput?.focus();
@@ -180,8 +181,3 @@ export default {
   }
 };
 </script>
-<style>
-.sort-input .v-input__slot {
-  background-color: rgba(0, 0, 0, 0) !important;
-}
-</style>

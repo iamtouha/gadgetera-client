@@ -14,7 +14,7 @@
       <span class="font-weight-bold">Gadget</span> Era
     </v-toolbar-title>
     <v-spacer />
-    <navigation-tabs height="56px" class="d-none d-md-block" />
+    <navigation-tabs height="56px" centered class="d-none d-md-block" />
 
     <v-spacer />
     <v-btn
@@ -39,7 +39,12 @@
     >
       <v-icon>mdi-account</v-icon>
     </v-btn>
-    <v-menu v-model="cartMenu" :close-on-content-click="false">
+    <v-menu
+      v-model="cartMenu"
+      offset-y
+      :close-on-content-click="false"
+      min-width="300px"
+    >
       <template #activator="{ on, attrs }">
         <v-btn v-bind="attrs" text icon v-on="on">
           <v-icon>mdi-cart</v-icon>
@@ -63,13 +68,6 @@ export default {
     ...mapGetters("cart", ["cartItems"]),
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown;
-    }
-  },
-  prevRoute() {
-    const route = { path: "", name: "" };
-    switch (this.$route.name) {
-      case "products-slug":
-        route.path = "/products";
     }
   },
 

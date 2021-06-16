@@ -2,8 +2,8 @@
   <v-menu
     v-model="menu"
     content-class="search-menu"
+    offset-y
     :close-on-content-click="false"
-    :close-on-click="isMobile"
   >
     <template #activator="{on,attrs}">
       <v-btn
@@ -19,25 +19,15 @@
       </v-btn>
     </template>
 
-    <v-card elevation="4" class="search-card" width="340px">
-      <v-btn
-        x-small
-        absolute
-        elevation="2"
-        class="secondary primary--text close-menu-btn"
-        icon
-        @click.stop="menu = false"
-      >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
+    <v-card class="search-card" width="340px">
       <v-card-text class="pb-0">
         <v-text-field
           ref="searchInput"
           v-model="search"
           placeholder="Search Product"
           name="search"
-          outlined
-          filled
+          flat
+          prepend-inner-icon="mdi-magnify"
           dense
           hide-details
         />
@@ -85,7 +75,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 import debounce from "lodash.debounce";
 export default {
   name: "SearchMenu",
@@ -100,15 +90,24 @@ export default {
   },
   data() {
     return {
-      menu: false,
       search: "",
       products: [],
       loading: false
     };
   },
   computed: {
+    ...mapGetters("app", ["searchMenu"]),
+
     isMobile() {
       return this.$vuetify.breakpoint.smAndDown;
+    },
+    menu: {
+      get() {
+        return this.searchMenu;
+      },
+      set(val) {
+        this.SEARCH_MENU_OPEN(val);
+      }
     }
   },
   watch: {
@@ -127,6 +126,8 @@ export default {
 
   methods: {
     ...mapMutations("products", ["RESET_FILTER", "SET_SEARCH"]),
+    ...mapMutations("app", ["SEARCH_MENU_OPEN"]),
+
     searchItems: debounce(async function() {
       try {
         const search = this.search.trim();
@@ -165,16 +166,3 @@ export default {
   }
 };
 </script>
-<style>
-.search-menu {
-  box-shadow: none !important;
-  padding: 8px;
-}
-.search-card {
-  position: relative;
-}
-.close-menu-btn {
-  top: -5px;
-  right: -5px;
-}
-</style>

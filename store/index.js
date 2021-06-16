@@ -22,6 +22,9 @@ export const mutations = {
     state.token = jwt;
   },
   SET_ADDRESS(state, address) {
+    if (!address) {
+      return;
+    }
     const {
       receiver,
       district,

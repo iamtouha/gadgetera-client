@@ -9,14 +9,14 @@
           <v-card-text>
             <v-text-field
               v-model="user.email"
-              outlined
+              flat
               label="Email"
               placeholder="Email"
               single-line
             />
             <v-text-field
               v-model="user.password"
-              outlined
+              flat
               :type="viewPass ? 'text' : 'password'"
               :append-icon="viewPass ? 'mdi-eye' : 'mdi-eye-off'"
               label="Password"
@@ -31,6 +31,7 @@
               sign up
             </v-btn>
             <v-btn
+              class="font-weight-medium px-4"
               elevation="0"
               :loading="loading"
               color="accent"
@@ -63,16 +64,24 @@ export default {
     };
   },
   methods: {
-    login() {
-      if (!this.user.email || !this.user.password) {
-        return this.$store.commit("SHOW_ALERT", "Email and password required.");
+    async login() {
+      try {
+        this.loading = true;
+        if (!this.user.email || !this.user.password) {
+          return this.$store.commit(
+            "SHOW_ALERT",
+            "Email and password required."
+          );
+        }
+        await this.$store.dispatch("logIn", this.user);
+        this.$router.push("/");
+      } catch (error) {
+        // eslint-disable-next-line
+        console.log(error);
+        return error;
+      } finally {
+        this.loading = false;
       }
-      this.loading = true;
-      this.$store
-        .dispatch("logIn", this.user)
-        .then(() => this.$nuxt.$router.push("/"))
-        .catch(err => err)
-        .finally(() => (this.loading = false));
     }
   }
 };

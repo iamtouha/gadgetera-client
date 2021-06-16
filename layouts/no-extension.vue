@@ -9,7 +9,7 @@
       class="showcase-app-bar"
     >
       <v-btn
-        to="/products"
+        :to="prevRoute.path"
         nuxt
         exact
         class="font-weight-bold pl-0"
@@ -19,23 +19,12 @@
         <v-icon class="mr-2">
           mdi-arrow-left
         </v-icon>
-        Products
+        {{ prevRoute.name }}
       </v-btn>
+      <v-spacer />
+      <navigation-tabs height="56px" centered class="d-none d-md-block" />
+      <v-spacer />
 
-      <v-spacer />
-      <navigation-tabs height="56px" class="d-none d-md-block" />
-      <v-spacer />
-      <v-btn
-        v-show="$route.name === 'products'"
-        text
-        icon
-        elevation="0"
-        @click="focusOnSearch"
-      >
-        <v-icon>
-          mdi-magnify
-        </v-icon>
-      </v-btn>
       <search-menu />
       <v-btn
         text
@@ -47,7 +36,12 @@
       >
         <v-icon>mdi-account</v-icon>
       </v-btn>
-      <v-menu v-model="cartMenu" :close-on-content-click="false">
+      <v-menu
+        v-model="cartMenu"
+        offset-y
+        :close-on-content-click="false"
+        min-width="300px"
+      >
         <template #activator="{ on, attrs }">
           <v-btn v-bind="attrs" text icon v-on="on">
             <v-icon>mdi-cart</v-icon>
@@ -104,13 +98,20 @@ export default {
         // eslint-disable-next-line curly
         if (!val) this.$store.commit("HIDE_ALERT");
       }
-    }
-  },
-  prevRoute() {
-    const route = { path: "", name: "" };
-    switch (this.$route.name) {
-      case "products-slug":
-        route.path = "/products";
+    },
+    prevRoute() {
+      const route = { path: "", name: "" };
+      switch (this.$route.name) {
+        case "products-slug":
+          route.path = "/products";
+          route.name = "Products";
+          break;
+        default:
+          route.path = "/";
+          route.name = "Home";
+          break;
+      }
+      return route;
     }
   },
 

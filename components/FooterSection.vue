@@ -41,7 +41,10 @@
           </v-list-item-content>
         </v-list-item>
       </v-col>
-      <v-col cols="12" sm="6">
+      <v-col class="secondary-routes" cols="12" sm="6">
+        <v-list-item dense nuxt active-class="secondary--text" to="/contact">
+          Contact Us
+        </v-list-item>
         <v-list-item
           dense
           nuxt
@@ -96,5 +99,8 @@ export default {
   }
 };
 </script>
-
-<style></style>
+<style>
+.secondary-routes a {
+  max-width: fit-content;
+}
+</style>

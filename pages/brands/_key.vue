@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card color="transparent">
+    <v-card color="transparent" :loading="loading">
       <div class="d-flex flex-no-wrap">
         <div v-show="!logo" class="responsive rounded ma-1" style="width:95px;">
           <div class="sizer">
@@ -34,10 +34,7 @@
         </div>
       </div>
     </v-card>
-    <v-divider />
-    <div style="height:5px">
-      <v-progress-linear v-show="loading" indeterminate />
-    </div>
+
     <v-row class="mt-3">
       <v-col
         v-show="!products.length && loading"

@@ -4,7 +4,7 @@
       <v-img :src="cover" :lazy-src="thumbnail" class="subcategory-cover">
         <v-overlay class="align-end justify-start" absolute>
           <v-card dark width="100%" color="transparent">
-            <v-card-title class="text-h5 text-md-h4 text-lg-h3">
+            <v-card-title class="text-h5 text-md-h4">
               {{ subcategory.name }}
             </v-card-title>
             <v-card-subtitle class="text-subtitle-1">

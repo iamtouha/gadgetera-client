@@ -9,14 +9,14 @@
           <v-card-text>
             <v-text-field
               v-model="user.name"
-              outlined
+              flat
               label="Name"
               placeholder="Name"
               single-line
             />
             <v-text-field
               v-model="user.email"
-              outlined
+              flat
               label="Email"
               placeholder="Email"
               type="email"
@@ -24,7 +24,7 @@
             />
             <v-text-field
               v-model="user.password"
-              outlined
+              flat
               :type="viewPass ? 'text' : 'password'"
               label="Password"
               placeholder="Password"
@@ -34,7 +34,7 @@
             />
             <v-text-field
               v-model="user.repeatPassword"
-              outlined
+              flat
               :type="viewPass ? 'text' : 'password'"
               label="Enter Again"
               placeholder="Enter Again"
@@ -47,6 +47,7 @@
               log in
             </v-btn>
             <v-btn
+              class="font-weight-medium px-4"
               elevation="0"
               :loading="loading"
               color="accent"

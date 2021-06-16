@@ -1,26 +1,25 @@
 <template>
   <v-container>
-    <v-toolbar flat color="transparent">
-      <v-toolbar-title class="d-none d-sm-block" style="min-width:100px;">
+    <div class="d-flex align-center">
+      <h1 class="title d-none d-sm-block">
         Brands
-      </v-toolbar-title>
+      </h1>
       <v-spacer class="d-none d-sm-block" />
       <v-text-field
         v-model="search"
-        style="max-width:450px; width:100%;"
-        class="mx-auto mx-sm-0"
-        outlined
-        single-line
+        style="max-width:300px; width:100%;"
+        class="mx-auto mx-sm-0 toolbar-input"
+        solo
+        flat
+        dense
         hide-details
-        append-icon="mdi-magnify"
+        prepend-inner-icon="mdi-magnify"
         label="Search brands"
         placeholder="Search brands"
       />
-    </v-toolbar>
-    <v-divider />
-    <div style="height:5px">
-      <v-progress-linear v-show="loading" indeterminate />
     </div>
+    <v-divider />
+
     <v-row class="mt-5">
       <v-col v-show="!filtered.length && loading" cols="6" sm="4" md="3" lg="2">
         <v-skeleton-loader type="image" />
