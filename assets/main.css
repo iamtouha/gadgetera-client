@@ -1,4 +1,4 @@
-.page-enter-active,
+.layout-enter-active,
 .page-leave-active {
   transition: opacity 0.5s;
 }
@@ -6,7 +6,19 @@
 .page-leave-to {
   opacity: 0;
 }
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 0.5s;
+}
+.layout-enter,
+.layout-leave-to {
+  opacity: 0;
+}
 
 .d-contents {
   display: contents;
+}
+
+.toolbar-input .v-input__slot {
+  background-color: rgba(0, 0, 0, 0) !important;
 }

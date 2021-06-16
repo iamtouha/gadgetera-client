@@ -1,12 +1,14 @@
 export const namespaced = true;
 
-export const state = () => ({});
+export const state = () => ({
+  searchMenu: false
+});
 
 export const getters = {
-  filterDrawer: ({ filterDrawer }) => filterDrawer
+  searchMenu: ({ searchMenu }) => searchMenu
 };
 export const mutations = {
-  FILTER_DRAWER_OPEN(state, val) {
-    state.filterDrawer = val;
+  SEARCH_MENU_OPEN(state, val) {
+    state.searchMenu = val;
   }
 };

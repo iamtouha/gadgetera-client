@@ -85,19 +85,14 @@
           Shipping Address
         </h1>
         <v-divider class="mb-4" />
-        <v-text-field
-          v-model="address.receiver"
-          outlined
-          label="Receiver Name"
-        />
-        <v-text-field v-model="address.email" outlined label="Email" />
-        <v-text-field v-model="address.phone" outlined label="Phone" />
+        <v-text-field v-model="address.receiver" label="Receiver Name" />
+        <v-text-field v-model="address.email" label="Email" />
+        <v-text-field v-model="address.phone" label="Phone" />
         <v-row>
           <v-col cols="6">
             <v-autocomplete
               v-model="district"
               :items="districts"
-              outlined
               item-text="name"
               item-value="id"
               label="District"
@@ -107,18 +102,13 @@
             <v-autocomplete
               v-model="address.sub_district"
               :items="subDistricts"
-              outlined
               item-text="name"
               item-value="name"
               label="Sub District"
             />
           </v-col>
         </v-row>
-        <v-text-field
-          v-model="address.street_address"
-          outlined
-          label="Street Address"
-        />
+        <v-text-field v-model="address.street_address" label="Street Address" />
         <h1 class="title mt-6">
           Payment
         </h1>
@@ -126,11 +116,10 @@
         <v-checkbox v-model="order.cash_on_delivery" label="Cash on delivery" />
         <v-select
           v-model="order.option"
-          outlined
           label="Method"
           :items="['bkash', 'nagad', 'rocket']"
         />
-        <v-text-field v-model="order.trx_id" outlined label="Transaction Id" />
+        <v-text-field v-model="order.trx_id" label="Transaction Id" />
         <v-btn
           :loading="placing_order"
           class="mt-2 mb-6 orderbtn"

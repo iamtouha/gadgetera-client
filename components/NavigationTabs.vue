@@ -1,9 +1,11 @@
 <template>
   <v-tabs
     v-model="tab"
-    centered
-    align-with-title
+    :centered="centered"
+    slider-size="4"
+    :align-with-title="centered"
     class="nav-tabs px-sm-3"
+    :class="[centered ? 'centered' : '']"
     :height="height"
   >
     <v-tab
@@ -11,11 +13,12 @@
       :key="route.name"
       :to="route.path"
       nuxt
-      :exact="route.name !== 'Home'"
+      exact
       class="font-weight-bold route-tab"
     >
-      {{ route.name }}
+      {{ route.title }}
     </v-tab>
+    <v-tabs-slider v-show="hasRoutePath" />
   </v-tabs>
 </template>
 
@@ -23,32 +26,36 @@
 export default {
   name: "Navigation",
   props: {
-    center: Boolean,
+    centered: Boolean,
     height: { type: String, default: "48px" }
   },
   data: () => ({
     tab: null,
     routes: [
-      { name: "Home", path: "/" },
-      { name: "Store", path: "/products" },
-      { name: "Categories", path: "/categories" },
-      { name: "brands", path: "/brands" }
+      { title: "Home", path: "/", name: "index" },
+      { title: "Store", path: "/products", name: "products" },
+      { title: "Categories", path: "/categories", name: "categories" },
+      { title: "brands", path: "/brands", name: "brands" }
     ]
-  })
+  }),
+  computed: {
+    hasRoutePath() {
+      const name = this.$route.name;
+      return this.routes.some(item => item.name === name);
+    }
+  }
 };
 </script>
 
 <style lang="scss">
 .nav-tabs {
-  max-width: 340px;
   font-size: 18px;
   .v-slide-group__prev,
   .v-slide-group__next {
     display: none !important;
   }
-  @import "~vuetify/src/styles/styles.sass";
-  // .route-tab {
-  //   border-radius: $border-radius-root $border-radius-root 0 0;
-  // }
+  &.centered {
+    max-width: 500px;
+  }
 }
 </style>

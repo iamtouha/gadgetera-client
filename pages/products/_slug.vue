@@ -13,7 +13,7 @@
         :items="bredcrumbItems"
       />
       <v-row>
-        <v-col cols="12" sm="6" class="pa-0 pa-sm-3">
+        <v-col cols="12" sm="6">
           <div v-show="!product.images.length" class="responsive">
             <div class="sizer">
               <div class="wrapper">
@@ -252,7 +252,7 @@ export default {
       return img.formats?.small?.url || img.url;
     }
   },
-  layout: "product",
+  layout: "no-extension",
   data: () => ({
     image: {},
     options: [],
