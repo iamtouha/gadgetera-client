@@ -22,7 +22,7 @@
     </div>
     <v-card-title
       style="line-height:1.5rem"
-      class="text-subtitle-1 text-md-h6 font-weight-medium pt-1"
+      class="text-body-1 text-md-h6 font-weight-medium pt-1"
     >
       {{ product.name }}
     </v-card-title>

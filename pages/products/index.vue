@@ -7,7 +7,7 @@
       prepend-inner-icon="mdi-magnify"
       style="max-width:400px"
       clearable
-      class="mx-auto product-search-main"
+      class="mx-auto mb-6 product-search-main"
       hide-details
       single-line
       placeholder="Search products"
@@ -68,13 +68,19 @@
         </div>
         <!-- Products grid -->
         <v-row align="stretch" class="mt-3">
-          <v-col v-show="!products.length && loading" cols="6" sm="4" lg="3">
+          <v-col
+            v-show="!products.length && loading"
+            class="pa-1 pa-sm-3"
+            cols="6"
+            sm="4"
+            lg="3"
+          >
             <v-skeleton-loader type="card" />
           </v-col>
           <v-col
             v-for="prod in products"
             :key="prod.id"
-            class="pa-2 pa-sm-3"
+            class="pa-1 pa-sm-3"
             cols="6"
             sm="4"
             lg="3"

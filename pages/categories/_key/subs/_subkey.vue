@@ -21,10 +21,10 @@
       <v-row>
         <v-col
           v-show="!products.length && loading"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
+          class="pa-1 pa-sm-3"
+          cols="6"
+          sm="4"
+          md="3"
         >
           <v-skeleton-loader type="card" />
         </v-col>
@@ -34,6 +34,7 @@
         <v-col
           v-for="product in products"
           :key="product.id"
+          class="pa-1 pa-sm-3"
           cols="6"
           sm="4"
           md="3"
