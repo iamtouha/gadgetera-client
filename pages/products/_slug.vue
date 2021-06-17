@@ -323,7 +323,7 @@ export default {
             "https://gadgeterabd.com"}/products/${slug}`
         },
         { hid: "og:title", name: "og:title", content: name },
-        { hid: "og:desc", name: "og:description", content: overview },
+        { hid: "og:description", name: "og:description", content: overview },
         { hid: "og:image", name: "og:image", content: this.imageUrl },
         { hid: "image", name: "image", content: this.imageUrl },
         { hid: "twitter:card", name: "twitter:card", content: "summary" }

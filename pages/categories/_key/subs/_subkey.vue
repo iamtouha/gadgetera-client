@@ -99,16 +99,20 @@ export default {
     return {
       title: this.subcategory.name,
       meta: [
+        { hid: "title", name: "title", content: this.subcategory.name },
+        { hid: "og:title", name: "og:title", content: this.subcategory.name },
         {
           hid: "description",
           name: "description",
           content: this.subcategory.description
         },
+
         {
-          hid: "og:image",
-          name: "og:image",
-          content: this.cover
-        }
+          hid: "og:description",
+          name: "og:description",
+          content: this.subcategory.description
+        },
+        { hid: "og:image", name: "og:image", content: this.cover }
       ]
     };
   },

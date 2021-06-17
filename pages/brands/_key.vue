@@ -107,16 +107,19 @@ export default {
     return {
       title: this.brand.name,
       meta: [
+        { hid: "title", name: "title", content: this.brand.name },
+        { hid: "og:title", name: "og:title", content: this.brand.name },
         {
           hid: "description",
           name: "description",
           content: this.brand.description
         },
         {
-          hid: "og:image",
-          name: "og:image",
-          content: this.logo
-        }
+          hid: "og:description",
+          name: "og:description",
+          content: this.brand.description
+        },
+        { hid: "og:image", name: "og:image", content: this.logo }
       ]
     };
   },
