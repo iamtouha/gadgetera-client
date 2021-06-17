@@ -16,9 +16,6 @@
         </v-overlay>
       </v-img>
     </v-container>
-    <div class="loadingbar-wrapper">
-      <v-progress-linear v-show="loading" indeterminate />
-    </div>
 
     <v-container>
       <v-row class="my-6">
@@ -94,16 +91,20 @@ export default {
     return {
       title: this.category.name,
       meta: [
+        { hid: "title", name: "title", content: this.category.name },
+        { hid: "og:title", name: "og:title", content: this.category.name },
         {
           hid: "description",
           name: "description",
           content: this.category.description
         },
+
         {
-          hid: "og:image",
-          name: "og:image",
-          content: this.cover
-        }
+          hid: "og:description",
+          name: "og:description",
+          content: this.category.description
+        },
+        { hid: "og:image", name: "og:image", content: this.cover }
       ]
     };
   }

@@ -22,3 +22,18 @@
 .toolbar-input .v-input__slot {
   background-color: rgba(0, 0, 0, 0) !important;
 }
+
+.cart-activator {
+  position: relative;
+}
+.cart-activator-notifier {
+  position: absolute;
+  display: block;
+  margin: 0;
+  padding: 0;
+  top: -3px;
+  right: 6px;
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 1000%;
+}

@@ -34,7 +34,7 @@
         nuxt
         exact
       >
-        <v-icon>mdi-account</v-icon>
+        <v-icon>mdi-account-circle-outline</v-icon>
       </v-btn>
       <v-menu
         v-model="cartMenu"
@@ -43,8 +43,12 @@
         min-width="300px"
       >
         <template #activator="{ on, attrs }">
-          <v-btn v-bind="attrs" text icon v-on="on">
-            <v-icon>mdi-cart</v-icon>
+          <v-btn class="cart-activator" v-bind="attrs" text icon v-on="on">
+            <span
+              v-show="cartItems.length"
+              class="accent cart-activator-notifier"
+            />
+            <v-icon>mdi-cart-outline</v-icon>
           </v-btn>
         </template>
         <cart @close="cartMenu = false" />
