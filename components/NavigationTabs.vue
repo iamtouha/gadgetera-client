@@ -2,7 +2,7 @@
   <v-tabs
     v-model="tab"
     :centered="centered"
-    slider-size="4"
+    slider-size="3"
     :align-with-title="centered"
     class="nav-tabs px-sm-3"
     :class="[centered ? 'centered' : '']"
@@ -14,7 +14,7 @@
       :to="route.path"
       nuxt
       exact
-      class="font-weight-bold route-tab"
+      class="route-tab font-weight-medium"
     >
       {{ route.title }}
     </v-tab>

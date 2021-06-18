@@ -95,7 +95,7 @@
             </v-icon>
             )
           </v-btn>
-          <p>
+          <p class="text-body-2">
             {{ product.overview }}
           </p>
           <p class="text-subtitle font-weight-medium">
@@ -405,13 +405,13 @@ export default {
   width: 100%;
 }
 .option-overlay {
-  display: none;
+  display: none !important;
 }
 .option-active {
   cursor: default !important;
 }
 .option-active .option-overlay {
-  display: flex;
+  display: flex !important;
 }
 
 .option-active {
