@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-container style="min-height:100vh">
     <v-card color="transparent" :loading="loading">
-      <div class="d-flex flex-no-wrap">
+      <div class="d-flex flex-no-wrap flex-column flex-sm-row">
         <div v-show="!logo" class="responsive rounded ma-1" style="width:95px;">
           <div class="sizer">
             <div class="wrapper">
@@ -12,9 +12,10 @@
         <v-img
           v-show="logo"
           contain
-          max-width="95px"
-          class="rounded ma-1"
-          :aspect-ratio="1"
+          max-width="180px"
+          min-width="95px"
+          class="rounded mx-auto mx-sm-0"
+          :aspect-ratio="logo.height / logo.width"
           :src="logo"
         />
         <div class="d-flex flex-column justify-end">

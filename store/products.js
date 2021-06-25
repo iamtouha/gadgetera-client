@@ -35,7 +35,7 @@ export const mutations = {
       brand: product.brand,
       stock: product.stock,
       price: product.price,
-      discount: product.discount
+      sale_price: product.sale_price
     }));
     state.products = [...state.products, ...products];
   },
@@ -49,7 +49,7 @@ export const mutations = {
       brand: product.brand,
       stock: product.stock,
       price: product.price,
-      discount: product.discount
+      sale_price: product.sale_price
     }));
   },
   SORT(state, { field, order }) {

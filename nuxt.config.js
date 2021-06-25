@@ -104,7 +104,8 @@ export default {
           info: "#fdfce2",
           warning: "#FFC107",
           error: "#FF8A80",
-          success: "#00E676"
+          success: "#00E676",
+          font: "#000000"
         }
       }
     }

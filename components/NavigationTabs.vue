@@ -14,7 +14,7 @@
       :to="route.path"
       nuxt
       exact
-      class="route-tab font-weight-medium"
+      class="route-tab"
     >
       {{ route.title }}
     </v-tab>
@@ -48,6 +48,9 @@ export default {
 </script>
 
 <style lang="scss">
+.route-tab {
+  font-weight: 600 !important;
+}
 .nav-tabs {
   font-size: 18px;
   .v-slide-group__prev,

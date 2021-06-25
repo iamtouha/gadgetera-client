@@ -114,4 +114,7 @@ export default {
     padding-top: 60px !important;
   }
 }
+.default-main {
+  min-height: 100vh;
+}
 </style>

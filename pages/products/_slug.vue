@@ -12,166 +12,16 @@
         class="pl-0 bredcrumb"
         :items="bredcrumbItems"
       />
-      <v-row>
-        <v-col cols="12" sm="6">
-          <div v-show="!product.images.length" class="responsive">
-            <div class="sizer">
-              <div class="wrapper">
-                <v-skeleton-loader
-                  class="product-image-skeleton"
-                  min-height="400px"
-                  type="image"
-                />
-              </div>
-            </div>
-          </div>
-
-          <v-carousel
-            height="auto"
-            hide-delimiters
-            show-arrows-on-hover
-            cycle
-            dark
-            show-arrows
-            :interval="10000"
-          >
-            <v-carousel-item v-for="img in product.images" :key="img.id">
-              <div class="responsive rounded">
-                <div class="sizer">
-                  <div class="wrapper">
-                    <img
-                      :src="img | small"
-                      :alt="img.alternativeText"
-                      :title="img.caption"
-                    />
-                  </div>
-                </div>
-              </div>
-            </v-carousel-item>
-          </v-carousel>
-        </v-col>
-        <v-col cols="12" sm="6">
-          <div v-show="!product.id" class="d-contents info-placeholder">
-            <v-skeleton-loader type="chip" />
-            <v-skeleton-loader type="heading" max-width="300px" class="my-7" />
-            <v-skeleton-loader type="text" />
-            <v-skeleton-loader max-width="350px" type="text" />
-            <v-skeleton-loader type="text" />
-            <v-skeleton-loader max-width="100px" type="text" />
-          </div>
-          <h1 class="text-md-h4 text-h6 mb-3 font-weight-medium">
-            {{ product.name }}
-          </h1>
-          <h2
-            v-if="!product.discount"
-            class="mb-3 text-h6 primary--text font-weight-medium"
-          >
-            {{ product.price | groupNum }}
-          </h2>
-          <h2 v-else class="text-body-1">
-            <span class="text-h6 primary--text font-weight-medium">
-              {{
-                Math.ceil(product.price - product.price * product.discount)
-                  | groupNum
-              }}
-            </span>
-            <span class="font-weight-medium ml-1 text-body-1">
-              ( {{ Math.ceil(100 * product.discount) }}% off)
-            </span>
-          </h2>
-          <v-btn
-            v-show="reviews.length"
-            text
-            color="primary"
-            class="my-2 px-0 text-lowercase font-weight-medium"
-            @click="scrollToReviews"
-          >
-            view reviews (
-            <span class="accent--text">
-              {{ rating }}
-            </span>
-            <v-icon color="accent">
-              mdi-star
-            </v-icon>
-            )
-          </v-btn>
-          <p class="text-body-2">
-            {{ product.overview }}
-          </p>
-          <p class="text-subtitle font-weight-medium">
-            Options
-          </p>
-          <v-row class="mb-3">
-            <v-col v-show="!options.length" cols="3" lg="2">
-              <div class="responsive rounded">
-                <div class="sizer">
-                  <div class="wrapper">
-                    <v-skeleton-loader type="image" />
-                  </div>
-                </div>
-              </div>
-            </v-col>
-            <v-col v-for="option in options" :key="option.id" cols="3" lg="2">
-              <v-card
-                elevation="0"
-                :to="'/products/' + option.slug"
-                nuxt
-                active-class="option-active"
-              >
-                <v-img
-                  :src="option.thumb"
-                  aspect-ratio="1"
-                  :title="option.name"
-                  :alt="option.name"
-                >
-                  <v-overlay absolute class="option-overlay">
-                    <v-icon>
-                      mdi-check-circle
-                    </v-icon>
-                  </v-overlay>
-                </v-img>
-              </v-card>
-            </v-col>
-          </v-row>
-          <v-simple-table dense class="transparent">
-            <tbody style="cursor:pointer">
-              <tr>
-                <th>Model</th>
-                <td>
-                  <v-skeleton-loader v-show="!product.id" type="text" />
-                  {{ product.model }}
-                </td>
-              </tr>
-              <tr>
-                <th>SKU</th>
-                <td>
-                  <v-skeleton-loader v-show="!product.id" type="text" />
-                  {{ product.sku }}
-                </td>
-              </tr>
-              <tr>
-                <th>Status</th>
-                <td>
-                  <v-skeleton-loader v-show="!product.id" type="text" />
-                  <span v-show="product.id">
-                    {{ product.stock ? "Available in stock" : "Out of Stock" }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </v-simple-table>
-          <v-row class="px-2 mt-6 mx-auto add2cart-row">
-            <v-spacer class="d-sm-block d-none" />
-
-            <cart-buttons :product="product" />
-          </v-row>
-        </v-col>
-      </v-row>
+      <product-viewer
+        :product="product"
+        :options="options"
+        :reviews="reviews"
+      />
     </v-container>
 
-    <v-container class="px-0 px-sm-3">
-      <v-card class="my-10 description-wrapper">
-        <v-card-title class="title font-weight-medium">
+    <v-container class="my-10 px-0 px-sm-3">
+      <v-card class="description-wrapper">
+        <v-card-title class="text-headline font-weight-medium">
           Product Description
         </v-card-title>
         <v-card-text>
@@ -183,47 +33,8 @@
       </v-card>
     </v-container>
 
-    <v-container>
-      <v-card id="reviews">
-        <v-card-title class="title font-weight-medium">
-          Product Reviews
-        </v-card-title>
-        <v-card-text>
-          <v-list
-            max-width="540px"
-            max-height="800px"
-            style="overflow-y:auto;"
-            color="transparent"
-          >
-            <v-list-item v-show="!reviews.length">
-              no reviews found
-            </v-list-item>
-            <v-list-item v-for="review in reviews" :key="review.id" three-line>
-              <v-list-item-content>
-                <v-list-item-title class="title font-weight-medium">
-                  {{ review.user_name }}
-                </v-list-item-title>
-                <v-list-item-subtitle class="body-2 primary--text">
-                  {{ review.createdAt | formatDate }}
-                </v-list-item-subtitle>
-                <v-list-item-subtitle
-                  class="subtitle-1 mt-2 font-weight-medium"
-                >
-                  {{ review.message }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <span class="font-weight-medium text-subtitle-1 accent--text">
-                  {{ review.rating }}
-                  <v-icon color="accent">
-                    mdi-star
-                  </v-icon>
-                </span>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-      </v-card>
+    <v-container class="my-10 ">
+      <reviews-card :reviews="reviews" :loading="loadingReviews" />
     </v-container>
   </v-container>
 </template>
@@ -234,24 +45,7 @@ import extractor from "keyword-extractor";
 
 export default {
   name: "Product",
-  filters: {
-    groupNum(price) {
-      if (!price) {
-        return "";
-      }
-      const formatter = new Intl.NumberFormat("en-US");
-      return "৳ " + formatter.format(price);
-    },
-    formatDate(val) {
-      return new Date(val).toLocaleString();
-    },
-    thumb(img) {
-      return img.formats?.thumbnail.url || img.url;
-    },
-    small(img) {
-      return img.formats?.small?.url || img.url;
-    }
-  },
+
   layout: "no-extension",
   data: () => ({
     image: {},
@@ -334,16 +128,7 @@ export default {
     imageUrl() {
       return this.image.formats?.small?.url || this.image.url;
     },
-    rating() {
-      if (!this.reviews.length) {
-        return "N/A";
-      }
-      const total = this.reviews.reduce((acc, cur) => {
-        acc += cur.rating;
-        return acc;
-      }, 0);
-      return (Math.round((total / this.reviews.length) * 10) / 10).toFixed(1);
-    },
+
     bredcrumbItems() {
       const subcategory = this.subcategory;
       const category = this.subcategory.category;
@@ -380,11 +165,6 @@ export default {
       } finally {
         this.loadingReviews = false;
       }
-    },
-    scrollToReviews() {
-      const review = document.getElementById("reviews");
-      const top = review.offsetTop;
-      window.scrollTo({ top, behavior: "smooth" });
     }
   }
 };

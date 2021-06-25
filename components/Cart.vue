@@ -13,7 +13,7 @@
       <v-list-item-content>
         <v-list-item-title> {{ item.product.name }} </v-list-item-title>
         <v-list-item-subtitle>
-          &#2547; {{ item | calcTotal }}
+          {{ (item.product.sale_price || item.product.price) | groupNum }}
           &times;
           <span class="item-qty">
             {{ item.quantity }}
@@ -63,12 +63,12 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "Cart",
   filters: {
-    calcTotal(item) {
-      const total =
-        item.product.price - item.product.price * item.product.discount;
-
+    groupNum(price) {
+      if (!price) {
+        return "";
+      }
       const formatter = new Intl.NumberFormat("en-US");
-      return formatter.format(total);
+      return "৳ " + formatter.format(price);
     }
   },
   props: {

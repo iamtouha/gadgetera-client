@@ -26,7 +26,7 @@ export const mutations = {
         images,
         name,
         price,
-        discount,
+        sale_price,
         slug,
         photo
       } = payload.product;
@@ -37,11 +37,11 @@ export const mutations = {
           image: img.formats?.thumbnail?.url || img.url,
           name,
           price,
-          discount,
+          sale_price,
           slug
         },
         quantity: payload.quantity,
-        unitPrice: price - price * discount
+        unitPrice: sale_price
       });
     }
     similarItem.quantity += 1;

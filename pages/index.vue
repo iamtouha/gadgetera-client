@@ -41,8 +41,7 @@
                   class="hero-button"
                   color="accent"
                   elevation="0"
-                  :href="banner.href"
-                  target="_blank"
+                  :to="banner.href"
                 >
                   {{ banner.hero_button }}
                 </v-btn>

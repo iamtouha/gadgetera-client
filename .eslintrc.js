@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     semi: [1, "always"],
     quotes: ["error", "double"],
+    camelcase: [1, { properties: "never" }],
     "vue/html-self-closing": [
       "error",
       {
