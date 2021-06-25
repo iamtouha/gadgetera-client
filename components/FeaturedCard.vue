@@ -1,10 +1,10 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-card
-      outlined
+      color="transparent"
       nuxt
       :to="`/products/${product.slug}`"
-      class="fill-height featured-card"
+      class="fill-height featured-card pa-4"
     >
       <v-img
         :src="image.url"
@@ -14,19 +14,17 @@
         max-width="100%"
       >
         <v-expand-transition>
-          <v-card
-            v-if="hover || isMobile"
-            tile
-            dark
+          <div
+            v-show="hover || isMobile"
             class="transition-fast-in-fast-out v-card--reveal"
           >
-            <v-card-title class="title">
+            <v-card-title class="title white--text">
               {{ product.name }}
             </v-card-title>
             <v-card-subtitle class="white--text">
               {{ product.overview }}
             </v-card-subtitle>
-          </v-card>
+          </div>
         </v-expand-transition>
       </v-img>
     </v-card>
@@ -37,8 +35,7 @@
 export default {
   name: "FeaturedCard",
   props: {
-    product: { type: Object, default: () => ({}) },
-    index: { type: Number, default: 0 }
+    product: { type: Object, default: () => ({}) }
   },
 
   computed: {
@@ -61,13 +58,36 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "~vuetify/src/styles/styles.sass";
+
 .v-card--reveal {
   bottom: 0;
   background-color: rgba($color: #489fb5, $alpha: 0.7);
   position: absolute;
   width: 100%;
 }
-.text-shadow {
-  text-shadow: 0 0 3px rgba($color: #000000, $alpha: 0.6);
+@media #{map-get(
+    $display-breakpoints,
+    "md-and-up"
+  )} {
+  .featured-card {
+    width: 550px;
+  }
+}
+@media #{map-get(
+    $display-breakpoints,
+    "sm-only"
+  )} {
+  .featured-card {
+    width: 350px;
+  }
+}
+@media #{map-get(
+    $display-breakpoints,
+    "xs-only"
+  )} {
+  .featured-card {
+    width: 350px;
+  }
 }
 </style>

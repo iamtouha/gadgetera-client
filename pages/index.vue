@@ -63,15 +63,14 @@
       <v-col v-show="!content.featured_products.length" cols="12" sm="6">
         <v-skeleton-loader type="image" />
       </v-col>
-      <v-col
-        v-for="(product, i) in content.featured_products"
-        :key="product.id"
-        class="featured-product"
-        cols="12"
-        sm="6"
-      >
-        <featured-card :product="product" :index="i" />
-      </v-col>
+      <v-slide-group mobile-breakpoint="600">
+        <v-slide-item
+          v-for="product in content.featured_products"
+          :key="product.id"
+        >
+          <featured-card :product="product" />
+        </v-slide-item>
+      </v-slide-group>
     </v-row>
     <!-- featured products end -->
 
@@ -92,7 +91,7 @@
         <v-card nuxt :to="`/subcategories/${subcat.key}`">
           <v-img aspect-ratio="2" :src="subcat.cover.formats.small.url">
             <v-overlay absolute class="align-end justify-start">
-              <div class="pa-4 headline font-weight-bold">
+              <div class="pa-4 headline">
                 {{ subcat.name }}
               </div>
             </v-overlay>
@@ -127,6 +126,9 @@
             </div>
           </v-img>
         </v-card>
+      </v-slide-item>
+      <v-slide-item v-show="!content.best_deals.length">
+        <v-skeleton-loader width="200px" type="image" />
       </v-slide-item>
     </v-slide-group>
     <!-- best deals end -->
@@ -169,7 +171,7 @@
                   {{ user.name }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ user.name }}
+                  {{ user.affiliation }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -178,6 +180,9 @@
             {{ user.message }}
           </v-card-text>
         </v-card>
+      </v-slide-item>
+      <v-slide-item v-show="!content.testimonials.length">
+        <v-skeleton-loader width="350px" type="card" />
       </v-slide-item>
     </v-slide-group>
   </v-container>
