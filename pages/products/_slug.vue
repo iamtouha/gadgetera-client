@@ -139,7 +139,7 @@ export default {
       return [
         { to: `/categories/${category.key}`, text: category.name },
         {
-          to: `/categories/${category.key}/subs/${subcategory.key}`,
+          to: `/subcategories/${subcategory.key}`,
           text: subcategory.name
         },
         { to: `/brands/${brand.key}`, text: brand.name },

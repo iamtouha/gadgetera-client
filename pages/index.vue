@@ -56,46 +56,146 @@
     <!-- homepage carousel end -->
 
     <!-- featured products -->
-    <h2 class="text-h5 text-sm-h4 text-center mb-10 mt-12">
-      Featured Products
-    </h2>
-    <v-row class="mb-6">
-      <v-col v-show="!content.featured_products.length" cols="12" md="6">
-        <v-skeleton-loader type="article" />
+    <v-row class="my-6">
+      <v-col v-show="!content.featured_products.length" cols="12" sm="6">
+        <v-skeleton-loader type="image" />
+      </v-col>
+      <v-col v-show="!content.featured_products.length" cols="12" sm="6">
+        <v-skeleton-loader type="image" />
       </v-col>
       <v-col
-        v-for="product in content.featured_products"
+        v-for="(product, i) in content.featured_products"
         :key="product.id"
         class="featured-product"
         cols="12"
-        md="6"
+        sm="6"
       >
-        <featured-card :product="product" />
+        <featured-card :product="product" :index="i" />
       </v-col>
     </v-row>
     <!-- featured products end -->
 
-    <!-- brands -->
-    <h2 class="text-h5 text-sm-h4 text-center mb-10 mt-12">
-      Brands
+    <!-- subcategories start -->
+    <h2 class="text-h5 text-center mb-6 mt-12">
+      Popular categories
     </h2>
-    <v-row class="mb-6">
-      <v-col v-show="!brands.length" cols="4" sm="3" md="2">
+    <v-row>
+      <v-col v-show="!content.subcategories.length" cols="12" sm="6">
         <v-skeleton-loader type="image" />
       </v-col>
-      <v-col v-for="brand in brands" :key="brand.id" cols="4" sm="3" md="2">
+      <v-col
+        v-for="subcat in content.subcategories"
+        :key="subcat.id"
+        cols="12"
+        sm="6"
+      >
+        <v-card nuxt :to="`/subcategories/${subcat.key}`">
+          <v-img aspect-ratio="2" :src="subcat.cover.formats.small.url">
+            <v-overlay absolute class="align-end justify-start">
+              <div class="pa-4 headline font-weight-bold">
+                {{ subcat.name }}
+              </div>
+            </v-overlay>
+          </v-img>
+        </v-card>
+      </v-col>
+    </v-row>
+    <!-- subcategories end -->
+
+    <!-- best deals start -->
+    <h2 class="text-h5 text-center mb-6 mt-12">
+      Best Deals
+    </h2>
+    <v-slide-group mobile-breakpoint="600" class="pa-4">
+      <v-slide-item v-for="product in content.best_deals" :key="product.id">
+        <v-card
+          width="200px"
+          class="ma-4"
+          nuxt
+          outlined
+          :to="'/products/' + product.slug"
+        >
+          <v-img
+            :src="product.images[0].url"
+            aspect-ratio="1"
+            class="align-center"
+          >
+            <div style="text-align:center;">
+              <v-chip class="mx-auto elevation-2" color="primary">
+                {{ product | calcDiscount }}% OFF
+              </v-chip>
+            </div>
+          </v-img>
+        </v-card>
+      </v-slide-item>
+    </v-slide-group>
+    <!-- best deals end -->
+
+    <!-- brands -->
+    <h2 class="text-h5 text-center mb-6 mt-12">
+      Top Brands
+    </h2>
+    <v-row class="mb-6">
+      <v-col v-show="!content.top_brands.length" cols="4" sm="3" md="2">
+        <v-skeleton-loader type="image" />
+      </v-col>
+      <v-col
+        v-for="brand in content.top_brands"
+        :key="brand.id"
+        cols="4"
+        sm="3"
+        md="2"
+      >
         <v-card nuxt :to="`/brands/${brand.key}`" outlined color="secondary">
           <v-img :aspect-ratio="1" contain :src="brand.logo.url" />
         </v-card>
       </v-col>
     </v-row>
     <!-- brands end -->
+    <!-- testimonials -->
+    <h2 class="text-h5 text-center mb-6 mt-12">
+      Testimonials
+    </h2>
+    <v-slide-group center-active mobile-breakpoint="600" class="pa-4">
+      <v-slide-item v-for="user in content.testimonials" :key="user.id">
+        <v-card width="350px" color="transparent" class="ma-4">
+          <v-card-title>
+            <v-list-item two-line class="pa-0">
+              <v-list-item-avatar>
+                <v-img :src="user.photo.formats.thumbnail.url" />
+              </v-list-item-avatar>
+              <v-list-item-content class="py-0">
+                <v-list-item-title>
+                  {{ user.name }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ user.name }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-card-title>
+          <v-card-text>
+            {{ user.message }}
+          </v-card-text>
+        </v-card>
+      </v-slide-item>
+    </v-slide-group>
   </v-container>
 </template>
 
 <script>
 export default {
   name: "Home",
+  filters: {
+    calcDiscount(product) {
+      const { price, sale_price } = product;
+      if (!product.sale_price) {
+        return 0;
+      }
+      const discount = (100 * (price - sale_price)) / price;
+      return Math.ceil(discount);
+    }
+  },
   data() {
     return {
       touchDevice: false,
@@ -104,7 +204,9 @@ export default {
         banners: [],
         best_deals: [],
         featured_products: [],
-        new_arrivals: []
+        top_brands: [],
+        testimonials: [],
+        subcategories: []
       },
       categories: [],
       brands: []
@@ -112,15 +214,9 @@ export default {
   },
 
   async fetch() {
-    const [homepage, brands, categories] = await Promise.all([
-      this.$axios.$get("/homepage"),
-      this.$axios.$get("/brands"),
-      this.$axios.$get("/categories")
-    ]);
+    const homepage = await this.$axios.$get("/homepage");
     this.content = homepage;
     this.img = homepage.banners[0].content;
-    this.categories = categories;
-    this.brands = brands;
   },
   head() {
     return {

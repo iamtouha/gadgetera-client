@@ -7,12 +7,12 @@
   >
     <div class="responsive">
       <v-chip
-        v-show="product.discount"
-        color="primary"
-        light
-        class="offer-chip"
+        v-show="product.sale_price"
+        color="accent"
+        small
+        class="offer-chip text-uppercase"
       >
-        {{ Math.ceil(100 * product.discount) }}% off
+        on sale
       </v-chip>
       <div class="sizer">
         <div class="wrapper">
@@ -31,7 +31,7 @@
     </v-card-subtitle>
     <v-card-actions class="pt-0 actions-bar">
       <p class="mb-0 pl-2 text-subtitle-1 text-sm-h6">
-        {{ product.price | groupNum }}
+        {{ (product.sale_price || product.price) | groupNum }}
       </p>
       <v-spacer />
       <v-btn

@@ -41,7 +41,7 @@
             :title="subcat.name"
             :subtitle="subcat.products.length + ' products'"
             :image="subcat.cover"
-            :path="`/categories/${category.key}/subs/${subcat.key}`"
+            :path="`/subcategories/${subcat.key}`"
           />
         </v-col>
         <v-col v-show="!(subcategories.length || loading)" class="text-center">

@@ -41,7 +41,7 @@ export const mutations = {
           slug
         },
         quantity: payload.quantity,
-        unitPrice: sale_price
+        unitPrice: sale_price || price
       });
     }
     similarItem.quantity += 1;
