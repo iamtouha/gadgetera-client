@@ -215,18 +215,30 @@
           <circle cx="202.03012" cy="16.95465" r="16.95465" fill="#3f3d56" />
           <circle cx="648.90619" cy="196.18949" r="16.95465" fill="#3f3d56" />
         </svg>
-        <p class="headline text-center mt-4">
+        <p class="title text-center mt-4">
           {{ note }}
         </p>
         <v-btn
+          v-show="error.statusCode === 404"
           nuxt
           to="/"
           elevation="0"
           color="accent"
           class="font-weight-bold "
         >
-          <v-icon>mdi-arrow-left</v-icon>
+          <v-icon class="mr-1">mdi-arrow-left</v-icon>
           Home Page
+        </v-btn>
+        <v-btn
+          v-show="error.statusCode !== 404"
+          nuxt
+          elevation="0"
+          color="accent"
+          class="font-weight-bold"
+          @click="forceReload"
+        >
+          <v-icon class="mr-1">mdi-refresh</v-icon>
+          Refresh
         </v-btn>
       </v-col>
     </v-row>
@@ -262,6 +274,23 @@ export default {
   computed: {
     note() {
       return this.error.statusCode === 404 ? this.notFoundNote : this.otherNote;
+    }
+  },
+  mounted() {
+    window.addEventListener("online", this.reloadWindow);
+  },
+  beforeDestroy() {
+    window.removeEventListener("online", this.reloadWindow);
+  },
+  methods: {
+    reloadWindow() {
+      location.reload();
+    },
+    forceReload() {
+      if (!window.navigator?.onLine) {
+        return this.$store.commit("SHOW_ALERT", "you are offline");
+      }
+      location.reload();
     }
   }
 };

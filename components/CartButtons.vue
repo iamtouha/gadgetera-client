@@ -1,12 +1,18 @@
 <template>
   <div class="d-contents">
     <client-only>
+      <template #placeholder>
+        <v-btn class="add2cart-btn flex-grow-1 mt-sm-3" elevation="0" disabled>
+          Loading...
+        </v-btn>
+      </template>
       <v-btn
         v-if="!addedInCart"
-        class="d-sm-block d-none add2cart-btn mt-3 font-weight-medium"
+        class="add2cart-btn flex-grow-1 mt-sm-3"
         elevation="0"
-        height="44px"
+        :class="[mobileView ? '' : 'd-none d-sm-block']"
         color="accent"
+        :large="!isMobile"
         @click="addToCart"
       >
         <v-icon left>
@@ -17,40 +23,17 @@
       <v-btn
         v-else
         outlined
-        class="d-sm-block d-none add2cart-btn mt-3 font-weight-medium"
+        class="add2cart-btn flex-grow-1 mt-sm-3"
+        :class="[mobileView ? '' : 'd-none d-sm-block']"
         elevation="0"
-        height="44px"
         color="accent"
-        @click="removeFromCart"
+        :large="!isMobile"
+        @click="REMOVE_FROM_CART(product.id)"
       >
         <v-icon left>
           mdi-cart-minus
         </v-icon>
-        remove from cart
-      </v-btn>
-
-      <v-btn
-        v-if="!addedInCart"
-        fab
-        bottom
-        right
-        fixed
-        color="accent"
-        class="d-sm-none "
-        @click="addToCart"
-      >
-        <v-icon>mdi-cart-plus</v-icon>
-      </v-btn>
-      <v-btn
-        v-else
-        fab
-        bottom
-        right
-        fixed
-        class="d-sm-none"
-        @click="removeFromCart"
-      >
-        <v-icon>mdi-cart-minus</v-icon>
+        remove
       </v-btn>
     </client-only>
   </div>
@@ -62,10 +45,19 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "CartButtons",
   props: {
-    product: { type: Object, default: () => ({}) }
+    product: {
+      type: Object,
+      default: () => ({})
+    },
+    mobileView: Boolean
   },
+
   computed: {
     ...mapGetters("cart", ["cartItems"]),
+
+    isMobile() {
+      return this.$vuetify.breakpoint.xsOnly;
+    },
     addedInCart() {
       return this.cartItems.some(item => item.product.id === this.product.id);
     }
@@ -78,12 +70,18 @@ export default {
         this.SHOW_ALERT("Out of Stock!");
       }
       this.ADD_TO_CART({ product: this.product, quantity: 1 });
-      this.SHOW_ALERT("added to cart");
-    },
-    removeFromCart() {
-      this.REMOVE_FROM_CART(this.product.id);
-      this.SHOW_ALERT("removed from cart");
     }
   }
 };
 </script>
+<style scoped>
+.add2cart-btn {
+  font-weight: 600;
+  max-width: 200px;
+}
+@media (min-width: 600px) {
+  .cart-bottom-sheet {
+    display: none !important;
+  }
+}
+</style>

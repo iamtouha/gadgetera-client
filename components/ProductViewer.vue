@@ -155,10 +155,17 @@
       </v-simple-table>
       <v-row class="px-2 mt-6 mx-auto add2cart-row">
         <v-spacer class="d-sm-block d-none" />
-
         <cart-buttons :product="product" />
       </v-row>
     </v-col>
+    <v-sheet
+      class="d-sm-none mobile-cart-sheet d-flex rounded-top pa-3 align-center justify-space-between elevation-6"
+    >
+      <h2 class="text-h6 font-weight-medium pr-2">
+        {{ (product.sale_price || product.price) | groupNum }}
+      </h2>
+      <cart-buttons mobile-view :product="product" />
+    </v-sheet>
   </v-row>
 </template>
 
@@ -216,4 +223,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.mobile-cart-sheet {
+  position: fixed;
+  z-index: 12;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+</style>

@@ -215,10 +215,7 @@ export default {
     max-width: 100%;
     overflow-x: auto;
   }
-  .add2cart-btn {
-    width: 100%;
-    max-width: 350px;
-  }
+
   .add2cart-row {
     justify-content: center;
   }

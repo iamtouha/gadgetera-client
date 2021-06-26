@@ -55,30 +55,72 @@
 
     <!-- homepage carousel end -->
 
-    <!-- featured products -->
-    <v-row class="my-6">
-      <v-col v-show="!content.featured_products.length" cols="12" sm="6">
-        <v-skeleton-loader type="image" />
-      </v-col>
-      <v-col v-show="!content.featured_products.length" cols="12" sm="6">
-        <v-skeleton-loader type="image" />
-      </v-col>
-      <v-slide-group mobile-breakpoint="600">
-        <v-slide-item
-          v-for="product in content.featured_products"
-          :key="product.id"
+    <v-slide-group show-arrows="always" mobile-breakpoint="600" class="my-8">
+      <v-slide-item v-for="product in content.best_deals" :key="product.id">
+        <v-card
+          width="200px"
+          class="ma-2 ma-sm-4"
+          nuxt
+          outlined
+          :to="'/products/' + product.slug"
         >
-          <featured-card :product="product" />
+          <v-img
+            :src="product.images[1].url"
+            aspect-ratio="1"
+            class="align-end"
+            :title="product.name"
+          >
+            <div class="pb-3" style="text-align:center;">
+              <v-chip class="mx-auto elevation-2" color="primary">
+                {{ product | calcDiscount }}% OFF
+              </v-chip>
+            </div>
+          </v-img>
+        </v-card>
+      </v-slide-item>
+      <div v-show="!content.best_deals.length" class="d-contents">
+        <v-slide-item>
+          <v-skeleton-loader class="pa-4 rounded" width="200px" type="image" />
         </v-slide-item>
-      </v-slide-group>
+        <v-slide-item>
+          <v-skeleton-loader class="pa-4 rounded" width="200px" type="image" />
+        </v-slide-item>
+        <v-slide-item>
+          <v-skeleton-loader class="pa-4 rounded" width="200px" type="image" />
+        </v-slide-item>
+      </div>
+    </v-slide-group>
+    <v-row class="mt-8">
+      <v-col
+        v-for="item in resolutions"
+        :key="item.icon"
+        cols="12"
+        sm="6"
+        md="3"
+      >
+        <v-list-item two-line>
+          <v-list-item-avatar size="40">
+            <v-icon size="40">
+              {{ item.icon }}
+            </v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title class="title text-wrap">
+              {{ item.title }}
+            </v-list-item-title>
+            <v-list-item-subtitle class="text-wrap subtitle-1">
+              {{ item.text }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-col>
     </v-row>
-    <!-- featured products end -->
-
+    <v-divider class="my-8" />
     <!-- subcategories start -->
     <h2 class="text-h5 text-center mb-6 mt-12">
-      Popular categories
+      Browse Popular categories
     </h2>
-    <v-row>
+    <v-row class="mb-12">
       <v-col v-show="!content.subcategories.length" cols="12" sm="6">
         <v-skeleton-loader type="image" />
       </v-col>
@@ -86,12 +128,18 @@
         v-for="subcat in content.subcategories"
         :key="subcat.id"
         cols="12"
-        sm="6"
+        sm="4"
+        md="3"
       >
-        <v-card nuxt :to="`/subcategories/${subcat.key}`">
+        <v-card
+          nuxt
+          max-width="300px"
+          class="mx-auto"
+          :to="`/subcategories/${subcat.key}`"
+        >
           <v-img aspect-ratio="2" :src="subcat.cover.formats.small.url">
-            <v-overlay absolute class="align-end justify-start">
-              <div class="pa-4 headline">
+            <v-overlay absolute class="align-center justify-center">
+              <div class="pa-4 text-center title">
                 {{ subcat.name }}
               </div>
             </v-overlay>
@@ -101,43 +149,11 @@
     </v-row>
     <!-- subcategories end -->
 
-    <!-- best deals start -->
-    <h2 class="text-h5 text-center mb-6 mt-12">
-      Best Deals
-    </h2>
-    <v-slide-group mobile-breakpoint="600" class="pa-4">
-      <v-slide-item v-for="product in content.best_deals" :key="product.id">
-        <v-card
-          width="200px"
-          class="ma-4"
-          nuxt
-          outlined
-          :to="'/products/' + product.slug"
-        >
-          <v-img
-            :src="product.images[0].url"
-            aspect-ratio="1"
-            class="align-center"
-          >
-            <div style="text-align:center;">
-              <v-chip class="mx-auto elevation-2" color="primary">
-                {{ product | calcDiscount }}% OFF
-              </v-chip>
-            </div>
-          </v-img>
-        </v-card>
-      </v-slide-item>
-      <v-slide-item v-show="!content.best_deals.length">
-        <v-skeleton-loader width="200px" type="image" />
-      </v-slide-item>
-    </v-slide-group>
-    <!-- best deals end -->
-
     <!-- brands -->
     <h2 class="text-h5 text-center mb-6 mt-12">
       Top Brands
     </h2>
-    <v-row class="mb-6">
+    <v-row justify="center" class="mb-6">
       <v-col v-show="!content.top_brands.length" cols="4" sm="3" md="2">
         <v-skeleton-loader type="image" />
       </v-col>
@@ -210,7 +226,28 @@ export default {
       touchDevice: false,
       loading: false,
       img: {},
-
+      resolutions: [
+        {
+          icon: "mdi-seal-variant",
+          title: "Premium Quality",
+          text: "Every product in our store."
+        },
+        {
+          icon: "mdi-piggy-bank-outline",
+          title: "Reasonable Price",
+          text: "For making our product more accessible to you."
+        },
+        {
+          icon: "mdi-truck-fast-outline",
+          title: "Fast delivery",
+          text: "Anywhere in Bangladesh."
+        },
+        {
+          icon: "mdi-face-agent",
+          title: "Support 24/7",
+          text: "Contact us 24 hours a day."
+        }
+      ],
       categories: [],
       brands: []
     };
