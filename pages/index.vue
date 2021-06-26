@@ -155,7 +155,10 @@
     </v-row>
     <!-- brands end -->
     <!-- testimonials -->
-    <h2 class="text-h5 text-center mb-6 mt-12">
+    <h2
+      v-show="content.testimonials.length"
+      class="text-h5 text-center mb-6 mt-12"
+    >
       Testimonials
     </h2>
     <v-slide-group center-active mobile-breakpoint="600" class="pa-4">
@@ -181,7 +184,7 @@
           </v-card-text>
         </v-card>
       </v-slide-item>
-      <v-slide-item v-show="!content.testimonials.length">
+      <v-slide-item v-show="loading">
         <v-skeleton-loader width="350px" type="card" />
       </v-slide-item>
     </v-slide-group>
@@ -189,6 +192,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Home",
   filters: {
@@ -204,24 +208,21 @@ export default {
   data() {
     return {
       touchDevice: false,
+      loading: false,
       img: {},
-      content: {
-        banners: [],
-        best_deals: [],
-        featured_products: [],
-        top_brands: [],
-        testimonials: [],
-        subcategories: []
-      },
+
       categories: [],
       brands: []
     };
   },
 
   async fetch() {
-    const homepage = await this.$axios.$get("/homepage");
-    this.content = homepage;
-    this.img = homepage.banners[0].content;
+    this.loading = true;
+    const error = await this.getHomepageContent();
+    if (error) {
+      this.$nuxt.error(error);
+    }
+    this.loading = false;
   },
   head() {
     return {
@@ -242,6 +243,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      content: "app/homepageContent"
+    }),
     isTouch() {
       return this.$vuetify.breakpoint.smAndDown;
     },
@@ -260,7 +264,9 @@ export default {
     }
   },
 
-  methods: {}
+  methods: {
+    ...mapActions("app", ["getHomepageContent"])
+  }
 };
 </script>
 <style lang="scss">

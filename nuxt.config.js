@@ -82,6 +82,11 @@ export default {
     workbox: {
       runtimeCaching: [
         {
+          urlPattern: "https://gadget-era.s3.ap-southeast-1.amazonaws.com/.*",
+          handler: "CacheFirst",
+          method: "GET"
+        },
+        {
           urlPattern: "https://res.cloudinary.com/.*",
           handler: "CacheFirst",
           method: "GET"
