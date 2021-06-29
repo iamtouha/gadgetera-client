@@ -41,11 +41,15 @@
         >
           <product-card :product="product" />
         </v-col>
-        <v-col v-if="!products.length" class="text-center" cols="12">
-          No products available
-        </v-col>
+
         <v-col class="text-center" cols="12">
-          <v-btn :disabled="!products.length" outlined large @click="fetchMore">
+          <v-btn
+            :disabled="!products.length"
+            color="primary"
+            outlined
+            large
+            @click="fetchMore"
+          >
             load more
           </v-btn>
         </v-col>
@@ -74,7 +78,7 @@ export default {
   async fetch() {
     try {
       this.loading = true;
-      const key = this.$route.params.subkey;
+      const key = this.$route.params.key;
       this.filterParams.subcatKey = key;
       const [subcats, products] = await Promise.all([
         this.$repositories.subcategory.get({ key }),

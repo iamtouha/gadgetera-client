@@ -23,7 +23,7 @@
             <v-skeleton-loader
               v-show="!brand.id"
               min-width="250px"
-              class="mb-2"
+              class="mb-2 mx-auto mx-sm-0"
               type="heading"
             />
             {{ brand.name }}
@@ -60,7 +60,13 @@
         No products found
       </v-col>
       <v-col class="text-center" cols="12">
-        <v-btn :disabled="!products.length" outlined large @click="fetchMore">
+        <v-btn
+          :disabled="!products.length"
+          color="primary"
+          outlined
+          large
+          @click="fetchMore"
+        >
           load more
         </v-btn>
       </v-col>
