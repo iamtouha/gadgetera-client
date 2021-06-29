@@ -16,15 +16,13 @@
         </v-list-item>
       </v-col>
       <v-col cols="12" sm="6">
-        <v-list-item two-line>
+        <v-list-item>
           <v-list-item-content>
-            <v-list-item-subtitle class="text-subtitle-1 text-sm-right">
-              Social Networks
-            </v-list-item-subtitle>
             <v-list-item-title class="text-sm-right">
               <v-btn
                 v-for="network in networks"
                 :key="network.name"
+                small
                 icon
                 text
                 large
@@ -70,12 +68,12 @@ export default {
       {
         name: "Facebook",
         icon: "mdi-facebook",
-        link: "https://www.facebook.com/gadgetEraBangladesh"
+        link: "https://www.facebook.com/bdgadgetera"
       },
       {
         name: "Messenger",
         icon: "mdi-facebook-messenger",
-        link: "https://m.me/gadgetEraBangladesh"
+        link: "https://m.me/bdgadgetera"
       },
       {
         name: "Instagram",
@@ -84,7 +82,7 @@ export default {
       }
     ],
     contact: {
-      phone: "+880-19362-99699",
+      phone: "+880 1517-019546",
       email: "gadgeterabd@gmail.com"
     }
   }),

@@ -9,7 +9,7 @@
       continuous
       cycle
       :interval="7000"
-      class="rounded"
+      class="rounded mt-8"
       hide-delimiters
       show-arrows-on-hover
       height="auto"
@@ -55,7 +55,7 @@
 
     <!-- homepage carousel end -->
 
-    <v-slide-group show-arrows="always" mobile-breakpoint="600" class="my-8">
+    <v-slide-group mobile-breakpoint="600" class="my-8">
       <v-slide-item v-for="product in content.best_deals" :key="product.id">
         <v-card
           width="200px"
