@@ -56,28 +56,10 @@
     <!-- homepage carousel end -->
 
     <v-slide-group mobile-breakpoint="600" class="my-8">
-      <v-slide-item v-for="product in content.best_deals" :key="product.id">
-        <v-card
-          width="200px"
-          class="ma-2 ma-sm-4"
-          nuxt
-          outlined
-          :to="'/products/' + product.slug"
-        >
-          <v-img
-            :src="product.images[1].url"
-            aspect-ratio="1"
-            class="align-end"
-            :title="product.name"
-          >
-            <div class="pb-3" style="text-align:center;">
-              <v-chip class="mx-auto elevation-2" color="primary">
-                {{ product | calcDiscount }}% OFF
-              </v-chip>
-            </div>
-          </v-img>
-        </v-card>
-      </v-slide-item>
+      <template v-for="product in content.best_deals">
+        <promotion-card :key="product.id" :product="product" />
+      </template>
+
       <div v-show="!content.best_deals.length" class="d-contents">
         <v-slide-item>
           <v-skeleton-loader class="pa-4 rounded" width="200px" type="image" />
@@ -211,16 +193,7 @@
 import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Home",
-  filters: {
-    calcDiscount(product) {
-      const { price, sale_price } = product;
-      if (!product.sale_price) {
-        return 0;
-      }
-      const discount = (100 * (price - sale_price)) / price;
-      return Math.ceil(discount);
-    }
-  },
+
   data() {
     return {
       touchDevice: false,

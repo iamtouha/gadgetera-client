@@ -2,13 +2,18 @@
   <v-container style="min-height:100vh">
     <v-card color="transparent" :loading="loading">
       <div class="d-flex flex-no-wrap flex-column flex-sm-row">
-        <div v-show="!logo" class="responsive rounded ma-1" style="width:95px;">
-          <div class="sizer">
-            <div class="wrapper">
-              <v-skeleton-loader type="image" />
-            </div>
-          </div>
-        </div>
+        <v-responsive
+          v-show="!logo"
+          class="mx-auto mx-sm-2"
+          max-height="180px"
+          max-width="180px"
+          width="100%"
+          min-width="95px"
+          aspect-ratio="1"
+        >
+          <v-skeleton-loader type="image" max-width="100%" max-height="100%" />
+        </v-responsive>
+
         <v-img
           v-show="logo"
           contain
@@ -23,7 +28,7 @@
             <v-skeleton-loader
               v-show="!brand.id"
               min-width="250px"
-              class="mb-2 mx-auto mx-sm-0"
+              class="mb-2"
               type="heading"
             />
             {{ brand.name }}
