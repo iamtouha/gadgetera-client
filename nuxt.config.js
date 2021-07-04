@@ -70,8 +70,8 @@ export default {
 
   pwa: {
     meta: {
-      theme_color: "#03A9F4",
-      background_color: "#fffcf2"
+      theme_color: "#ffffff",
+      background_color: "#ffffff"
     },
     manifest: {
       name: "Gadget Era - Online Shop",
@@ -103,8 +103,8 @@ export default {
       dark: false,
       themes: {
         light: {
-          primary: "#489fb5",
-          secondary: "#fffcf2",
+          primary: "#03A9F4",
+          secondary: "#ffffff",
           accent: "#fe5f55",
           info: "#fdfce2",
           warning: "#FFC107",

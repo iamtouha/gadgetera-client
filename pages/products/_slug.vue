@@ -45,8 +45,6 @@ import extractor from "keyword-extractor";
 
 export default {
   name: "Product",
-
-  layout: "no-extension",
   data: () => ({
     image: {},
     options: [],

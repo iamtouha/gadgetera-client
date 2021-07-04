@@ -1,24 +1,22 @@
 <template>
   <v-tabs
     v-model="tab"
-    :centered="centered"
     slider-size="3"
-    :align-with-title="centered"
     class="nav-tabs px-sm-3"
-    :class="[centered ? 'centered' : '']"
     :height="height"
+    :centered="centered"
   >
     <v-tab
       v-for="route in routes"
       :key="route.name"
       :to="route.path"
       nuxt
-      exact
+      :exact="route.name === 'index'"
       class="route-tab"
     >
       {{ route.title }}
     </v-tab>
-    <v-tabs-slider v-show="hasRoutePath" />
+    <v-tabs-slider />
   </v-tabs>
 </template>
 
@@ -56,9 +54,6 @@ export default {
   .v-slide-group__prev,
   .v-slide-group__next {
     display: none !important;
-  }
-  &.centered {
-    max-width: 500px;
   }
 }
 </style>
