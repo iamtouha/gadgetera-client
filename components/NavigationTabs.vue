@@ -3,8 +3,10 @@
     v-model="tab"
     slider-size="3"
     class="nav-tabs px-sm-3"
+    :class="[centered ? 'mx-auto' : '']"
     :height="height"
     :centered="centered"
+    style="max-width:800px"
   >
     <v-tab
       v-for="route in routes"
@@ -50,7 +52,6 @@ export default {
   font-weight: 600 !important;
 }
 .nav-tabs {
-  font-size: 18px;
   .v-slide-group__prev,
   .v-slide-group__next {
     display: none !important;
