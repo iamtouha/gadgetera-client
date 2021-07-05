@@ -111,6 +111,15 @@ export default {
           error: "#FF8A80",
           success: "#00E676",
           font: "#000000"
+        },
+        dark: {
+          primary: "#03A9F4",
+          secondary: "#ffffff",
+          accent: "#fe5f55",
+          info: "#fdfce2",
+          warning: "#FFC107",
+          error: "#FF8A80",
+          success: "#00E676"
         }
       }
     }
