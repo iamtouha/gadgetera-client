@@ -16,6 +16,7 @@ export default {
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { hid: "description", name: "description", content: "" },
+      { hid: "theme-color", name: "theme-color", content: "#ffffff" },
       {
         hid: "og:image",
         name: "og:image",
@@ -70,8 +71,7 @@ export default {
 
   pwa: {
     meta: {
-      theme_color: "#ffffff",
-      background_color: "#ffffff"
+      theme_color: "#ffffff"
     },
     manifest: {
       name: "Gadget Era - Online Shop",
