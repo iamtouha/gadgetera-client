@@ -1,5 +1,5 @@
 <template>
-  <v-footer class="py-3" dark color="primary">
+  <v-footer class="py-3">
     <v-row>
       <v-col class="secondary-routes" cols="12" sm="6">
         <v-list-item dense @click="openDialer">

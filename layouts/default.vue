@@ -2,7 +2,7 @@
   <v-app>
     <app-bar />
 
-    <v-main class="secondary default-main">
+    <v-main class="default-main">
       <Nuxt />
     </v-main>
     <v-snackbar v-model="snackbar">

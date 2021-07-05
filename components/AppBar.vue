@@ -4,16 +4,16 @@
     :elevate-on-scroll="!isMobile"
     :hide-on-scroll="isMobile"
     :flat="isMobile"
-    color="secondary"
+    :color="$vuetify.theme.dark ? '' : 'secondary'"
     class="app-bar"
   >
     <template #extension>
       <navigation-tabs />
     </template>
-    <v-toolbar-title>
+    <v-toolbar-title style="min-width:144px;">
       <v-img
-        src="/icon.svg"
-        width="56px"
+        :src="$vuetify.theme.dark ? '/icon-dark.svg' : '/icon.svg'"
+        width="50px"
         aspect-ratio="1"
         class="pa-0 ma-0"
         contain

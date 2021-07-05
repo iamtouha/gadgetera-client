@@ -1,9 +1,11 @@
 /* eslint-disable camelcase, no-console */
+
 export const state = () => ({
   user: null,
   address: null,
   alertMessage: null,
-  token: null
+  token: null,
+  darkMode: false
 });
 
 export const getters = {
@@ -18,6 +20,7 @@ export const mutations = {
   SET_USER(state, { name, email }) {
     state.user = { name, email };
   },
+
   SET_TOKEN(state, jwt) {
     state.token = jwt;
   },
@@ -56,11 +59,7 @@ export const mutations = {
 };
 
 export const actions = {
-  nuxtClientInit({ commit }) {
-    commit("cart/SET_CART");
-  },
-
-  async nuxtServerInit({ commit }, { $cookies, $axios, error }) {
+  async nuxtClientInit({ commit }, { $cookies, $axios }) {
     try {
       const token = $cookies.get("jwt_token");
       if (token) {
@@ -68,15 +67,30 @@ export const actions = {
         const { id, email, name, address } = await $axios.$get("/users/me");
         commit("SET_USER", { id, email, name });
         if (address) {
-          const addressDoc = await $axios.$get("/addresses/" + address);
-          commit("SET_ADDRESS", addressDoc);
+          const {
+            receiver,
+            district,
+            sub_district,
+            email,
+            phone,
+            street_address
+          } = await $axios.$get("/addresses/" + address);
+
+          commit("SET_ADDRESS", {
+            receiver,
+            district,
+            sub_district,
+            email,
+            phone,
+            street_address
+          });
         }
       }
-    } catch (err) {
-      if (err.response) {
+      commit("cart/SET_CART");
+    } catch (error) {
+      if (error.response) {
         $cookies.remove("jwt_token");
       }
-      error(err);
     }
   },
   async logIn({ commit }, payload) {

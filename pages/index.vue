@@ -146,7 +146,7 @@
         sm="3"
         md="2"
       >
-        <v-card nuxt :to="`/brands/${brand.key}`" outlined color="secondary">
+        <v-card nuxt :to="`/brands/${brand.key}`" color="transparent">
           <v-img :aspect-ratio="1" contain :src="brand.logo.url" />
         </v-card>
       </v-col>
