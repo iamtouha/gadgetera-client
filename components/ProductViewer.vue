@@ -146,7 +146,10 @@
             <th>Status</th>
             <td>
               <v-skeleton-loader v-show="!product.id" type="text" />
-              <span v-show="product.id">
+              <span
+                v-show="product.id"
+                :class="product.stock ? 'primary--text' : 'accent--text'"
+              >
                 {{ product.stock ? "Available in stock" : "Out of Stock" }}
               </span>
             </td>

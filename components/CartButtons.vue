@@ -6,35 +6,38 @@
           Loading...
         </v-btn>
       </template>
-      <v-btn
-        v-if="!addedInCart"
-        class="add2cart-btn flex-grow-1 mt-sm-3"
-        elevation="0"
-        :class="[mobileView ? '' : 'd-none d-sm-block']"
-        color="accent"
-        :large="!isMobile"
-        @click="addToCart"
-      >
-        <v-icon left>
-          mdi-cart-plus
-        </v-icon>
-        add to cart
-      </v-btn>
-      <v-btn
-        v-else
-        outlined
-        class="add2cart-btn flex-grow-1 mt-sm-3"
-        :class="[mobileView ? '' : 'd-none d-sm-block']"
-        elevation="0"
-        color="accent"
-        :large="!isMobile"
-        @click="REMOVE_FROM_CART(product.id)"
-      >
-        <v-icon left>
-          mdi-cart-minus
-        </v-icon>
-        remove
-      </v-btn>
+      <span>
+        <v-btn
+          v-if="addedInCart"
+          outlined
+          class="add2cart-btn flex-grow-1 mt-sm-3"
+          :class="[mobileView ? '' : 'd-none d-sm-block']"
+          elevation="0"
+          color="accent"
+          :large="!isMobile"
+          @click="REMOVE_FROM_CART(product.id)"
+        >
+          <v-icon left>
+            mdi-cart-minus
+          </v-icon>
+          remove
+        </v-btn>
+        <v-btn
+          v-else
+          :disabled="!product.stock"
+          class="add2cart-btn flex-grow-1 mt-sm-3"
+          elevation="0"
+          :class="[mobileView ? '' : 'd-none d-sm-block']"
+          color="accent"
+          :large="!isMobile"
+          @click="addToCart"
+        >
+          <v-icon left>
+            mdi-cart-plus
+          </v-icon>
+          add to cart
+        </v-btn>
+      </span>
     </client-only>
   </div>
 </template>
@@ -62,6 +65,7 @@ export default {
       return this.cartItems.some(item => item.product.id === this.product.id);
     }
   },
+
   methods: {
     ...mapMutations("cart", ["ADD_TO_CART", "REMOVE_FROM_CART"]),
     ...mapMutations(["SHOW_ALERT"]),
@@ -70,6 +74,11 @@ export default {
         this.SHOW_ALERT("Out of Stock!");
       }
       this.ADD_TO_CART({ product: this.product, quantity: 1 });
+    }
+  },
+  mounted() {
+    if (!this.product.stock && this.addedInCart) {
+      this.REMOVE_FROM_CART(this.product.id);
     }
   }
 };

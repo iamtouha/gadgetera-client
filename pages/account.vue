@@ -58,7 +58,7 @@
                   #{{ order.order_id }}
                 </v-card-title>
                 <v-card-subtitle>
-                  {{ order.createdAt | formatDate }}
+                  {{ (order.createdAt || order.created_at) | formatDate }}
                 </v-card-subtitle>
                 <v-card-subtitle>
                   status:
@@ -88,10 +88,10 @@ export default {
   data: () => ({
     orders: []
   }),
-
+  fetchOnServer: false,
   async fetch() {
     try {
-      const orders = await this.$axios.$get("/orders");
+      const orders = await this.$repositories.order.get();
       this.orders = orders;
     } catch (error) {
       this.$nuxt.error(error);

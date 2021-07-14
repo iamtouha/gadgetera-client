@@ -7,13 +7,14 @@
   >
     <div class="responsive">
       <v-chip
-        v-show="product.sale_price"
+        v-show="product.sale_price && product.stock"
         color="accent"
         small
         class="offer-chip text-uppercase"
       >
         on sale
       </v-chip>
+
       <div class="sizer">
         <div class="wrapper">
           <img :src="imgSrc" :alt="img.alternativeText" :title="img.caption" />

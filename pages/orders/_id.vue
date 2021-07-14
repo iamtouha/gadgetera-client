@@ -16,7 +16,7 @@
           </v-btn>
         </v-card-title>
         <v-card-subtitle class="px-0">
-          {{ order.createdAt | formatDate }}
+          {{ (order.createdAt || order.created_at) | formatDate }}
         </v-card-subtitle>
       </v-card>
 
@@ -98,7 +98,11 @@
         </v-card-title>
         <v-card-text class="px-0">
           <v-list class="rounded" subheader outlined>
-            <v-list-item v-for="item in order.cart" :key="item.id">
+            <v-list-item
+              v-for="item in order.cart"
+              :key="item.id"
+              :to="`/products/${item.product.slug}`"
+            >
               <v-list-item-avatar size="50">
                 <v-img :src="item.product.images[0].formats.thumbnail.url" />
               </v-list-item-avatar>
@@ -112,7 +116,10 @@
               </v-list-item-content>
             </v-list-item>
           </v-list>
-          <v-simple-table class="transparent order-table text-subtitle-1">
+          <v-simple-table
+            style="max-width:600px"
+            class="transparent order-table text-subtitle-1"
+          >
             <tbody>
               <tr>
                 <td>Cart total</td>
@@ -228,8 +235,8 @@ export default {
   async fetch() {
     try {
       const [orders, reviews] = await Promise.all([
-        this.$axios.$get("/orders?order_id=" + this.$route.params.id),
-        this.$axios.$get("/reviews?order.order_id=" + this.$route.params.id)
+        this.$repositories.order.get(this.$route.params.id),
+        this.$repositories.review.get(this.$route.params.id)
       ]);
       if (!orders[0]) {
         return this.$nuxt.error({ statusCode: 404, message: "not found" });
@@ -249,6 +256,7 @@ export default {
         };
       });
     } catch (error) {
+      console.log(error.message);
       this.$nuxt.error(error);
     }
   },
@@ -277,7 +285,7 @@ export default {
           this.$store.commit("SHOW_ALERT", "Please rate the product");
           return;
         }
-        await this.$axios.$post("/reviews", {
+        await this.$repositories.review.create({
           rating: +rating,
           message,
           order,

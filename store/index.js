@@ -59,12 +59,17 @@ export const mutations = {
 };
 
 export const actions = {
-  async nuxtClientInit({ commit }, { $cookies, $axios }) {
+  async nuxtClientInit({ commit }, { $cookies }) {
     try {
       const token = $cookies.get("jwt_token");
       if (token) {
         commit("SET_TOKEN", token);
-        const { id, email, name, address } = await $axios.$get("/users/me");
+        const {
+          id,
+          email,
+          name,
+          address
+        } = await this.$repositories.user.get();
         commit("SET_USER", { id, email, name });
         if (address) {
           const {
@@ -74,7 +79,7 @@ export const actions = {
             email,
             phone,
             street_address
-          } = await $axios.$get("/addresses/" + address);
+          } = await this.$repositories.user.address();
 
           commit("SET_ADDRESS", {
             receiver,
@@ -94,7 +99,7 @@ export const actions = {
     }
   },
   async logIn({ commit }, payload) {
-    const { user, jwt } = await this.$axios.$post("/auth/local", {
+    const { user, jwt } = await this.$repositories.user.login({
       identifier: payload.email,
       password: payload.password
     });
@@ -106,8 +111,7 @@ export const actions = {
   },
   async signUp({ commit }, payload) {
     try {
-      const { user, jwt } = await this.$axios.$post(
-        "/auth/local/register",
+      const { user, jwt } = await await this.$repositories.user.register(
         payload
       );
       commit("SHOW_ALERT", "Signup successful. Thanks for joining us!");

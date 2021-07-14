@@ -36,27 +36,22 @@
                 <tbody>
                   <tr>
                     <td>Cart total</td>
-                    <td>&#2547; {{ Math.ceil(cartTotal) }}</td>
+                    <td>{{ Math.ceil(cartTotal) | groupNum }}</td>
                   </tr>
                   <tr v-if="coupon">
                     <td>Discount ({{ coupon.code }})</td>
-                    <td>- &#2547; {{ coupon.discount }}</td>
+                    <td>- {{ coupon.discount | groupNum }}</td>
                   </tr>
                   <tr>
                     <td>Shipping charge</td>
-                    <td>&#2547; {{ shipping }}</td>
+                    <td>{{ shipping | groupNum }}</td>
                   </tr>
                   <tr>
                     <td class="text-subtitle-2">
                       Subtotal
                     </td>
                     <td class="text-subtitle-2">
-                      &#2547;
-                      {{
-                        Math.ceil(cartTotal) +
-                          shipping -
-                          (coupon ? coupon.discount : 0)
-                      }}
+                      {{ subTotal | groupNum }}
                     </td>
                   </tr>
                 </tbody>
@@ -116,10 +111,26 @@
         <v-checkbox v-model="order.cash_on_delivery" label="Cash on delivery" />
         <v-select
           v-model="order.option"
+          :disabled="order.cash_on_delivery"
           label="Method"
           :items="['bkash', 'nagad', 'rocket']"
         />
-        <v-text-field v-model="order.trx_id" label="Transaction Id" />
+        <v-text-field
+          v-model="order.trx_id"
+          :disabled="order.cash_on_delivery"
+          label="Transaction Id"
+        />
+
+        <h1 class="title mt-6">
+          Note
+        </h1>
+        <v-divider />
+        <v-textarea
+          v-model="order.note"
+          rows="2"
+          placeholder="any message regarding this order?"
+        />
+
         <v-btn
           :loading="placing_order"
           class="mt-2 mb-6 orderbtn"
@@ -132,6 +143,24 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-sheet class="checkout-sheet d-none elevation-6 px-2">
+      <div class="fill-height d-flex justify-space-between">
+        <span class="subtitle-1 py-3">
+          {{ subTotal | groupNum }}
+        </span>
+        <v-btn
+          :loading="placing_order"
+          class="my-1"
+          elevation="0"
+          height="42px"
+          color="accent"
+          large
+          @click="placeOrder"
+        >
+          Place Order
+        </v-btn>
+      </div>
+    </v-sheet>
   </v-container>
 </template>
 
@@ -141,6 +170,15 @@ import { mapGetters, mapMutations } from "vuex";
 import { subDistricts, districts } from "~/assets/addressbook.json";
 export default {
   name: "Checkout",
+  filters: {
+    groupNum(price) {
+      if (!price) {
+        return "";
+      }
+      const formatter = new Intl.NumberFormat("en-US");
+      return "৳ " + formatter.format(price);
+    }
+  },
   data: () => ({
     district: "",
     couponCode: "",
@@ -157,6 +195,7 @@ export default {
     order: {
       option: "",
       trx_id: "",
+      note: "",
       cash_on_delivery: false
     },
     payment: {
@@ -164,11 +203,11 @@ export default {
       domestic_districts: "",
       shipping_charge: 0
     },
-    shipping: 120
+    shipping: 0
   }),
   async fetch() {
     try {
-      const data = await this.$axios.$get("/payment");
+      const data = await this.$repositories.payment.get();
       this.payment = data;
     } catch (error) {
       this.$nuxt.error(error);
@@ -181,6 +220,16 @@ export default {
   },
   computed: {
     ...mapGetters("cart", ["cartItems", "cartTotal"]),
+    subTotal() {
+      return (
+        Math.ceil(this.cartTotal) +
+        this.shipping -
+        (this.coupon ? this.coupon.discount : 0)
+      );
+    },
+    isMobile() {
+      return this.$vuetify.breakpoint.smAndDown;
+    },
     districts() {
       return districts;
     },
@@ -210,11 +259,8 @@ export default {
     },
     isDomestic(val) {
       if (val) {
-        return (this.shipping = this.payment.domestic_shipping_charge);
-      } else if (this.order?.cash_on_delivery) {
-        this.SHOW_ALERT(
-          "Shipping charge is required in advance for delivery outside Dhaka"
-        );
+        this.shipping = this.payment.domestic_shipping_charge;
+        return;
       }
       this.shipping = this.payment.shipping_charge;
     },
@@ -233,10 +279,9 @@ export default {
       }
     },
     "order.cash_on_delivery"(val) {
-      if (val && !this.isDomestic) {
-        this.SHOW_ALERT(
-          "Shipping charge is required in advance for delivery outside Dhaka"
-        );
+      if (val) {
+        this.order.option = "";
+        this.order.trx_id = "";
       }
     }
   },
@@ -254,7 +299,7 @@ export default {
     ...mapMutations("cart", ["DUMP_CART"]),
     async getCoupon() {
       try {
-        const coupon = await this.$axios.$get("/coupons/" + this.couponCode);
+        const coupon = await this.$repositories.coupon.get(this.couponCode);
         if (coupon.minimum_order > this.cartTotal) {
           return this.SHOW_ALERT("Minimum order requirement not fulfilled.");
         }
@@ -287,9 +332,10 @@ export default {
           trx_id: this.order.trx_id,
           cash_on_delivery: this.order.cash_on_delivery,
           payment_method: this.order.option,
-          coupon: this.coupon?.code
+          coupon: this.coupon?.code,
+          note: this.order.note
         };
-        const order = await this.$axios.$post("/orders", obj);
+        const order = await this.$repositories.order.create(obj);
         this.DUMP_CART();
         await this.$router.push({
           name: "thank-you",
@@ -310,6 +356,14 @@ export default {
 }
 .doc-table tr td:last-of-type {
   text-align: right;
+}
+.checkout-sheet {
+  position: fixed;
+  z-index: 5;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
 }
 @media (max-width: 600px) {
   .orderbtn {

@@ -16,7 +16,7 @@
                 {{ review.user_name }}
               </v-list-item-title>
               <v-list-item-subtitle class="body-2 primary--text">
-                {{ review.createdAt | formatDate }}
+                {{ (review.createdAt || review.created_at) | formatDate }}
               </v-list-item-subtitle>
               <v-list-item-subtitle>
                 <v-rating
