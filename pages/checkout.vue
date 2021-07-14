@@ -226,7 +226,9 @@ export default {
     cartTotal(val) {
       if (this.coupon && val < this.coupon.minimum_order) {
         this.coupon = null;
-        this.SHOW_ALERT("Coupon requirement not fulfilled");
+        if (!this.placing_order) {
+          this.SHOW_ALERT("Coupon requirement not fulfilled");
+        }
         this.couponCode = "";
       }
     },
@@ -279,18 +281,17 @@ export default {
         if (!isSubdist) {
           this.address.sub_district = "";
         }
-
         const obj = {
           cart,
           address: this.address,
           trx_id: this.order.trx_id,
           cash_on_delivery: this.order.cash_on_delivery,
-          payment_method: this.order.option
+          payment_method: this.order.option,
+          coupon: this.coupon?.code
         };
-
         const order = await this.$axios.$post("/orders", obj);
         this.DUMP_CART();
-        this.$router.push({
+        await this.$router.push({
           name: "thank-you",
           params: { order: order.order_id }
         });
