@@ -66,6 +66,7 @@
       </v-col>
       <v-col class="text-center" cols="12">
         <v-btn
+          class="d-none"
           :disabled="!products.length"
           color="primary"
           outlined
@@ -100,7 +101,10 @@ export default {
       this.filterParams.brandKey = key;
       const [brands, products] = await Promise.all([
         this.$repositories.brand.get({ key }),
-        this.$repositories.product.get(this.filterParams)
+        this.$repositories.product.get(this.filterParams, {
+          start: 0,
+          limit: 60
+        })
       ]);
       const [brand] = brands;
       if (!brand) {
