@@ -125,7 +125,7 @@ export default {
   data: () => ({
     mobileFilter: false,
     sorting: [
-      { key: "published_at:desc", label: "Publish Date" },
+      { key: "published_at:desc", label: "Date" },
       { key: "price:asc", label: "Price: Low to High" },
       { key: "price:desc", label: "Price: High to Low" }
     ]

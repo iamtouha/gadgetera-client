@@ -16,7 +16,8 @@ export default $axios => ({
       category,
       subcategory,
       subcatKey,
-      brandKey
+      brandKey,
+      stock
     } = filterParams;
     const sort =
       sortField && sortOrder ? `${sortField}:${sortOrder.toUpperCase()}` : null;
@@ -41,6 +42,10 @@ export default $axios => ({
       }
       return acc;
     }, {});
+
+    if (stock !== null) {
+      filter.stock = stock;
+    }
     const query = qs.stringify(filter);
     return $axios.$get(`${resource}?${slug ? "slug=" + slug : query}`);
   },

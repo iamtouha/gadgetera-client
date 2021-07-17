@@ -8,6 +8,55 @@
     <v-expansion-panel class="transparent">
       <v-expansion-panel-header>
         <span class="pt-1" style="height:24px;">
+          Availability
+        </span>
+        <client-only>
+          <v-chip
+            v-show="filter.stock !== null"
+            class="mx-1 px-2"
+            small
+            style="flex:0 1 auto;"
+            close
+            @click:close="availability = stockOptions[0]"
+          >
+            {{ availability }}
+          </v-chip>
+        </client-only>
+      </v-expansion-panel-header>
+      <v-expansion-panel-content>
+        <v-chip-group v-model="availability" mandatory column>
+          <v-chip
+            v-for="option in stockOptions"
+            :key="option"
+            :value="option"
+            filter
+            outlined
+            small
+          >
+            {{ option }}
+          </v-chip>
+        </v-chip-group>
+
+        <p class="mt-2 mb-0 body-2 disabled">
+          {{ subcategories.length ? "Subcategories" : "" }}
+        </p>
+        <v-chip-group v-model="subcategory" column>
+          <v-chip
+            v-for="subcat in subcategories"
+            :key="subcat.id"
+            :value="subcat.id"
+            small
+            filter
+            outlined
+          >
+            {{ subcat.name }}
+          </v-chip>
+        </v-chip-group>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+    <v-expansion-panel class="transparent">
+      <v-expansion-panel-header>
+        <span class="pt-1" style="height:24px;">
           Categories
         </span>
         <client-only>
@@ -172,7 +221,8 @@ export default {
   },
   data() {
     return {
-      panel: this.single ? 0 : [0]
+      panel: this.single ? 0 : [0],
+      stockOptions: ["All products", "In stock", "Out of stock"]
     };
   },
   async fetch() {
@@ -204,6 +254,36 @@ export default {
     },
     rangeActive() {
       return this.filter.maxPrice || this.filter.minPrice;
+    },
+    availability: {
+      get() {
+        const [all, inStock, notInStock] = this.stockOptions;
+        switch (this.filter.stock) {
+          case true:
+            return inStock;
+
+          case false:
+            return notInStock;
+
+          default:
+            return all;
+        }
+      },
+      set(val) {
+        switch (val) {
+          case "In stock":
+            this.SET_STOCK(true);
+            break;
+
+          case "Out of stock":
+            this.SET_STOCK(false);
+            break;
+
+          default:
+            this.SET_STOCK(null);
+            break;
+        }
+      }
     },
 
     category: {
@@ -250,7 +330,8 @@ export default {
       "SET_BRAND",
       "SET_CATEGORY",
       "SET_SUBCATEGORY",
-      "SET_RANGE"
+      "SET_RANGE",
+      "SET_STOCK"
     ])
   }
 };

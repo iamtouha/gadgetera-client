@@ -12,7 +12,8 @@ export const state = () => ({
     minPrice: null,
     brand: "",
     category: "",
-    subcategory: ""
+    subcategory: "",
+    stock: null
   },
   limit: 12
 });
@@ -65,6 +66,9 @@ export const mutations = {
   SET_SUBCATEGORY(state, id) {
     state.filter.subcategory = id;
   },
+  SET_STOCK(state, val) {
+    state.filter.stock = val;
+  },
   SET_RANGE(state, [min, max]) {
     state.filter.minPrice = min;
     state.filter.maxPrice = max;
@@ -78,7 +82,8 @@ export const mutations = {
       minPrice: null,
       brand: "",
       category: "",
-      subcategory: ""
+      subcategory: "",
+      stock: null
     };
     state.products = [];
   },
