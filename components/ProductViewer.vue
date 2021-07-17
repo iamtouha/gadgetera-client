@@ -88,9 +88,27 @@
         </v-icon>
         )
       </v-btn>
-      <p class="text-body-2">
+
+      <p class="text-body-2 mb-0">
         {{ product.overview }}
       </p>
+      <v-col class="px-0">
+        <ShareNetwork
+          v-for="{ network, icon } in networks"
+          :key="network"
+          :network="network"
+          :url="'https://gadgeterabd.com/products/' + product.slug"
+          :title="product.title || 'loading'"
+          :description="product.overview || 'loading'"
+        >
+          <v-btn icon :title="network" class="mr-1">
+            <v-icon>{{ icon }}</v-icon>
+          </v-btn>
+        </ShareNetwork>
+        <v-btn icon @click="copyToClipboard">
+          <v-icon>mdi-content-copy</v-icon>
+        </v-btn>
+      </v-col>
       <p class="text-subtitle font-weight-medium">
         Options
       </p>
@@ -174,6 +192,7 @@
 
 <script>
 /* eslint-disable camelcase */
+
 export default {
   name: "ProductView",
   filters: {
@@ -204,6 +223,15 @@ export default {
     options: { type: Array, default: () => [] },
     reviews: { type: Array, default: () => [] }
   },
+  data: () => ({
+    networks: [
+      { network: "facebook", icon: "mdi-facebook" },
+      { network: "messenger", icon: "mdi-facebook-messenger" },
+      { network: "whatsapp", icon: "mdi-whatsapp" }
+      // { network: "twitter", icon: "mdi-twitter" },
+      // { network: "email", icon: "mdi-at" }
+    ]
+  }),
   computed: {
     rating() {
       if (!this.reviews.length) {
@@ -221,6 +249,13 @@ export default {
       const review = document.getElementById("reviews");
       const top = review.offsetTop;
       window.scrollTo({ top, behavior: "smooth" });
+    },
+    copyToClipboard() {
+      if (!navigator.clipboard) {
+        return;
+      }
+      navigator.clipboard.writeText(window.location.href);
+      this.$store.commit("SHOW_ALERT", "Link copied to clipboard");
     }
   }
 };

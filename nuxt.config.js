@@ -42,7 +42,8 @@ export default {
     "@nuxtjs/axios",
     "nuxt-webfontloader",
     "cookie-universal-nuxt",
-    "@nuxtjs/sitemap"
+    "@nuxtjs/sitemap",
+    "vue-social-sharing/nuxt"
   ],
 
   sitemap: {

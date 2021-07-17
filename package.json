@@ -25,7 +25,8 @@
     "nuxt": "^2.15.3",
     "nuxt-client-init-module": "^0.3.0",
     "nuxt-webfontloader": "^1.1.0",
-    "qs": "^6.10.1"
+    "qs": "^6.10.1",
+    "vue-social-sharing": "^3.0.8"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^6.0.0",
