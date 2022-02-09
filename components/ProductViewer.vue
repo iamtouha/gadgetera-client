@@ -236,7 +236,7 @@ export default {
         icon: "mdi-facebook-messenger",
         color: "#006AFF"
       },
-      { network: "whatsapp", icon: "mdi-whatsapp", color: "#34B7F1" },
+      { network: "whatsapp", icon: "mdi-whatsapp", color: "#4FCE5D" },
       { network: "twitter", icon: "mdi-twitter", color: "#00acee" }
       // { network: "email", icon: "mdi-at" }
     ]
