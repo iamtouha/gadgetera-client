@@ -92,20 +92,25 @@
       <p class="text-body-2 mb-0">
         {{ product.overview }}
       </p>
-      <v-col class="px-0">
+      <v-col class="px-0 share-social-row">
+        <p class="mb-0 d-inline-block">
+          share on:&nbsp;
+        </p>
         <ShareNetwork
-          v-for="{ network, icon } in networks"
+          v-for="{ network, icon, color } in networks"
           :key="network"
           :network="network"
           :url="'https://gadgeterabd.com/products/' + product.slug"
-          :title="product.title || 'loading'"
-          :description="product.overview || 'loading'"
+          :title="product.name"
+          :description="product.overview"
         >
-          <v-btn icon :title="network" class="mr-1">
-            <v-icon>{{ icon }}</v-icon>
+          <v-btn icon :aria-label="network" class="mr-1">
+            <v-icon :color="color">
+              {{ icon }}
+            </v-icon>
           </v-btn>
         </ShareNetwork>
-        <v-btn icon @click="copyToClipboard">
+        <v-btn icon aria-label="copy link" @click="copyToClipboard">
           <v-icon>mdi-content-copy</v-icon>
         </v-btn>
       </v-col>
@@ -225,10 +230,14 @@ export default {
   },
   data: () => ({
     networks: [
-      { network: "facebook", icon: "mdi-facebook" },
-      { network: "messenger", icon: "mdi-facebook-messenger" },
-      { network: "whatsapp", icon: "mdi-whatsapp" }
-      // { network: "twitter", icon: "mdi-twitter" },
+      { network: "facebook", icon: "mdi-facebook", color: "#3b5998" },
+      {
+        network: "messenger",
+        icon: "mdi-facebook-messenger",
+        color: "#006AFF"
+      },
+      { network: "whatsapp", icon: "mdi-whatsapp", color: "#34B7F1" },
+      { network: "twitter", icon: "mdi-twitter", color: "#00acee" }
       // { network: "email", icon: "mdi-at" }
     ]
   }),
@@ -268,5 +277,9 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+}
+.share-social-row a {
+  display: inline-block;
+  text-decoration: none;
 }
 </style>
