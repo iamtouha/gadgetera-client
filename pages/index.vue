@@ -248,6 +248,11 @@ export default {
           hid: "og:image",
           name: "og:image",
           content: "/home-banner-placeholder.jpg"
+        },
+        {
+          hid: "cf",
+          name: "cf-2fa-verify",
+          content: "a7b90b922461d36"
         }
       ]
     };
